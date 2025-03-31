@@ -8,7 +8,20 @@
 integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
   <title>Posts</title>
 </head>
+<title>{{ config('app.name', 'Laravel') }}</title>
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.bunny.net">
+<link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+
+<!-- Scripts -->
+@vite(['resources/css/app.css', 'resources/js/app.js'])
 <body>
+  
+  <nav>
+    @include('layouts.navigation')
+  
+  </nav>
   <nav class="navbar navbar-expand-lg navbar-light bg-warning">
     <div class="container-fluid">
       <a class="navbar-brand h1" href={{ route('posts.index') }}>CRUDPosts</a>
