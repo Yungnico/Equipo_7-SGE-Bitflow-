@@ -1,6 +1,6 @@
 <?php
-namespace AppConsoleCommands;
-use IlluminateConsoleCommand;
+namespace App\Console\Commands;
+use Illuminate\Console\Command;
 use File;
 class MakeViewCommand extends Command
 {
