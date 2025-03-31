@@ -1,6 +1,6 @@
 <?php
 namespace App\Http\Controllers;
-use IlluminateHttpRequest;
+use Illuminate\Http\Request;
 use App\Models\Post;
 
 class PostController extends Controller
