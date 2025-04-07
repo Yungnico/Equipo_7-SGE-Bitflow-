@@ -330,7 +330,7 @@ return [
         ['header' => 'account_settings'],
         [
             'text' => 'roles',
-            'url' => 'admin/settings',
+            'url' => 'resources/views/roles',
             'icon' => 'fas fa-fw fa-user',
         ],
         [
