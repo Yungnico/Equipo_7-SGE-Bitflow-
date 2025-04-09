@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\ServicioController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,6 +19,14 @@ use App\Http\Controllers\PostController;
 Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
+
+Route::get('/servicios/crear', [ServicioController::class, 'create'])->name('servicios.create');
+Route::post('/servicios', [ServicioController::class, 'store'])->name('servicios.store');
+Route::get('/servicios/{id}/editar', [ServicioController::class, 'edit'])->name('servicios.edit');
+Route::put('/servicios/{id}', [ServicioController::class, 'update'])->name('servicios.update');
+Route::get('/servicios', [ServicioController::class, 'index'])->name('servicios.index');
+Route::put('/servicios/{id}/toggle', [ServicioController::class, 'toggleEstado'])->name('servicios.toggleEstado');
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/posts/index', [PostController::class, 'index'])->name('posts.index');

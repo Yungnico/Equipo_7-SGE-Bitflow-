@@ -16,6 +16,7 @@ integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6
       <div class="justify-end ">
         <div class="col ">
           <a class="btn btn-sm btn-success" href={{ route('posts.create') }}>Add Post</a>
+          <a class="btn btn-sm btn-success" href={{ route('servicios.index') }}>service</a>
         </div>
       </div>
     </div>
