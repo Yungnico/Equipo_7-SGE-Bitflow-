@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('nombre_servicio', 150)->unique();
             $table->string('descripcion', 300);
-            $table->integer('precio');
-            $table->enum('moneda', ['UF','USD','CLP']);
+            $table->double('precio', 10, 2);
+            $table->enum('moneda', ['UF', 'USD', 'CLP']);
             $table->timestamps();
         });
     }

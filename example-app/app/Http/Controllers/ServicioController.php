@@ -1,5 +1,7 @@
 <?php
+
 namespace App\Http\Controllers;
+
 use App\Models\Servicio;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -39,7 +41,7 @@ class ServicioController extends Controller
         $validated = $request->validate([
             'nombre_servicio' => 'required|string|max:150|unique:servicios,nombre_servicio,' . $servicio->id,
             'descripcion' => 'required|string|max:300',
-            'precio' => 'required|integer',
+            'precio' => 'required|numeric',
             'moneda' => 'required|in:UF,USD,CLP',
         ]);
 
@@ -58,8 +60,15 @@ class ServicioController extends Controller
         $servicio = Servicio::findOrFail($id);
         $servicio->estado = !$servicio->estado; // cambia el estado
         $servicio->save();
-    
+
         return redirect()->route('servicios.index')->with('success', 'Estado del servicio actualizado');
     }
-}
 
+    public function destroy($id)
+    {
+        $servicio = Servicio::findOrFail($id);
+        $servicio->delete();
+
+        return redirect()->route('servicios.index')->with('success', 'Servicio eliminado correctamente');
+    }
+}

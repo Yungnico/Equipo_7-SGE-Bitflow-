@@ -26,6 +26,8 @@ Route::get('/servicios/{id}/editar', [ServicioController::class, 'edit'])->name(
 Route::put('/servicios/{id}', [ServicioController::class, 'update'])->name('servicios.update');
 Route::get('/servicios', [ServicioController::class, 'index'])->name('servicios.index');
 Route::put('/servicios/{id}/toggle', [ServicioController::class, 'toggleEstado'])->name('servicios.toggleEstado');
+Route::resource('servicios', ServicioController::class);
+
 
 
 Route::middleware('auth')->group(function () {
@@ -38,4 +40,4 @@ Route::middleware('auth')->group(function () {
     Route::delete('/posts/{post}', [PostController::class, 'destroy'])->name('posts.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
