@@ -333,20 +333,20 @@ return [
             'submenu'=>
             [
                 [
-                    'text' => 'profile',
-                    'url' => 'admin/settings',
+                    'text' => 'Perfil',
+                    'url' => 'perfil',
                     'icon' => 'fas fa-fw fa-user',
                 ],
                 [
-                    'text' => 'change_password',
-                    'url' => 'admin/settings',
+                    'text' => 'Cambiar contraseña',
+                    'url' => 'cambiar-password',
                     'icon' => 'fas fa-fw fa-lock',
                 ],
             ],
         ],
         [
-            'text' => 'roles',
-            'url' => 'resources/views/roles',
+            'text' => 'Roles',
+            'url' => 'roles',
             'icon' => 'fas fa-fw fa-user',
         ],
          /*,

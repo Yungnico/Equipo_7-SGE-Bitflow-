@@ -14,17 +14,45 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+
 Route::get('/', function () {
-    return view('welcome');
+    return view('auth.login');
 });
 
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::middleware(['auth'])->group(function () {
+    Route::get('/perfil', function () {
+        return view('profile.edit');
+    })->name('profile.show');
+});
+
+/*
+Route::middleware(['auth'])->group(function () {
+    Route::get('/cambiar-perfil', function () {
+        return view('profile.edit');
+    })->name('profile.edit');
+
+    Route::put('/profile', [ProfileController::class, 'updateProfile'])->name('profile.update');
+});
+*/
+Route::middleware(['auth'])->group(function () {
+    Route::get('/cambiar-password', function () {
+        return view('password.change');
+    })->name('password.change');
+
+    Route::put('/password', [ProfileController::class, 'updatePassword'])->name('password.update');
+});
+
+
+
 Route::get('/roles', function () {
     return view('roles');
 })->middleware(['auth', 'verified']);
+
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
