@@ -25,9 +25,10 @@ Route::get('/dashboard', function () {
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/perfil', function () {
-        return view('profile.edit');
+        return view('profile.edit', [
+            'user' => Auth::user()
+        ]);
     })->name('profile.show');
-
 });
 
 Route::middleware(['auth'])->group(function () {
