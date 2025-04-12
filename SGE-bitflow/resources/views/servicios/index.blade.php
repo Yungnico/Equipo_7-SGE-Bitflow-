@@ -1,3 +1,12 @@
+@extends('adminlte::page')
+
+@section('title', 'Dashboard')
+
+@section('content_header')
+<h1></h1>
+@stop
+
+@section('content')
 <!DOCTYPE html>
 <html>
 
@@ -8,6 +17,25 @@
 </head>
 
 <body class="bg-light">
+
+    <form method="GET" action="{{ route('servicios.index') }}" class="mb-3">
+        <div class="row">
+            <div class="col-md-6">
+                <input type="text" name="nombre_servicio" class="form-control" placeholder="Buscar servicio..." value="{{ request('nombre_servicio') }}">
+            </div>
+            <div class="col-md-4">
+                <select name="moneda" class="form-control">
+                    <option value="">-- Filtrar por moneda --</option>
+                    <option value="UF" {{ request('moneda') == 'UF' ? 'selected' : '' }}>UF</option>
+                    <option value="USD" {{ request('moneda') == 'USD' ? 'selected' : '' }}>USD</option>
+                    <option value="CLP" {{ request('moneda') == 'CLP' ? 'selected' : '' }}>CLP</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-primary w-100" type="submit">Buscar</button>
+            </div>
+        </div>
+    </form>
 
     <div class="container mt-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
@@ -73,6 +101,9 @@
                     @endforeach
                 </tbody>
             </table>
+            <div class="d-flex justify-content-center">
+                {{ $servicios->appends(request()->query())->links() }}
+            </div>
         </div>
         @endif
     </div>
@@ -195,3 +226,15 @@
 </body>
 
 </html>
+@stop
+
+@section('css')
+{{-- Add here extra stylesheets --}}
+{{-- <link rel="stylesheet" href="/css/admin_custom.css"> --}}
+@stop
+
+@section('js')
+<script>
+    console.log("Hi, I'm using the Laravel-AdminLTE package!");
+</script>
+@stop

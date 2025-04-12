@@ -330,7 +330,7 @@ return [
         [
             'text' => 'account_settings',
             'icon' => 'fas fa-fw fa-user',
-            'submenu'=>
+            'submenu' =>
             [
                 [
                     'text' => 'profile',
@@ -349,7 +349,12 @@ return [
             'url' => 'resources/views/roles',
             'icon' => 'fas fa-fw fa-user',
         ],
-         /*,
+        [
+            'text' => 'Servicios',
+            'url' => 'servicios',
+            'icon' => 'fas fa-fw fa-user',
+        ]
+        /*,
         ['header' => 'labels'],
         [
             'text' => 'important',

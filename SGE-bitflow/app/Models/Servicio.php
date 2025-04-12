@@ -5,11 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class post extends Model
+class Servicio extends Model
 {
     use HasFactory;
-    protected $fillable = [
-        'title',
-        'body',
-      ];
+    protected $fillable = ['nombre_servicio', 'descripcion', 'precio', 'moneda', 'estado'];
 }

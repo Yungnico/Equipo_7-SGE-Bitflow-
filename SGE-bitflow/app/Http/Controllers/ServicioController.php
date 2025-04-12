@@ -50,9 +50,20 @@ class ServicioController extends Controller
         return redirect()->route('servicios.index')->with('success', 'Servicio actualizado correctamente');
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $servicios = Servicio::all(); // Obtiene todos los servicios
+        $query = Servicio::query();
+
+        if ($request->filled('nombre_servicio')) {
+            $query->where('nombre_servicio', 'like', '%' . $request->nombre_servicio . '%');
+        }
+
+        if ($request->filled('moneda')) {
+            $query->where('moneda', $request->moneda);
+        }
+
+        $servicios = $query->paginate(10);
+
         return view('servicios.index', compact('servicios'));
     }
     public function toggleEstado($id)
