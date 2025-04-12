@@ -27,17 +27,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/perfil', function () {
         return view('profile.edit');
     })->name('profile.show');
+
 });
 
-/*
-Route::middleware(['auth'])->group(function () {
-    Route::get('/cambiar-perfil', function () {
-        return view('profile.edit');
-    })->name('profile.edit');
-
-    Route::put('/profile', [ProfileController::class, 'updateProfile'])->name('profile.update');
-});
-*/
 Route::middleware(['auth'])->group(function () {
     Route::get('/cambiar-password', function () {
         return view('password.change');
