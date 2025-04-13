@@ -29,6 +29,8 @@ Route::middleware(['auth'])->group(function () {
             'user' => Auth::user()
         ]);
     })->name('profile.show');
+
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
 });
 
 Route::middleware(['auth'])->group(function () {
@@ -38,8 +40,6 @@ Route::middleware(['auth'])->group(function () {
 
     Route::put('/password', [ProfileController::class, 'updatePassword'])->name('password.update');
 });
-
-
 
 Route::get('/roles', function () {
     return view('roles');

@@ -2,6 +2,17 @@
 @extends('adminlte::page')
 @section('content')
 
+    @if ($errors->any())
+        <div class="mb-4 text-red-600">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+
     <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
                 <div class="p-4 sm:p-8 bg-gray dark:bg-gray-800 shadow sm:rounded-lg">
