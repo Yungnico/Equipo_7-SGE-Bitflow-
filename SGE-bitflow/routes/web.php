@@ -19,7 +19,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('clientes', ClienteController::class);
 });
 
-Route::resource('clientes', ClienteController::class)->middleware('auth');
+Route::resource('clientes', ClienteController::class);
 
 
 Route::get('/', function () {

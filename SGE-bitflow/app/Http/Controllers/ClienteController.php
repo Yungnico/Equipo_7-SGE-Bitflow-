@@ -17,21 +17,20 @@ class ClienteController extends Controller
     }
 
     public function create()
-    {
+    {   
         return view('clientes.create');
     }
 
     public function store(StoreClienteRequest $request)
     {
+        
         $data = $request->validated();
-
         // Guardar logo si viene
         if ($request->hasFile('logo')) {
             $data['logo'] = $request->file('logo')->store('logos', 'public');
         }
-
+        #echo "<script>console.log('Debug Objects: " . $data . "' );</script>";
         $cliente = Cliente::create($data);
-
         return redirect()->route('clientes.index')->with('success', 'Cliente registrado correctamente: ' . $cliente->razon_social . ' (' . $cliente->rut . ')');
     }
 
