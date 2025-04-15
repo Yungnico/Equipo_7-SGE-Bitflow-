@@ -346,7 +346,7 @@ return [
         ],
         [
             'text' => 'Registro de usuarios',
-            'url' => '',
+            'url' => 'users/create',
             'icon' => 'fas fa-solid fa-user-plus',
         ],
         [
