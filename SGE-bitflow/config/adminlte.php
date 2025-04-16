@@ -354,7 +354,12 @@ return [
             'url' => 'roles',
             'icon' => 'fas fa-users-cog',
         ],
-         /*,
+        [
+            'text' => 'Servicios',
+            'url' => 'servicios',
+            'icon' => 'fas fa-fw fa-user',
+        ]
+        /*,
         ['header' => 'labels'],
         [
             'text' => 'important',
