@@ -16,4 +16,10 @@ class Cliente extends Model
         'direccion',
         'logo'
     ];
+    
+    public function contactos() {
+        return $this->hasMany(Contacto::class);
+    }
+    
+
 }

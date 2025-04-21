@@ -47,9 +47,14 @@
                         </form>
                     </td>
                 </tr>
+                <a href="{{ route('clientes.contactos.index', $cliente->id) }}" class="btn btn-primary">
+                    Gestionar Contactos
+                </a>
             @endforeach
         </tbody>
     </table>
+    
+
 </div>
 @endsection
 

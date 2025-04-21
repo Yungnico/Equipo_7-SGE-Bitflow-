@@ -1,38 +1,24 @@
-@csrf
-
 <div class="mb-3">
-    <label for="razon_social" class="form-label">Razón Social*</label>
-    <input type="text" class="form-control" name="razon_social" value="{{ old('razon_social', $cliente->razon_social ?? '') }}" maxlength="100" required>
+    <label for="nombre_contacto" class="form-label">Nombre</label>
+    <input type="text" name="nombre_contacto" class="form-control" value="{{ old('nombre_contacto', $contacto->nombre_contacto ?? '') }}">
 </div>
 
 <div class="mb-3">
-    <label for="rut" class="form-label">RUT*</label>
-    <input type="text" class="form-control" name="rut" value="{{ old('rut', $cliente->rut ?? '') }}" required>
+    <label for="email_contacto" class="form-label">Correo</label>
+    <input type="email" name="email_contacto" class="form-control" value="{{ old('email_contacto', $contacto->email_contacto ?? '') }}">
 </div>
 
 <div class="mb-3">
-    <label for="nombre_fantasia" class="form-label">Nombre Fantasía</label>
-    <input type="text" class="form-control" name="nombre_fantasia" value="{{ old('nombre_fantasia', $cliente->nombre_fantasia ?? '') }}" maxlength="100">
+    <label for="telefono_contacto" class="form-label">Teléfono</label>
+    <input type="text" name="telefono_contacto" class="form-control" value="{{ old('telefono_contacto', $contacto->telefono_contacto ?? '') }}">
 </div>
 
 <div class="mb-3">
-    <label for="giro" class="form-label">Giro</label>
-    <input type="text" class="form-control" name="giro" value="{{ old('giro', $cliente->giro ?? '') }}" maxlength="100">
+    <label for="tipo_contacto" class="form-label">Tipo de Contacto</label>
+    <select name="tipo_contacto" class="form-select">
+        <option value="">Seleccione</option>
+        <option value="Comercial" {{ old('tipo_contacto', $contacto->tipo_contacto ?? '') == 'Comercial' ? 'selected' : '' }}>Comercial</option>
+        <option value="TI" {{ old('tipo_contacto', $contacto->tipo_contacto ?? '') == 'TI' ? 'selected' : '' }}>TI</option>
+        <option value="Contable" {{ old('tipo_contacto', $contacto->tipo_contacto ?? '') == 'Contable' ? 'selected' : '' }}>Contable</option>
+    </select>
 </div>
-
-<div class="mb-3">
-    <label for="direccion" class="form-label">Dirección</label>
-    <input type="text" class="form-control" name="direccion" value="{{ old('direccion', $cliente->direccion ?? '') }}" maxlength="150">
-</div>
-
-<div class="mb-3">
-    <label for="logo" class="form-label">Logo (JPG o PNG)</label>
-    <input type="file" class="form-control" name="logo">
-    @if(isset($cliente) && $cliente->logo)
-        <p>Logo actual:</p>
-        <img src="{{ asset('storage/' . $cliente->logo) }}" width="100">
-    @endif
-</div>
-
-<button type="submit" class="btn btn-success">Guardar</button>
-<a href="{{ route('clientes.index') }}" class="btn btn-secondary">Cancelar</a>

@@ -8,14 +8,23 @@
 
 @section('content')
     <p>Welcome to this beautiful admin panel.</p>
-    <div class="card mb-4">
-        <div class="card-body">
-            <h5 class="card-title">Clientes</h5>
-            <p class="card-text">Ingresar, editar o eliminar clientes registrados en el sistema.</p>
-            <a href="{{ route('clientes.index') }}" class="btn btn-outline-primary">Ir a Gestión de Clientes</a>
+    
+
+    <div class="container mt-4">
+        <div class="row">
+            <!-- Tarjeta de Clientes (ya existente) -->
+            <div class="col-md-6">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h5 class="card-title">Clientes</h5>
+                        <p class="card-text">Ingresar, editar o eliminar clientes registrados en el sistema.</p>
+                        <a href="{{ route('clientes.index') }}" class="btn btn-outline-primary">Ir a Gestión de Clientes</a>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
-
 
 @stop
 
