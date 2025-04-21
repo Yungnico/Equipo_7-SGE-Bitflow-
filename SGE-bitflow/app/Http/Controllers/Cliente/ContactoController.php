@@ -17,6 +17,11 @@ class ContactoController extends Controller
 
     }
 
+    public function create()
+    {   
+        return view('clientes.contactos.create');
+    }
+
     // Guardar un nuevo contacto
     public function store(Request $request, $clienteId)
     {

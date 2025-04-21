@@ -1,9 +1,11 @@
 @extends('adminlte::page')
 @section('content')
 <div class="container">
-    <h2>Contactos de {{ $cliente->nombre }}</h2>
-
-    <a href="{{ route('clientes.contactos.create', $cliente->id) }}" class="btn btn-primary mb-3">Nuevo Contacto</a>
+    <h2>Contactos de {{ $cliente->nombre_fantasia }}</h2>
+    
+    <!-- AQUI ESTA EL ERROR -->
+    <a href="{{ route('clientes.contactos.create',$cliente->nombre_fantasia) }}" class="btn btn-primary mb-3">Nuevo Contacto</a>
+    <!-- AQUI ESTA EL ERROR -->
 
     @if ($cliente->contactos->isEmpty())
         <div class="alert alert-info">No hay contactos registrados.</div>

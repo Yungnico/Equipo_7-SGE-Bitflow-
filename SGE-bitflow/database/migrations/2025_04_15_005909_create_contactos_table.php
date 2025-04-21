@@ -17,7 +17,6 @@ return new class extends Migration
             $table->enum('tipo_contacto', ['Comercial', 'TI', 'Contable'])->nullable();
             $table->unsignedBigInteger('cliente_id'); // relación con cliente
             $table->timestamps();
-
             $table->foreign('cliente_id')->references('id')->on('clientes')->onDelete('cascade');
         });
     }

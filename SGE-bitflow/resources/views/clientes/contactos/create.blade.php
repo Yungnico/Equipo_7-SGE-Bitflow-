@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container">
-    <h2>Agregar nuevo contacto a {{ $cliente->nombre }}</h2>
+    <h2>Agregar nuevo contacto a {{ $cliente->nombre_fantasia }}</h2>
 
     <form action="{{ route('clientes.contactos.store', $cliente->id) }}" method="POST">
         @csrf
