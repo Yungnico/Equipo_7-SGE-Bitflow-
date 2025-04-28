@@ -330,7 +330,7 @@ return [
         [
             'text' => 'account_settings',
             'icon' => 'fas fa-user-cog ',   //fa-fw fa-user para el icono del usuario fontawesone 5 usa admin lte
-            'submenu'=>
+            'submenu' =>
             [
                 [
                     'text' => 'Perfil',
@@ -357,6 +357,11 @@ return [
         [
             'text' => 'Servicios',
             'url' => 'servicios',
+            'icon' => 'fas fa-fw fa-user',
+        ],
+        [
+            'text' => 'Categoria',
+            'url' => 'categorias',
             'icon' => 'fas fa-fw fa-user',
         ]
         /*,

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Servicio;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Categoria;
 
 
 class ServicioController extends Controller
@@ -21,6 +22,7 @@ class ServicioController extends Controller
             'descripcion' => 'required|string|max:300',
             'precio' => 'required|integer',
             'moneda' => 'required|in:UF,USD,CLP',
+            'categoria_id' => 'nullable|exists:categorias,id',
         ]);
 
         Servicio::create($validated);
@@ -43,6 +45,7 @@ class ServicioController extends Controller
             'descripcion' => 'required|string|max:300',
             'precio' => 'required|numeric',
             'moneda' => 'required|in:UF,USD,CLP',
+            'categoria_id' => 'required|exists:categorias,id',
         ]);
 
         $servicio->update($validated);
@@ -52,7 +55,9 @@ class ServicioController extends Controller
 
     public function index(Request $request)
     {
-        $query = Servicio::query();
+        $categorias = Categoria::all();
+
+        $query = Servicio::with('categoria');
 
         if ($request->filled('nombre_servicio')) {
             $query->where('nombre_servicio', 'like', '%' . $request->nombre_servicio . '%');
@@ -62,17 +67,13 @@ class ServicioController extends Controller
             $query->where('moneda', $request->moneda);
         }
 
+        if ($request->filled('categoria_id')) {
+            $query->where('categoria_id', $request->categoria_id);
+        }
+
         $servicios = $query->paginate(10);
 
-        return view('servicios.index', compact('servicios'));
-    }
-    public function toggleEstado($id)
-    {
-        $servicio = Servicio::findOrFail($id);
-        $servicio->estado = !$servicio->estado; // cambia el estado
-        $servicio->save();
-
-        return redirect()->route('servicios.index')->with('success', 'Estado del servicio actualizado');
+        return view('servicios.index', compact('servicios', 'categorias'));
     }
 
     public function destroy($id)
