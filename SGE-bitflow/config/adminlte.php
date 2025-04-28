@@ -257,7 +257,7 @@ return [
     */
 
     'use_route_url' => false,
-    'dashboard_url' => 'home',
+    'dashboard_url' => 'dashboard',
     'logout_url' => 'logout',
     'login_url' => 'login',
     'register_url' => 'register',
@@ -329,25 +329,30 @@ return [
         ],
         [
             'text' => 'account_settings',
-            'icon' => 'fas fa-fw fa-user',
-            'submenu' =>
+            'icon' => 'fas fa-user-cog ',   //fa-fw fa-user para el icono del usuario fontawesone 5 usa admin lte
+            'submenu'=>
             [
                 [
-                    'text' => 'profile',
-                    'url' => 'admin/settings',
+                    'text' => 'Perfil',
+                    'url' => 'perfil',
                     'icon' => 'fas fa-fw fa-user',
                 ],
                 [
-                    'text' => 'change_password',
-                    'url' => 'admin/settings',
+                    'text' => 'Cambiar contraseña',
+                    'url' => 'cambiar-password',
                     'icon' => 'fas fa-fw fa-lock',
                 ],
             ],
         ],
         [
-            'text' => 'roles',
-            'url' => 'resources/views/roles',
-            'icon' => 'fas fa-fw fa-user',
+            'text' => 'Registro de usuarios',
+            'url' => 'users/create',
+            'icon' => 'fas fa-solid fa-user-plus',
+        ],
+        [
+            'text' => 'Roles',
+            'url' => 'roles',
+            'icon' => 'fas fa-users-cog',
         ],
         [
             'text' => 'Servicios',
