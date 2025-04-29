@@ -44,12 +44,13 @@
                             @csrf
                             @method('DELETE')
                             <button class="btn btn-danger btn-sm">Eliminar</button>
+                            <a href="{{ route('clientes.contactos.index', [$cliente->id, $cliente->nombre_fantasia]) }}" class="btn btn-primary btn-sm">
+                                Contactos
+                            </a>
                         </form>
                     </td>
                 </tr>
-                <a href="{{ route('clientes.contactos.index', [$cliente->id, $cliente->nombre_fantasia]) }}" class="btn btn-primary">
-                    Gestionar Contactos
-                </a>
+                
             @endforeach
         </tbody>
     </table>

@@ -24,7 +24,7 @@
      <label for="direccion" class="form-label">Dirección</label>
      <input type="text" class="form-control" name="direccion" value="{{ old('direccion', $cliente->direccion ?? '') }}" maxlength="150">
  </div>
- 
+
  <div class="mb-3">
      <label for="logo" class="form-label">Logo (JPG o PNG)</label>
      <input type="file" class="form-control" name="logo">

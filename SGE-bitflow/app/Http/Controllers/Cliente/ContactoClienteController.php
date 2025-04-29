@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Cliente;
 use App\Models\Contacto;
 
-class ContactoController extends Controller
+class ContactoClienteController extends Controller
 {
     // Mostrar todos los contactos de un cliente
     public function index($clienteId)
@@ -16,11 +16,12 @@ class ContactoController extends Controller
         return view('clientes.contactos.index', compact('cliente'));
 
     }
-
-    public function create()
-    {   
-        return view('clientes.contactos.create');
+    public function create($clienteId)
+    {
+        $cliente = Cliente::findOrFail($clienteId);
+        return view('clientes.contactos.create', compact('cliente'));
     }
+
 
     // Guardar un nuevo contacto
     public function store(Request $request, $clienteId)
