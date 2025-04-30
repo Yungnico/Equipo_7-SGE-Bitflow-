@@ -4,6 +4,8 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ServicioController;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\CotizacionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -58,7 +60,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
+    Route::resource('cotizaciones', CotizacionController::class);
     #SERVICIOS
     Route::get('/servicios/crear', [ServicioController::class, 'create'])->name('servicios.create');
     Route::post('/servicios', [ServicioController::class, 'store'])->name('servicios.store');
