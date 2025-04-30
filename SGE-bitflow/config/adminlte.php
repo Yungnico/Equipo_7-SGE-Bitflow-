@@ -321,13 +321,6 @@ return [
             'can' => 'manage-blog',
         ],
         [
-            'text' => 'pages',
-            'url' => 'admin/pages',
-            'icon' => 'far fa-fw fa-file',
-            'label' => 4,
-            'label_color' => 'success',
-        ],
-        [
             'text' => 'account_settings',
             'icon' => 'fas fa-user-cog ',   //fa-fw fa-user para el icono del usuario fontawesone 5 usa admin lte
             'submenu'=>
@@ -341,6 +334,30 @@ return [
                     'text' => 'Cambiar contraseña',
                     'url' => 'cambiar-password',
                     'icon' => 'fas fa-fw fa-lock',
+                ],
+            ],
+        ],
+        [
+            'text' => 'Cotizaciones',   
+            'icon' => 'fas fa-fw fa-file-invoice-dollar',
+            'submenu' => [
+                [
+                    'text' => 'Crear Cotización',
+                    'url'  => 'cotizaciones/create',
+                    'icon' => 'fas fa-fw fa-plus',
+                    'classes' => 'text-green text-bold text-center',
+                ],
+                [
+                    'text' => 'Mis Cotizaciones',
+                    'url'  => 'cotizaciones',
+                    'icon' => 'fas fa-fw fa-list',
+                    'classes' => 'text-yellow text-bold text-center',
+                ],
+                [
+                    'text' => 'Borrador',
+                    'url'  => 'cotizaciones/borrador',
+                    'icon' => 'fas fa-fw fa-file',
+                    'classes' => 'text-red text-bold text-center',
                 ],
             ],
         ],

@@ -17,6 +17,11 @@ use App\Http\Controllers\CotizacionController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+Route::get('/cotizaciones/create', [CotizacionController::class, 'create'])->name('cotizaciones.create');
+
+Route::middleware('auth')->group(function () {
+    Route::resource('cotizaciones', CotizacionController::class);
+});
 
 
 Route::get('/', function () {
@@ -55,12 +60,10 @@ Route::get('/roles', function () {
 })->middleware(['auth', 'verified']);
 
 
-
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::resource('cotizaciones', CotizacionController::class);
     #SERVICIOS
     Route::get('/servicios/crear', [ServicioController::class, 'create'])->name('servicios.create');
     Route::post('/servicios', [ServicioController::class, 'store'])->name('servicios.store');
@@ -68,7 +71,8 @@ Route::middleware('auth')->group(function () {
     Route::put('/servicios/{id}', [ServicioController::class, 'update'])->name('servicios.update');
     Route::get('/servicios', [ServicioController::class, 'index'])->name('servicios.index');
     Route::put('/servicios/{id}/toggle', [ServicioController::class, 'toggleEstado'])->name('servicios.toggleEstado');
-    Route::resource('servicios', ServicioController::class);
+    Route::delete('/servicios/{id}', [ServicioController::class, 'destroy'])->name('servicios.destroy');
+
 });
 
 require __DIR__ . '/auth.php';
