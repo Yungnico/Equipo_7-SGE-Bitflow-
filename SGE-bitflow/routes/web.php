@@ -5,30 +5,16 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Cliente\ClienteController;
 use App\Http\Controllers\Cliente\ContactoClienteController;
 
-
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-*/
-
-
-
-
-Route::get('/clientes/{cliente}/contactos/create', [ContactoClienteController::class, 'create'])
-    ->name('clientes.contactos.create');
-
 Route::middleware('auth')->group(function () {
 
     // Rutas de Clientes
     Route::resource('clientes', ClienteController::class);
 
-    // Rutas de Contactos individuales
-    Route::resource('contactos', ContactoController::class)->except(['create', 'show']); 
-
-    // Rutas de contactos que pertenecen a un cliente
+    // Rutas de contactos anidados bajo clientes
     Route::prefix('clientes/{cliente}')->name('clientes.')->group(function () {
-        Route::resource('contactos', ContactoClienteController::class)->except(['create', 'show']);
+        Route::get('contactos/create', [ContactoClienteController::class, 'create'])->name('contactos.create');
+        Route::post('contactos', [ContactoClienteController::class, 'store'])->name('contactos.store');
+        Route::resource('contactos', ContactoClienteController::class)->except(['create', 'show', 'store']);
     });
 
     // Rutas del perfil
@@ -47,7 +33,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/roles', function () {
         return view('roles');
     })->middleware('verified')->name('roles');
-
 });
 
 // Página de bienvenida

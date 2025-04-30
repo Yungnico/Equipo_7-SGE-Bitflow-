@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Cliente;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Cliente;
-use App\Models\Contacto;
 
 class ContactoClienteController extends Controller
 {
@@ -21,11 +20,9 @@ class ContactoClienteController extends Controller
         $cliente = Cliente::findOrFail($clienteId);
         return view('clientes.contactos.create', compact('cliente'));
     }
-
-
-    // Guardar un nuevo contacto
     public function store(Request $request, $clienteId)
     {
+        // Validación
         $request->validate([
             'nombre_contacto' => 'nullable|string|max:50',
             'email_contacto' => 'nullable|email|unique:contactos,email_contacto',
@@ -37,7 +34,10 @@ class ContactoClienteController extends Controller
             'telefono_contacto.numeric' => 'El teléfono solo debe contener números.',
         ]);
 
+        // Encontrar al cliente
         $cliente = Cliente::findOrFail($clienteId);
+
+        // Crear el nuevo contacto
         $cliente->contactos()->create([
             'nombre_contacto' => $request->nombre_contacto,
             'email_contacto' => $request->email_contacto,
@@ -45,6 +45,7 @@ class ContactoClienteController extends Controller
             'tipo_contacto' => $request->tipo_contacto,
         ]);
 
+        // Redirigir con mensaje de éxito
         return redirect()->route('clientes.contactos.index', $clienteId)
             ->with('success', 'Contacto agregado exitosamente.');
     }

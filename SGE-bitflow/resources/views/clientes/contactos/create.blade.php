@@ -9,7 +9,8 @@
 @section('content')
     <div class="card">
         <div class="card-body">
-            <form action="{{ route('contactos.store') }}" method="POST">
+            <form action="{{ route('clientes.contactos.store', $cliente->id) }}" method="POST">
+
                 @csrf
 
                 {{-- Nombre del contacto --}}
@@ -71,7 +72,7 @@
                 {{-- Botón --}}
                 <div class="form-group mt-4">
                     <button type="submit" class="btn btn-primary">Guardar contacto</button>
-                    <a href="{{ route('contactos.index') }}" class="btn btn-secondary ml-2">Cancelar</a>
+                    <a href="{{ route('clientes.contactos.index', $cliente->id ) }}" class="btn btn-secondary ml-2">Cancelar</a>
                 </div>
             </form>
         </div>
