@@ -6,6 +6,8 @@ use App\Models\Servicio;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Categoria;
+use App\Models\UF;
+
 
 
 class ServicioController extends Controller
@@ -56,6 +58,7 @@ class ServicioController extends Controller
     public function index(Request $request)
     {
         $categorias = Categoria::all();
+        $uf = \App\Models\UF::first(); // Importante: agregar esto
 
         $query = Servicio::with('categoria');
 
@@ -73,8 +76,9 @@ class ServicioController extends Controller
 
         $servicios = $query->paginate(10);
 
-        return view('servicios.index', compact('servicios', 'categorias'));
+        return view('servicios.index', compact('servicios', 'categorias', 'uf'));
     }
+
 
     public function destroy($id)
     {
