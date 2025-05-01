@@ -21,7 +21,7 @@ class CategoriaController extends Controller
 
         Categoria::create($request->all());
 
-        return redirect()->route('categorias.index')->with('success', 'Categoría creada exitosamente.');
+        return redirect()->route('servicios.index')->with('success', 'Categoría creada exitosamente.');
     }
 
     public function edit(Categoria $categoria)
@@ -37,13 +37,13 @@ class CategoriaController extends Controller
 
         $categoria->update($request->all());
 
-        return redirect()->route('categorias.index')->with('success', 'Categoría actualizada exitosamente.');
+        return redirect()->route('servicios.index')->with('success', 'Categoría actualizada exitosamente.');
     }
 
     public function destroy(Categoria $categoria)
     {
         $categoria->delete();
 
-        return redirect()->route('categorias.index')->with('success', 'Categoría eliminada exitosamente.');
+        return redirect()->route('servicios.index')->with('success', 'Categoría eliminada exitosamente.');
     }
 }
