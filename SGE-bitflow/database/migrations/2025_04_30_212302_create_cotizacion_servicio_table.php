@@ -22,7 +22,6 @@ return new class extends Migration
             $table->foreign('cotizacion_id')->references('id_cotizacion')->on('cotizaciones')->onDelete('cascade');
             $table->foreign('servicio_id')->references('id')->on('servicios')->onDelete('cascade');
         });
-        
     }
 
     /**

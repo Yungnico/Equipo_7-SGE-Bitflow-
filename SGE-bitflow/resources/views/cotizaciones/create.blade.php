@@ -1,4 +1,5 @@
 @extends('adminlte::page')
+@section('plugin.select2',true)
 @section('content')
 <div class="container">
     <h2>Nueva Cotización</h2>
@@ -11,7 +12,7 @@
             <select name="id_cliente" id="id_cliente" class="form-control" required>
                 {{-- @foreach ($clientes as $cliente)
                     <option value="{{ $cliente->id }}">{{ $cliente->nombre }}</option>
-                @endforeach  CAMBIAR CUANDO AVI SUVA SUS CAMBIOS --}}
+                @endforeach  CAMBIAR CUANDO jAVI SUVA SUS CAMBIOS --}}
             </select>
         </div>
 
@@ -64,8 +65,11 @@
         <button type="submit" class="btn btn-primary">Guardar Cotización</button>
     </form>
 </div>
+@stop
 
-{{-- Script para clonar campos --}}
+
+
+@section('js')
 <script>
     let index = 1;
     document.getElementById('add-servicio').addEventListener('click', function () {
