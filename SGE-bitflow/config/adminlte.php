@@ -359,11 +359,6 @@ return [
             'url' => 'servicios',
             'icon' => 'fas fa-fw fa-user',
         ],
-        [
-            'text' => 'Categoria',
-            'url' => 'categorias',
-            'icon' => 'fas fa-fw fa-user',
-        ]
         /*,
         ['header' => 'labels'],
         [

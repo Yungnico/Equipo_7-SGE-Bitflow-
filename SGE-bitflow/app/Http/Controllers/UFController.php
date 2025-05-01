@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Servicio;
 use App\Models\UF;
 
 class UFController extends Controller

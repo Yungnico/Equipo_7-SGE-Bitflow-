@@ -19,13 +19,17 @@ class ServicioController extends Controller
 
     public function store(Request $request)
     {
+        $precio = str_replace(',', '.', $request->input('precio'));
+
         $validated = $request->validate([
-            'nombre_servicio' => 'required|string|max:150|unique:servicios',
-            'descripcion' => 'required|string|max:300',
-            'precio' => 'required|integer',
-            'moneda' => 'required|in:UF,USD,CLP',
+            'nombre_servicio' => 'required|string',
+            'descripcion' => 'required|string',
+            'precio' => 'required',
+            'moneda' => 'required|string',
             'categoria_id' => 'nullable|exists:categorias,id',
         ]);
+
+        $validated['precio'] = (float) $precio;
 
         Servicio::create($validated);
 
@@ -58,7 +62,7 @@ class ServicioController extends Controller
     public function index(Request $request)
     {
         $categorias = Categoria::all();
-        $uf = \App\Models\UF::first(); // Importante: agregar esto
+        $uf = \App\Models\UF::first();
 
         $query = Servicio::with('categoria');
 

@@ -32,7 +32,7 @@
                 <tr>
                     <td>{{ $servicio->nombre_servicio }}</td>
                     <td>{{ $servicio->descripcion }}</td>
-                    <td>${{ number_format($servicio->precio, 0, ',', '.') }}</td>
+                    <td>${{ number_format($servicio->precio, 2, ',', '.') }}</td>
                     <td>{{ $servicio->moneda }}</td>
                     <td>{{ $servicio->categoria->nombre ?? 'Sin categoría' }}</td>
                     <td class="d-flex gap-2">

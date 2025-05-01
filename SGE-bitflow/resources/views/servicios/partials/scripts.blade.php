@@ -30,7 +30,6 @@
             document.getElementById('editCategoriaNombre').value = nombre;
         });
 
-        // Tooltips
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
         tooltipTriggerList.map(function(el) {
             return new bootstrap.Tooltip(el)
@@ -41,7 +40,7 @@
 <script>
     function cargarUF(id, valor) {
         const form = document.getElementById('ufForm');
-        form.action = `/ufs/${id}`; // ruta del update
+        form.action = `/ufs/${id}`;
 
         document.getElementById('valorUF').value = valor;
 

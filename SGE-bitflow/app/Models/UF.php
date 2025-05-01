@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class UF extends Model
 {
-    protected $table = 'ufs'; // Asegúrate que el nombre coincide con tu tabla
+    protected $table = 'ufs';
 
     protected $fillable = ['valor'];
 }
