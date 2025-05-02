@@ -9,6 +9,22 @@
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
+    <a href="{{ route('clientes.exportar', array_merge(request()->all(), ['formato_exportacion' => 'pdf'])) }}" class="btn btn-outline-danger">Exportar a PDF</a>
+    
+    @if(session('warning'))
+        <div class="alert alert-warning">
+            {{ session('warning') }}
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+    @endif
+
+
+
     {{-- Formulario de búsqueda --}}
     <div class="card mb-3">
         <div class="card-body">
@@ -30,6 +46,7 @@
 
     {{-- Botón crear cliente --}}
     <a href="{{ route('clientes.create') }}" class="btn btn-success mb-3">Crear Cliente</a>
+
 
     {{-- Tabla de clientes --}}
     @if($clientes->count())
