@@ -23,9 +23,8 @@
                         <th>ID</th>
                         <th>Nombre</th>
                         <th>Email</th>
-                        <th>Incorporación</th>
-                        <th>Rol</th>
-                        <th>Permisos</th>
+                        <!-- <th>Rol</th>-->
+                        <th></th>
                     </tr>
                 </thead>
 
@@ -35,8 +34,8 @@
                             <td>{{ $user->id }}</td>
                             <td>{{ $user->name }}</td>
                             <td>{{ $user->email }}</td>
-                            <td>{{ $user->created_at->diffForHumans() }}</td>
-                            <td>{{ $user->role }}</td>
+                            <!-- <td>{{ $user->role }}</td> -->
+                            <td width="10px"><a class="btn btn-primary" href="{{route('viewusers.edit', $user)}}">Editar</a></td>
                         </tr>
                     @endforeach
             </table>
@@ -57,7 +56,10 @@
         $(document).ready(function() {
             var table = $('#usuarios').DataTable({
                 responsive: true,
-                autoWidth: false
+                autoWidth: false,
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
+                }
             });
 
             // Redibujar la tabla al cambiar el tamaño de la ventana
