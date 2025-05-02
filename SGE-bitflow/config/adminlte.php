@@ -116,8 +116,8 @@ return [
             'path' => 'images/logo-amarillo.png',
             'alt' => 'AdminLTE Preloader Image',
             'effect' => 'animation__shake',
-            'width' => 80,
-            'height' => 80,
+            'width' => 90,
+            'height' => 90,
         ],
     ],
 
