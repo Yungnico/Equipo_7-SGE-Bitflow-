@@ -5,6 +5,14 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Cliente\ClienteController;
 use App\Http\Controllers\Cliente\ContactoClienteController;
 
+Route::get('/contactos/{contacto}/edit', [ContactoClienteController::class, 'edit'])->name('contactos.edit');
+Route::put('/contactos/{contacto}', [ContactoClienteController::class, 'update'])->name('contactos.update');
+
+Route::resource('clientes.contactos', ContactoClienteController::class);
+
+Route::get('/clientes/buscar', [ClienteController::class, 'buscar'])->name('clientes.buscar');
+Route::get('/clientes/resultados', [ClienteController::class, 'buscar']);
+
 Route::middleware('auth')->group(function () {
 
     // Rutas de Clientes

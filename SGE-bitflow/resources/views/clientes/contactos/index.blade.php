@@ -1,15 +1,20 @@
 @extends('adminlte::page')
 @section('content')
 <div class="container">
+
+    {{-- Mensaje de éxito después de actualizar o crear --}}
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ session('success') }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Cerrar">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    @endif
+
     <h2>Contactos de {{ $cliente->nombre_fantasia }}</h2>
     
-    <!-- AQUI ESTA EL ERROR 
-    <a href="{{ route('clientes.contactos.create',$cliente->nombre_fantasia) }}" class="btn btn-primary mb-3">Nuevo Contacto</a>-->
-    
     <a href="{{ route('clientes.contactos.create', $cliente->id) }}" class="btn btn-primary">Agregar contacto</a>
-
-    <!-- AQUI ESTA EL ERROR -->
-
 
     @if ($cliente->contactos->isEmpty())
         <div class="alert alert-info">No hay contactos registrados.</div>
@@ -32,12 +37,12 @@
                         <td>{{ $contacto->telefono_contacto }}</td>
                         <td>{{ $contacto->tipo_contacto }}</td>
                         <td>
-                            <a href="{{ route('clientes.contactos.edit', [$cliente->id, $contacto->id]) }}" class="btn btn-warning btn-sm">Editar</a>
+                            <a href="{{ route('contactos.edit', $contacto->id) }}" class="btn btn-warning btn-sm">Editar</a>
                             <form action="{{ route('clientes.contactos.destroy', [$cliente->id, $contacto->id]) }}" method="POST" class="d-inline">
                                 @csrf
                                 @method('DELETE')
                                 <button class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro?')">Eliminar</button>
-                            </form>
+                            </form> 
                         </td>
                     </tr>
                 @endforeach
@@ -46,4 +51,3 @@
     @endif
 </div>
 @endsection
-

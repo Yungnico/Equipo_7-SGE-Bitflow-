@@ -5,6 +5,11 @@ namespace App\Http\Controllers\Cliente;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Cliente;
+use App\Models\ContactoCliente;
+use Illuminate\Validation\Rule;
+use App\Models\Contacto;
+
+
 
 class ContactoClienteController extends Controller
 {
@@ -20,24 +25,52 @@ class ContactoClienteController extends Controller
         $cliente = Cliente::findOrFail($clienteId);
         return view('clientes.contactos.create', compact('cliente'));
     }
+    public function edit(ContactoCliente $contacto)
+    {
+        // Si necesitas, puedes cargar el cliente relacionado
+        return view('clientes.contactos.edit', compact('contacto'));
+    }
+
+    public function update(Request $request, ContactoCliente $contacto)
+    {
+        $request->validate([
+            'nombre_contacto' => 'required|string|max:255',
+            'email_contacto' => [
+                'required',
+                'email',
+                Rule::unique('contacto_clientes', 'email_contacto')->ignore($contacto->id),
+            ],
+            'telefono_contacto' => 'required|numeric',
+            'tipo_contacto' => 'required|in:Comercial,TI,Contable',
+        ]);
+
+        $contacto->update($request->all());
+
+        return redirect()
+            ->route('clientes.contactos.index', $contacto->cliente_id) // 👈 Redirige a la tabla de contactos del cliente
+            ->with('success', 'Contacto actualizado correctamente.');
+    }
+
+
     public function store(Request $request, $clienteId)
     {
-        // Validación
         $request->validate([
             'nombre_contacto' => 'nullable|string|max:50',
-            'email_contacto' => 'nullable|email|unique:contactos,email_contacto',
+            'email_contacto' => [
+                'nullable',
+                'email',
+                Rule::unique('contacto_clientes', 'email_contacto'),
+            ],
             'telefono_contacto' => 'nullable|digits_between:1,15|numeric',
             'tipo_contacto' => 'nullable|in:Comercial,TI,Contable',
         ], [
             'email_contacto.email' => 'El correo no tiene un formato válido.',
-            'email_contacto.unique' => 'Este correo ya está registrado.',
+            'email_contacto.unique' => 'Este correo no puede ser ingresado.', // ✅ Tu mensaje personalizado
             'telefono_contacto.numeric' => 'El teléfono solo debe contener números.',
         ]);
 
-        // Encontrar al cliente
         $cliente = Cliente::findOrFail($clienteId);
 
-        // Crear el nuevo contacto
         $cliente->contactos()->create([
             'nombre_contacto' => $request->nombre_contacto,
             'email_contacto' => $request->email_contacto,
@@ -45,9 +78,19 @@ class ContactoClienteController extends Controller
             'tipo_contacto' => $request->tipo_contacto,
         ]);
 
-        // Redirigir con mensaje de éxito
-        return redirect()->route('clientes.contactos.index', $clienteId)
-            ->with('success', 'Contacto agregado exitosamente.');
+        return redirect()->back()->with('success', 'Contacto creado correctamente');
     }
+    
+    public function destroy($clienteId, $contactoId)
+    {
+        $contacto = ContactoCliente::where('cliente_id', $clienteId)->findOrFail($contactoId);
+        $contacto->delete();
+
+        return redirect()->route('clientes.contactos.index', $clienteId)
+                        ->with('success', 'Contacto eliminado correctamente.');
+    }
+
+
+
 }
 
