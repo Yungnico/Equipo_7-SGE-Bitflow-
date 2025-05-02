@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\User; // Asegúrate de importar el modelo User
 
 class CrudUserController extends Controller
 {
@@ -12,7 +13,9 @@ class CrudUserController extends Controller
     public function index()
     {
         // Puedes pasar datos a la vista si es necesario
-        return view('admin.viewusers.index'); // Asegúrate de tener la vista 'users/index.blade.php'
+        $users = User::all(); // Asegúrate de importar el modelo User
+        return view('admin.viewusers.index', compact('users')); // Pasa la variable $users a la vista
+        
     }
 
     /**
