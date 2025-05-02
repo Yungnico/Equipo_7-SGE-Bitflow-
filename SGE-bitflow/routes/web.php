@@ -4,6 +4,8 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ServicioController;
+use App\Http\Controllers\CrudUserController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -66,7 +68,10 @@ Route::middleware('auth')->group(function () {
     Route::put('/servicios/{id}', [ServicioController::class, 'update'])->name('servicios.update');
     Route::get('/servicios', [ServicioController::class, 'index'])->name('servicios.index');
     Route::put('/servicios/{id}/toggle', [ServicioController::class, 'toggleEstado'])->name('servicios.toggleEstado');
-    Route::resource('servicios', ServicioController::class);
+    Route::delete('/servicios/{id}', [ServicioController::class, 'destroy'])->name('servicios.destroy');
 });
+
+
+Route::resource('viewusers', CrudUserController::class)->names('viewusers');
 
 require __DIR__ . '/auth.php';

@@ -19,16 +19,16 @@ class RoleSeeder extends Seeder
 
         Permission::create(['name' => 'dashboard'])->syncRoles([$role1, $role2]);
 
-        Permission::create(['name' => 'servicios.index']);
-        Permission::create(['name' => 'servicios.create']);
-        Permission::create(['name' => 'servicios.edit']);
-        Permission::create(['name' => 'servicios.destroy']);
+        Permission::create(['name' => 'servicios.index'])->syncRoles([$role1, $role2]);
+        Permission::create(['name' => 'servicios.create'])->syncRoles([$role1, $role2]);
+        Permission::create(['name' => 'servicios.edit'])->syncRoles([$role1, $role2]);
+        Permission::create(['name' => 'servicios.destroy'])->syncRoles([$role1, $role2]);
 
-        Permission::create(['name' => 'perfil.index']);
-        Permission::create(['name' => 'perfil.edit']);
-        Permission::create(['name' => 'perfil.destroy']);
+        Permission::create(['name' => 'perfil.index'])->syncRoles([$role1, $role2]);
+        Permission::create(['name' => 'perfil.edit'])->syncRoles([$role1, $role2]);
+        Permission::create(['name' => 'perfil.destroy'])->syncRoles([$role1, $role2]);
 
-        Permission::create(['name' => 'cambioContraseña.index']);
-        Permission::create(['name' => 'cambioContraseña.edit']);
+        Permission::create(['name' => 'cambioContraseña.index'])->syncRoles([$role1, $role2]);
+        Permission::create(['name' => 'cambioContraseña.edit'])->syncRoles([$role1, $role2]);
     }
 }
