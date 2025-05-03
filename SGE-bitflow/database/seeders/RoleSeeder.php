@@ -30,5 +30,6 @@ class RoleSeeder extends Seeder
 
         Permission::create(['name' => 'cambioContraseña.index'])->syncRoles([$role1, $role2]);
         Permission::create(['name' => 'cambioContraseña.edit'])->syncRoles([$role1, $role2]);
+        
     }
 }

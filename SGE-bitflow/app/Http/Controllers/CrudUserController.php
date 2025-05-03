@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User; // Asegúrate de importar el modelo User
+use Spatie\Permission\Models\Role; // Asegúrate de importar el modelo Role
 
 class CrudUserController extends Controller
 {
@@ -45,17 +46,22 @@ class CrudUserController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit($id)
     {
-        //
+        $user = User::findOrFail($id);
+        $roles = Role::all(); // Asegúrate de importar el modelo Role
+        return view('admin.viewusers.edit', compact('user', 'roles')); // Pasa la variable $user a la vista
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, User $user)
     {
-        //
+
+        $user->roles()->sync($request->roles); // Sincroniza los roles del usuario con los seleccionados en el formulario
+
+        return redirect()->route('viewusers.edit', $user)->with('info', 'Rol asignado correctamente.');
     }
 
     /**

@@ -23,7 +23,6 @@
                         <th>ID</th>
                         <th>Nombre</th>
                         <th>Email</th>
-                        <!-- <th>Rol</th>-->
                         <th></th>
                     </tr>
                 </thead>
@@ -34,7 +33,6 @@
                             <td>{{ $user->id }}</td>
                             <td>{{ $user->name }}</td>
                             <td>{{ $user->email }}</td>
-                            <!-- <td>{{ $user->role }}</td> -->
                             <td width="10px"><a class="btn btn-primary" href="{{route('viewusers.edit', $user)}}">Editar</a></td>
                         </tr>
                     @endforeach
