@@ -57,7 +57,11 @@ class ClienteController extends Controller
 
         return redirect()->route('clientes.index')->with('success', 'Cliente actualizado correctamente: ' . $cliente->razon_social . ' (' . $cliente->rut . ')');
     }
-
+    public function getCliente($id)
+    {
+        $cliente = Cliente::findOrFail($id);
+        return response()->json($cliente);
+    }
     public function destroy(Cliente $cliente)
     {
         // Eliminar logo del storage

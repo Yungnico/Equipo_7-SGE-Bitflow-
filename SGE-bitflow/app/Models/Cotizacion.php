@@ -16,7 +16,7 @@ class Cotizacion extends Model
     protected $keyType = 'int'; // tipo de la clave primaria
 
     protected $fillable = [
-        'id_servicio',
+        'codigo_cotizacion',
         'id_cliente',
         'total',
         'moneda',
@@ -32,10 +32,10 @@ class Cotizacion extends Model
         return $this->belongsTo(Servicio::class, 'id_servicio');
     }
 
-    // public function cliente()
-    // {
-    //     return $this->belongsTo(Cliente::class, 'id_cliente');
-    // }
+    public function cliente()
+    {
+        return $this->belongsTo(Cliente::class, 'id_cliente');
+    }
 
     public function itemsLibres()
     {

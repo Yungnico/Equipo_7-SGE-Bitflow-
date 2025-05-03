@@ -15,11 +15,9 @@ return new class extends Migration
     {
         Schema::create('cotizaciones', function (Blueprint $table) {
             $table->id('id_cotizacion');
-            $table->unsignedBigInteger('id_servicio');
-            $table->foreign('id_servicio')->references('id')->on('servicios')->onDelete('cascade');
 
             $table->unsignedBigInteger('id_cliente');
-            #$table->foreign('id_cliente')->references('id')->on('clientes')->onDelete('cascade');
+            $table->foreign('id_cliente')->references('id')->on('clientes')->onDelete('cascade');
             $table->decimal('total', 10, 2);
             $table->string('moneda', 3);
             $table->enum('estado', ['Borrador','Enviada', 'Aceptada','Facturada','Pagada','Anulada', 'Rechazada']);

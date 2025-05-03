@@ -19,6 +19,7 @@ use App\Http\Controllers\CotizacionController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+
 Route::get('/cotizaciones/create', [CotizacionController::class, 'create'])->name('cotizaciones.create');
 
 Route::middleware('auth')->group(function () {
@@ -29,12 +30,14 @@ Route::middleware('auth')->group(function () {
 
     // Rutas de Clientes
     Route::resource('clientes', ClienteController::class);
+    Route::get('/clientes/{id}/info', [ClienteController::class, 'getCliente'])->name('clientes.info');
 
     // Rutas de contactos anidados bajo clientes
     Route::prefix('clientes/{cliente}')->name('clientes.')->group(function () {
         Route::get('contactos/create', [ContactoClienteController::class, 'create'])->name('contactos.create');
         Route::post('contactos', [ContactoClienteController::class, 'store'])->name('contactos.store');
         Route::resource('contactos', ContactoClienteController::class)->except(['create', 'show', 'store']);
+        Route::get('contactos/info', [ContactoClienteController::class, 'getContactos'])->name('contactos.info');
     });
 
     // Rutas del perfil
@@ -106,6 +109,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/servicios', [ServicioController::class, 'index'])->name('servicios.index');
     Route::put('/servicios/{id}/toggle', [ServicioController::class, 'toggleEstado'])->name('servicios.toggleEstado');
     Route::delete('/servicios/{id}', [ServicioController::class, 'destroy'])->name('servicios.destroy');
+    Route::get('/servicios/{id}/info', [ServicioController::class, 'getServicio'])->name('servicios.info');
 
 });
 
