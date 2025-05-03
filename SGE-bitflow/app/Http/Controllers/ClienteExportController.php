@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\Cliente;
+use Illuminate\Http\Request;
 
 class ClienteExportController extends Controller
 {

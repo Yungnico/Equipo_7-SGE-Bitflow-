@@ -101,7 +101,6 @@ Route::middleware('auth')->group(function () {
     Route::put('/servicios/{id}', [ServicioController::class, 'update'])->name('servicios.update');
     Route::get('/servicios', [ServicioController::class, 'index'])->name('servicios.index');
     Route::put('/servicios/{id}/toggle', [ServicioController::class, 'toggleEstado'])->name('servicios.toggleEstado');
-    Route::resource('servicios', ServicioController::class);
 });
 
 require __DIR__ . '/auth.php';

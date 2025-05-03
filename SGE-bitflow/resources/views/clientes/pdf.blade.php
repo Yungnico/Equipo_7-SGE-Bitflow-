@@ -24,7 +24,6 @@
                     <th>Nombre Fantasía</th>
                     <th>Giro</th>
                     <th>Dirección</th>
-                    <th>Contactos</th>
                 </tr>
             </thead>
             <tbody>
@@ -35,13 +34,6 @@
                         <td>{{ $cliente->nombre_fantasia }}</td>
                         <td>{{ $cliente->giro }}</td>
                         <td>{{ $cliente->direccion }}</td>
-                        <td>
-                            @foreach ($cliente->contactos as $contacto)
-                                @if (in_array($contacto->tipo_contacto, ['comercial', 'TI', 'contable']))
-                                    <p>{{ ucfirst($contacto->tipo_contacto) }}: {{ $contacto->nombre_contacto }} ({{ $contacto->telefono_contacto }})</p>
-                                @endif
-                            @endforeach
-                        </td>
                     </tr>
                 @endforeach
             </tbody>
