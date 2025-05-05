@@ -85,8 +85,8 @@
 </head>
 <body class="p-5">
     <div class="cotizacion-header">
-        <h1 class="titulo-cotizacion">COTIZACIÓN : {{ $cotizacion->codigo_cotizacion }}</h1>
         <img src="assets/logoPDF.png" alt="Logo" class="logo-cotizacion">
+        <h1 class="titulo-cotizacion">COTIZACIÓN : {{ $cotizacion->codigo_cotizacion }}</h1>
     </div>
 
     <div class="mb-4">
