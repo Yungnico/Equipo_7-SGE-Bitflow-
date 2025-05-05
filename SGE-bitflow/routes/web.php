@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Cliente\ClienteController;
 use App\Http\Controllers\Cliente\ContactoClienteController;
 use App\Http\Controllers\ServicioController;
+use App\Http\Controllers\CrudUserController;
+
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\CotizacionController;
 use App\Models\Cotizacion;
@@ -120,5 +122,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/servicios/{id}/info', [ServicioController::class, 'getServicio'])->name('servicios.info');
 
 });
+
+
+Route::resource('viewusers', CrudUserController::class)->names('viewusers');
 
 require __DIR__ . '/auth.php';

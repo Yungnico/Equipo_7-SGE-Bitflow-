@@ -63,12 +63,12 @@ return [
     |
     */
 
-    'logo' => '<b>Admin</b>LTE',
-    'logo_img' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
+    'logo' => '<b>Bitflow</b>',
+    'logo_img' => 'images/logo-amarillo.png',
     'logo_img_class' => 'brand-image img-circle elevation-3',
     'logo_img_xl' => null,
     'logo_img_xl_class' => 'brand-image-xs',
-    'logo_img_alt' => 'Admin Logo',
+    'logo_img_alt' => 'Bitflow Logo',
 
     /*
     |--------------------------------------------------------------------------
@@ -113,11 +113,11 @@ return [
         'enabled' => true,
         'mode' => 'fullscreen',
         'img' => [
-            'path' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
+            'path' => 'images/logo-amarillo.png',
             'alt' => 'AdminLTE Preloader Image',
             'effect' => 'animation__shake',
-            'width' => 60,
-            'height' => 60,
+            'width' => 90,
+            'height' => 90,
         ],
     ],
 
@@ -365,6 +365,11 @@ return [
             'text' => 'Registro de usuarios',
             'url' => 'users/create',
             'icon' => 'fas fa-solid fa-user-plus',
+        ],
+        [
+            'text' => 'Usuarios',
+            'url' => 'viewusers',
+            'icon' => 'fas fa-users fa-fw',
         ],
         [
             'text' => 'Roles',
