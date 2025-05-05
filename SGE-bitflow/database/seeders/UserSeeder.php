@@ -15,7 +15,7 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         // Busca al usuario registrado
-        $user = User::where('email', 'a@a.com')->first();
+        $user = User::where('email', 'admin@admin.com')->first();
 
         if ($user) {
             // Asigna el rol al usuario

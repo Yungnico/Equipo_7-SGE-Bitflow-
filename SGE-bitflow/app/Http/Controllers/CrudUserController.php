@@ -56,10 +56,14 @@ class CrudUserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, User $user)
+        public function update(Request $request, $id)
     {
+        $request->validate([
+            'roles' => 'required|array', 
+        ]);
+        $user = User::findOrFail($id); // Busca el usuario por ID
 
-        $user->roles()->sync($request->roles); // Sincroniza los roles del usuario con los seleccionados en el formulario
+        $user->roles()->sync($request->roles); // sincroniza los roles del usuario con los roles seleccionados
 
         return redirect()->route('viewusers.edit', $user)->with('info', 'Rol asignado correctamente.');
     }
