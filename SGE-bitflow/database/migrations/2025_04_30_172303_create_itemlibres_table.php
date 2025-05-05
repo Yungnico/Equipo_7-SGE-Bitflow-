@@ -16,9 +16,10 @@ return new class extends Migration
             $table->string('nombre');
             $table->decimal('precio', 10, 2);
             $table->integer('cantidad');
-            $table->unsignedBigInteger('id_cotizacion');
-            $table->foreign('id_cotizacion')->references('id_cotizacion')->on('cotizaciones')->onDelete('cascade');
+            $table->unsignedBigInteger('id_cotizacion'); 
             $table->timestamps();
+
+            $table->foreign('id_cotizacion')->references('id_cotizacion')->on('cotizaciones')->onDelete('cascade');
         });
     }
 
