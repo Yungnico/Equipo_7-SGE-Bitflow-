@@ -10,6 +10,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ContactanosMailable;
+use Illuminate\Http\Response;
 class CotizacionController extends Controller
 {
     public function prepararPDF($id){
@@ -21,7 +25,9 @@ class CotizacionController extends Controller
         $cotizacion = Cotizacion::with(['cliente', 'servicios', 'itemsLibres'])->findOrFail($id);
 
         $pdf = Pdf::loadView('cotizaciones.pdf', compact('cotizacion'));
-
+        Storage::disk('public')->put($cotizacion->codigo_cotizacion . '.pdf', $pdf->output());
+        Mail::to($cotizacion->email)->send(new ContactanosMailable($cotizacion));
+        Storage::disk('public')->delete($cotizacion->codigo_cotizacion . '.pdf');
         return $pdf->stream('cotizacion.pdf');
     }
     

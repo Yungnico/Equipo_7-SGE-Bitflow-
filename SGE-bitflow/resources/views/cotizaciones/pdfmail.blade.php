@@ -85,7 +85,7 @@
 </head>
 <body class="p-5">
     <div class="cotizacion-header">
-        <img src="assets/logoPDF.png" alt="Logoa" class="logo-cotizacion">
+        <img src="{{ url('logoPDF.png') }}" alt="Logob" style="width: 300px;">
         <h1 class="titulo-cotizacion">COTIZACIÓN : {{ $cotizacion->codigo_cotizacion }}</h1>
     </div>
 
@@ -180,4 +180,3 @@
     </div>
 </body>
 </html>
-
