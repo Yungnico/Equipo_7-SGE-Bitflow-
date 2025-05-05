@@ -1,5 +1,3 @@
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         var editarModal = document.getElementById('modalEditarServicio');
@@ -38,13 +36,33 @@
 </script>
 
 <script>
-    function cargarUF(id, valor) {
-        const form = document.getElementById('ufForm');
-        form.action = `/ufs/${id}`;
+    document.addEventListener('DOMContentLoaded', () => {
+        const modalEditarMoneda = document.getElementById('modalEditarMoneda');
+        modalEditarMoneda.addEventListener('show.bs.modal', function(event) {
+            const button = event.relatedTarget;
+            const id = button.getAttribute('data-id');
+            const nombre = button.getAttribute('data-nombre');
+            const valor = button.getAttribute('data-valor');
 
-        document.getElementById('valorUF').value = valor;
+            const form = document.getElementById('formEditarMoneda');
+            form.action = `/monedas/${id}`; // Asegúrate de que la ruta coincida con tu ruta update
 
-        const modal = new bootstrap.Modal(document.getElementById('editarUFModal'));
-        modal.show();
-    }
+            document.getElementById('editMonedaId').value = id;
+            document.getElementById('editMonedaNombre').value = nombre;
+            document.getElementById('editMonedaValor').value = valor;
+        });
+    });
+</script>
+
+<script>
+    document.querySelectorAll('.modal').forEach(function(modal) {
+        modal.addEventListener('hidden.bs.modal', function() {
+            const backdrop = document.querySelector('.modal-backdrop');
+            if (backdrop) {
+                backdrop.remove(); // Elimina el fondo gris si quedó pegado
+                document.body.classList.remove('modal-open');
+                document.body.style = ''; // Limpia posibles estilos de scroll bloqueado
+            }
+        });
+    });
 </script>

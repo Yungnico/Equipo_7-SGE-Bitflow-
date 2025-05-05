@@ -204,29 +204,116 @@
     </div>
 </div>
 
-<!-- Modal UF -->
-<div class="modal fade" id="editarUFModal" tabindex="-1" aria-labelledby="editarUFModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <form method="POST" action="{{ route('ufs.update', $uf->id) }}" id="ufForm">
-            @csrf
-            @method('PUT')
+{{-- Modal: Mantenedor de Monedas --}}
 
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editarUFModalLabel">Editar Valor de la UF</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+<div class="modal fade" id="modalMantenedorMonedas" tabindex="-1" aria-labelledby="modalMantenedorMonedasLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-secondary text-white">
+                <h5 class="modal-title">Mantenedor de Monedas</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#modalCrearMoneda">
+                    Crear Nueva Moneda
+                </button>
+
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Valor</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($monedas as $moneda)
+                            <tr>
+                                <td>{{ $moneda->nombre }}</td>
+                                <td>{{ $moneda->valor }}</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary" data-bs-toggle="modal"
+                                        data-bs-target="#modalEditarMoneda"
+                                        data-id="{{ $moneda->id }}"
+                                        data-nombre="{{ $moneda->nombre }}"
+                                        data-valor="{{ $moneda->valor }}">
+                                        Editar
+                                    </button>
+                                    <form action="{{ route('monedas.destroy', $moneda->id) }}" method="POST" class="d-inline-block">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="btn btn-sm btn-danger" onclick="return confirm('¿Eliminar esta moneda?')">
+                                            Eliminar
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
 
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalCrearMoneda" tabindex="-1" aria-labelledby="modalCrearMonedaLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form method="POST" action="{{ route('monedas.store') }}">
+            @csrf
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title">Crear Moneda</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="valorUF" class="form-label">Valor UF actual</label>
-                        <input type="number" step="0.01" class="form-control" id="valorUF" name="valor" value="{{ $uf->valor }}" required>
+                        <label for="nombre" class="form-label">Nombre de la Moneda</label>
+                        <input type="text" name="nombre" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="valor" class="form-label">Valor</label>
+                        <input type="number" name="valor" step="0.01" class="form-control" required>
                     </div>
                 </div>
-
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-success">Crear</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal fade" id="modalEditarMoneda" tabindex="-1" aria-labelledby="modalEditarMonedaLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form method="POST" id="formEditarMoneda">
+            @csrf
+            @method('PUT')
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title">Editar Moneda</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="id" id="editMonedaId">
+                    <div class="mb-3">
+                        <label for="editMonedaNombre" class="form-label">Nombre</label>
+                        <input type="text" name="nombre" id="editMonedaNombre" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editMonedaValor" class="form-label">Valor</label>
+                        <input type="number" name="valor" id="editMonedaValor" step="0.01" class="form-control" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Actualizar</button>
                 </div>
             </div>
         </form>

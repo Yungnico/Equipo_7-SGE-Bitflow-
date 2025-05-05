@@ -7,6 +7,8 @@ use App\Http\Controllers\Cliente\ClienteController;
 use App\Http\Controllers\Cliente\ContactoClienteController;
 use App\Http\Controllers\ServicioController;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\CategoriaController;
+use App\Http\Controllers\MonedaController;
 
 Route::middleware('auth')->group(function () {
 
@@ -98,9 +100,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/categorias/{categoria}/edit', [CategoriaController::class, 'edit'])->name('categorias.edit');
     Route::put('/categorias/{categoria}', [CategoriaController::class, 'update'])->name('categorias.update');
     Route::delete('/categorias/{categoria}', [CategoriaController::class, 'destroy'])->name('categorias.destroy');
-    Route::get('/ufs', [UFController::class, 'index'])->name('ufs.index');
-    Route::put('/ufs/{id}', [UFController::class, 'update'])->name('ufs.update');
-    Route::resource('ufs', UFController::class);
+
+    Route::resource('monedas', MonedaController::class)->only(['index', 'store', 'update', 'destroy']);
 });
 
 require __DIR__ . '/auth.php';

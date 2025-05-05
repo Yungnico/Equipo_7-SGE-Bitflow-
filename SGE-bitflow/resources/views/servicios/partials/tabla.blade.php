@@ -8,8 +8,8 @@
             <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#modalMantenedorCategorias">
                 Administrar Categorías
             </button>
-            <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editarUFModal">
-                Editar UF
+            <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modalMantenedorMonedas">
+                Mantenedor de Monedas
             </button>
         </div>
     </div>

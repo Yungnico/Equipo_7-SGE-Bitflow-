@@ -15,6 +15,8 @@
     <title>Gestión de Servicios</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 </head>
 
 <body>
@@ -28,10 +30,9 @@
 
         @include('servicios.partials.tabla')
 
-        @include('servicios.partials.modales', ['uf' => $uf])
+        @include('servicios.partials.modales', ['monedas' => $monedas])
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     @include('servicios.partials.scripts')
 

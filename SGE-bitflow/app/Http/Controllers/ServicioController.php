@@ -6,7 +6,7 @@ use App\Models\Servicio;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Categoria;
-use App\Models\UF;
+use App\Models\Moneda;
 
 
 
@@ -62,7 +62,7 @@ class ServicioController extends Controller
     public function index(Request $request)
     {
         $categorias = Categoria::all();
-        $uf = \App\Models\UF::first();
+        $monedas = Moneda::all();
 
         $query = Servicio::with('categoria');
 
@@ -80,7 +80,7 @@ class ServicioController extends Controller
 
         $servicios = $query->paginate(10);
 
-        return view('servicios.index', compact('servicios', 'categorias', 'uf'));
+        return view('servicios.index', compact('servicios', 'categorias', 'monedas'));
     }
 
 
