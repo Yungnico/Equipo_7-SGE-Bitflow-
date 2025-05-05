@@ -8,10 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class Servicio extends Model
 {
     use HasFactory;
-    protected $fillable = ['nombre_servicio', 'descripcion', 'precio', 'moneda', 'categoria_id',];
+    protected $fillable = ['nombre_servicio', 'descripcion', 'precio', 'moneda', 'estado'];
 
-    public function categoria()
+
+    public function cotizaciones()
     {
-        return $this->belongsTo(Categoria::class);
+        return $this->belongsToMany(Cotizacion::class, 'cotizacion_servicio', 'servicio_id', 'cotizacion_id')
+            ->withPivot('cantidad', 'precio_unitario')
+            ->withTimestamps();
     }
 }

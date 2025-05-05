@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Cliente;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Cliente;
-
+use App\Models\Contacto;
 class ContactoClienteController extends Controller
 {
     // Mostrar todos los contactos de un cliente
@@ -48,6 +48,11 @@ class ContactoClienteController extends Controller
         // Redirigir con mensaje de éxito
         return redirect()->route('clientes.contactos.index', $clienteId)
             ->with('success', 'Contacto agregado exitosamente.');
+    }
+    public function getContactos($id)
+    {
+        $contactos = Contacto::where('cliente_id', $id)->get();
+        return response()->json($contactos);
     }
 }
 

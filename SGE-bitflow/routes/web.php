@@ -6,20 +6,50 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Cliente\ClienteController;
 use App\Http\Controllers\Cliente\ContactoClienteController;
 use App\Http\Controllers\ServicioController;
+use App\Http\Controllers\CrudUserController;
+
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\MonedaController;
+use App\Http\Controllers\CotizacionController;
+use App\Models\Cotizacion;
+use Barryvdh\DomPDF\Facade\Pdf;
+
+
+// Ruta para VER el PDF en el navegador
+Route::get('/cotizaciones/{id}/preparar-pdf', [CotizacionController::class, 'prepararPDF'])->name('cotizaciones.prepararPDF');
+Route::get('/cotizaciones/{id}/pdf', [CotizacionController::class, 'generarPDF']);
+
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider and all of them will
+| be assigned to the "web" middleware group. Make something great!
+|
+*/
+
+Route::get('/cotizaciones/create', [CotizacionController::class, 'create'])->name('cotizaciones.create');
+
+Route::middleware('auth')->group(function () {
+    Route::resource('cotizaciones', CotizacionController::class);
+    Route::get('/cotizaciones/{id}/info', [CotizacionController::class, 'getCotizacion'])->name('cotizaciones.info');
+});
 
 Route::middleware('auth')->group(function () {
 
     // Rutas de Clientes
     Route::resource('clientes', ClienteController::class);
+    Route::get('/clientes/{id}/info', [ClienteController::class, 'getCliente'])->name('clientes.info');
 
     // Rutas de contactos anidados bajo clientes
     Route::prefix('clientes/{cliente}')->name('clientes.')->group(function () {
         Route::get('contactos/create', [ContactoClienteController::class, 'create'])->name('contactos.create');
         Route::post('contactos', [ContactoClienteController::class, 'store'])->name('contactos.store');
         Route::resource('contactos', ContactoClienteController::class)->except(['create', 'show', 'store']);
+        Route::get('contactos/info', [ContactoClienteController::class, 'getContactos'])->name('contactos.info');
     });
 
     // Rutas del perfil
@@ -79,12 +109,10 @@ Route::get('/roles', function () {
 })->middleware(['auth', 'verified']);
 
 
-
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
     #SERVICIOS
     Route::get('/servicios/crear', [ServicioController::class, 'create'])->name('servicios.create');
     Route::post('/servicios', [ServicioController::class, 'store'])->name('servicios.store');
@@ -103,5 +131,8 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('monedas', MonedaController::class)->only(['index', 'store', 'update', 'destroy']);
 });
+
+
+Route::resource('viewusers', CrudUserController::class)->names('viewusers');
 
 require __DIR__ . '/auth.php';

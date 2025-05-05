@@ -91,4 +91,8 @@ class ServicioController extends Controller
 
         return redirect()->route('servicios.index')->with('success', 'Servicio eliminado correctamente');
     }
+    public function getServicio($id){
+        $servicio = Servicio::findOrFail($id);
+        return response()->json($servicio);
+    }
 }
