@@ -311,7 +311,9 @@
                             <tr>
                                 <td colspan="4" class="text-right font-weight-bold">Total con descuento %:</td>
                                 <td colspan="1" id="total_dcto">$0.00</td>
-                                <td colspan="1" id=""><button type="submit" id="guardarCBtn" class="btn btn-primary" id="guardarCotizacion">Guardar Cotización</button></td>
+                                <td colspan="1" id="">
+                                    <button type="submit" id="guardarCBtn" class="btn btn-primary" id="guardarCotizacion">Guardar Cotización</button>
+                                </td>
                             </tr>
                         </tfoot>
                     </table>
@@ -391,6 +393,7 @@
                 subtotal += importe_itemsL;
                 ivaTotal += iva_itemsL;
                 total += totalProducto_itemsL;
+                totaldcto += totalProducto_itemsLDcto;
 
                 const fila = `<tr>
                                 <td>${i + 1}</td>
@@ -658,7 +661,11 @@
             const moneda = document.getElementById('moneda_cotizacion').value;
             const vigencia = document.getElementById('fecha').value;
             const dcto = document.getElementById('dcto').value;
+            const email = document.getElementById('Email').value;
+            const telefono = document.getElementById('telefono').value;
             const formData = new FormData();
+            formData.append('email', email);    
+            formData.append('telefono', telefono);
             formData.append('id_cliente', cliente);
             formData.append('moneda', moneda);
             formData.append('fecha_cotizacion', vigencia);

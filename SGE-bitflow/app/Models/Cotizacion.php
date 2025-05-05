@@ -23,14 +23,13 @@ class Cotizacion extends Model
         'estado',
         'fecha_cotizacion',
         'descuento',
+        'email',
+        'telefono',
+        'moneda_cotizacion',
     ];
+    
 
     // Definición de las relaciones ( cambiar cuando la javi actualice su parte )
-
-    public function servicio()
-    {
-        return $this->belongsTo(Servicio::class, 'id_servicio');
-    }
 
     public function cliente()
     {
@@ -45,7 +44,7 @@ class Cotizacion extends Model
     public function servicios()
     {
         return $this->belongsToMany(Servicio::class, 'cotizacion_servicio', 'cotizacion_id', 'servicio_id')
-                    ->withPivot('cantidad', 'precio')
+                    ->withPivot('cantidad', 'precio_unitario')
                     ->withTimestamps();
     }
 

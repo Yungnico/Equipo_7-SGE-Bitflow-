@@ -9,9 +9,29 @@ use App\Models\Cliente;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-
+use Barryvdh\DomPDF\Facade\Pdf;
 class CotizacionController extends Controller
 {
+    public function prepararPDF($id){
+        return view('cotizaciones.prepararPDF', compact('id'));
+    }
+
+    public function generarPDF($id)
+    {
+        $cotizacion = Cotizacion::with(['cliente', 'servicios', 'itemsLibres'])->findOrFail($id);
+
+        $pdf = Pdf::loadView('cotizaciones.pdf', compact('cotizacion'));
+
+        return $pdf->stream('cotizacion.pdf');
+    }
+    
+    public function getCotizacion($id)
+    {
+        $cotizacion = Cotizacion::with(['cliente', 'itemsLibres', 'servicios'])->findOrFail($id);
+        return response()->json($cotizacion);
+    }
+    
+
     public function index()
     {
         $cotizaciones = Cotizacion::with('itemsLibres')->get();
@@ -42,6 +62,8 @@ class CotizacionController extends Controller
                 'items_libres.*.nombre' => 'required|string|max:255',
                 'items_libres.*.precio' => 'required|numeric|min:0',
                 'items_libres.*.cantidad' => 'required|integer|min:1',
+                'email' => 'nullable|email',
+                'telefono' => 'nullable|string|max:20',
             ]);
 
             DB::beginTransaction();
@@ -61,6 +83,8 @@ class CotizacionController extends Controller
                 'estado' => $request->estado,
                 'fecha_cotizacion' => $request->fecha_cotizacion,
                 'descuento' => $request->descuento ?? 0,
+                'email' => $request->email,
+                'telefono' => $request->telefono,
             ]);
 
             $total = 0;
@@ -69,7 +93,8 @@ class CotizacionController extends Controller
                 $servicioModel = Servicio::findOrFail($servicio['servicio']);
                 $subtotal = $servicioModel->precio * $servicio['cantidad'];
                 $cotizacion->servicios()->attach($servicioModel->id, [
-                    'cantidad' => $servicio['cantidad']
+                    'cantidad' => $servicio['cantidad'],
+                    'precio_unitario' => $servicioModel->precio,
                 ]);
                 $total += $subtotal;
             }

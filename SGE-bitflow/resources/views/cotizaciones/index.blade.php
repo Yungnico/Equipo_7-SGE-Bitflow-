@@ -3,24 +3,37 @@
 @section('plugins.Datatables', true)
 @section('plugins.DatatablesPlugin', true)
 @section('content')
+<div class="content py-5">
     <table id="myTable" class="table table-bordered table-striped">
         <thead>
             <tr>
-                <th>Column 1</th>
-                <th>Column 2</th>
+                <th>Codigo Cotizacion</th>
+                <th>Cliente </th>
+                <th>Fecha</th>
+                <th>Moneda</th>
+                <th>Estado</th>
+                <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <td>Row 1 Data 1</td>
-                <td>Row 1 Data 2</td>
-            </tr>
-            <tr>
-                <td>Row 2 Data 1</td>
-                <td>Row 2 Data 2</td>
-            </tr>
+            @foreach ($cotizaciones as $cotizacion)
+                <tr>
+                    <td>{{ $cotizacion->codigo_cotizacion }}</td>
+                    <td>{{ $cotizacion->cliente->razon_social }}</td>
+                    <td>{{ $cotizacion->fecha_cotizacion }}</td>
+                    <td>{{ $cotizacion->moneda }}</td>
+                    <td>{{ $cotizacion->estado }}</td>
+                    <td>
+                        <a href="{{ route('cotizaciones.prepararPDF', ['id' => $cotizacion->id_cotizacion]) }}" class="btn btn-sm btn-secondary">
+                            Preparar PDF
+                        </a>                        
+                    </td>
+                </tr>
+            @endforeach
         </tbody>
     </table>
+</div>
+    
 @stop
 @section('js')
     <script>

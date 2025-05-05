@@ -8,6 +8,13 @@ use App\Http\Controllers\Cliente\ContactoClienteController;
 use App\Http\Controllers\ServicioController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\CotizacionController;
+use App\Models\Cotizacion;
+use Barryvdh\DomPDF\Facade\Pdf;
+
+
+// Ruta para VER el PDF en el navegador
+Route::get('/cotizaciones/{id}/preparar-pdf', [CotizacionController::class, 'prepararPDF'])->name('cotizaciones.prepararPDF');
+Route::get('/cotizaciones/{id}/pdf', [CotizacionController::class, 'generarPDF']);
 
 /*
 |--------------------------------------------------------------------------
@@ -24,6 +31,7 @@ Route::get('/cotizaciones/create', [CotizacionController::class, 'create'])->nam
 
 Route::middleware('auth')->group(function () {
     Route::resource('cotizaciones', CotizacionController::class);
+    Route::get('/cotizaciones/{id}/info', [CotizacionController::class, 'getCotizacion'])->name('cotizaciones.info');
 });
 
 Route::middleware('auth')->group(function () {
