@@ -27,6 +27,9 @@
         .logo-cotizacion {
             max-width: 200px;
             height: auto;
+            position: absolute; /* O fixed si quieres que permanezca fija al hacer scroll */
+            top: 10px; /* Ajusta la distancia desde la parte superior */
+            right: 10px; 
         }
 
         .table {

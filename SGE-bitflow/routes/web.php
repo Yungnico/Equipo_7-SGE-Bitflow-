@@ -62,10 +62,6 @@ Route::middleware('auth')->group(function () {
         return view('dashboard');
     })->middleware('verified')->name('dashboard');
 
-    // Roles
-    Route::get('/roles', function () {
-        return view('roles');
-    })->middleware('verified')->name('roles');
 });
 
 // Página de bienvenida
