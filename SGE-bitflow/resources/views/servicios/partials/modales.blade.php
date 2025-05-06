@@ -112,7 +112,7 @@
                 </button>
 
                 <div class="table-responsive">
-                    <table class="table table-bordered">
+                    <table class="table table-bordered" id="tabla-categorias" style="width: 100%">
                         <thead class="table-dark">
                             <tr>
                                 <th>Nombre</th>
@@ -143,7 +143,6 @@
                         </tbody>
                     </table>
                 </div>
-
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
@@ -219,7 +218,7 @@
                 </button>
 
                 <div class="table-responsive">
-                    <table class="table table-bordered">
+                    <table class="table table-bordered" id="tablaMonedas">
                         <thead class="table-dark">
                             <tr>
                                 <th>Nombre</th>

@@ -66,3 +66,55 @@
         });
     });
 </script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.datatables.net/2.3.0/js/dataTables.js"></script>
+<script src="https://cdn.datatables.net/2.3.0/js/dataTables.bootstrap5.js"></script>
+<script src="https://cdn.datatables.net/responsive/3.0.4/js/dataTables.responsive.js"></script>
+<script src="https://cdn.datatables.net/responsive/3.0.4/js/responsive.bootstrap5.js"></script>
+
+<script>
+    let tablaCategoriasInicializada = false;
+
+    $('#modalMantenedorCategorias').on('shown.bs.modal', function() {
+        if (!tablaCategoriasInicializada) {
+            $('#tabla-categorias').DataTable({
+                responsive: true,
+                autoWidth: false,
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
+                }
+            });
+            tablaCategoriasInicializada = true;
+        }
+    });
+</script>
+
+<script>
+    let monedaTableInitialized = false;
+
+    $('#modalMantenedorMonedas').on('shown.bs.modal', function() {
+        if (!monedaTableInitialized) {
+            $('#tablaMonedas').DataTable({
+                responsive: true,
+                autoWidth: false,
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
+                }
+            });
+            monedaTableInitialized = true;
+        }
+    });
+</script>
+
+<script>
+    $(document).ready(function() {
+        $('#tabla-servicios').DataTable({
+            language: {
+                url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/Spanish.json'
+            },
+            responsive: true,
+            autoWidth: false
+        });
+    });
+</script>
