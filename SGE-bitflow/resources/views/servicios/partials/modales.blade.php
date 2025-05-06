@@ -145,7 +145,6 @@
                                                 <i class="fas fa-pencil-alt"></i>
                                             </button>
 
-
                                             <form action="{{ route('categorias.destroy', $categoria->id) }}" method="POST" class="d-inline-block">
                                                 @csrf
                                                 @method('DELETE')
