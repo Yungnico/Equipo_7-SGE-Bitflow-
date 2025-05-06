@@ -107,41 +107,53 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#modalCrearCategoria">
-                    Crear Nueva Categoría
-                </button>
-
-                <div class="table-responsive">
-                    <table class="table table-bordered" id="tabla-categorias" style="width: 100%">
-                        <thead class="table-dark">
-                            <tr>
-                                <th>Nombre</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($categorias as $categoria)
-                            <tr>
-                                <td>{{ $categoria->nombre }}</td>
-                                <td>
-                                    <button class="btn btn-sm btn-primary" data-bs-toggle="modal"
-                                        data-bs-target="#modalEditarCategoria"
-                                        data-id="{{ $categoria->id }}"
-                                        data-nombre="{{ $categoria->nombre }}">
-                                        Editar
-                                    </button>
-                                    <form action="{{ route('categorias.destroy', $categoria->id) }}" method="POST" class="d-inline-block">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button class="btn btn-sm btn-danger" onclick="return confirm('¿Eliminar esta categoría?')">
-                                            Eliminar
-                                        </button>
-                                    </form>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                <div class="card">
+                    <div class="card-body">
+                        <table class="table table-bordered" id="tabla-categorias" style="width: 100%">
+                            <thead class="table-secondary">
+                                <tr>
+                                    <th></th>
+                                    <th>
+                                        <div class="d-flex justify-content-center">
+                                            <button class="btn btn-success p-2" data-bs-toggle="modal" data-bs-target="#modalCrearCategoria">
+                                                <i class="fas fa-plus"></i>
+                                            </button>
+                                        </div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($categorias as $categoria)
+                                <tr>
+                                    <td>{{ $categoria->nombre }}</td>
+                                    <td>
+                                        <div class="d-flex justify-content-center gap-2">
+                                            <button class="btn btn-sm btn-primary" data-bs-toggle="modal"
+                                                data-bs-target="#modalEditarCategoria"
+                                                data-id="{{ $categoria->id }}"
+                                                data-nombre="{{ $categoria->nombre }}">
+                                                <i class="fas fa-pencil-alt"></i>
+                                            </button>
+                                            <form action="{{ route('categorias.destroy', $categoria->id) }}" method="POST" class="d-inline-block">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button class="btn btn-sm btn-danger" onclick="return confirm('¿Eliminar esta categoría?')">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -213,44 +225,55 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#modalCrearMoneda">
-                    Crear Nueva Moneda
-                </button>
-
-                <div class="table-responsive">
-                    <table class="table table-bordered" id="tablaMonedas">
-                        <thead class="table-dark">
-                            <tr>
-                                <th>Nombre</th>
-                                <th>Valor</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($monedas as $moneda)
-                            <tr>
-                                <td>{{ $moneda->nombre }}</td>
-                                <td>{{ $moneda->valor }}</td>
-                                <td>
-                                    <button class="btn btn-sm btn-primary" data-bs-toggle="modal"
-                                        data-bs-target="#modalEditarMoneda"
-                                        data-id="{{ $moneda->id }}"
-                                        data-nombre="{{ $moneda->nombre }}"
-                                        data-valor="{{ $moneda->valor }}">
-                                        Editar
-                                    </button>
-                                    <form action="{{ route('monedas.destroy', $moneda->id) }}" method="POST" class="d-inline-block">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button class="btn btn-sm btn-danger" onclick="return confirm('¿Eliminar esta moneda?')">
-                                            Eliminar
+                <div class="card">
+                    <div class="card-body">
+                        <table class="table table-bordered" id="tablaMonedas">
+                            <thead class="table-secondary">
+                                <th></th>
+                                <th></th>
+                                <th>
+                                    <div class="d-flex justify-content-center">
+                                        <button class="btn btn-success p-2" data-bs-toggle="modal" data-bs-target="#modalCrearMoneda">
+                                            <i class="fas fa-plus"></i>
                                         </button>
-                                    </form>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                                    </div>
+                                </th>
+                            </thead>
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Valor</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($monedas as $moneda)
+                                <tr>
+                                    <td>{{ $moneda->nombre }}</td>
+                                    <td>{{ $moneda->valor }}</td>
+                                    <td>
+                                        <div class="d-flex justify-content-center gap-2">
+                                            <button class="btn btn-sm btn-primary" data-bs-toggle="modal"
+                                                data-bs-target="#modalEditarMoneda"
+                                                data-id="{{ $moneda->id }}"
+                                                data-nombre="{{ $moneda->nombre }}"
+                                                data-valor="{{ $moneda->valor }}">
+                                                <i class="fas fa-pencil-alt"></i>
+                                            </button>
+                                            <form action="{{ route('monedas.destroy', $moneda->id) }}" method="POST" class="d-inline-block">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button class="btn btn-sm btn-danger" onclick="return confirm('¿Eliminar esta moneda?')">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
             </div>

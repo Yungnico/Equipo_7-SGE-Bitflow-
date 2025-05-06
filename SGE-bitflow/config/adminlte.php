@@ -338,7 +338,7 @@ return [
             ],
         ],
         [
-            'text' => 'Cotizaciones',   
+            'text' => 'Cotizaciones',
             'icon' => 'fas fa-fw fa-file-invoice-dollar',
             'submenu' => [
                 [
@@ -379,7 +379,7 @@ return [
         [
             'text' => 'Servicios',
             'url' => 'servicios',
-            'icon' => 'fas fa-fw fa-user',
+            'icon' => 'fas fa-laptop-medical',
         ],
         /*,
         ['header' => 'labels'],

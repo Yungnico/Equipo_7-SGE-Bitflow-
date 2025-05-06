@@ -2,14 +2,11 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="h3">Servicios Registrados</h1>
         <div class="d-flex gap-2">
-            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalCrearServicio">
-                Agregar Servicio
-            </button>
             <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#modalMantenedorCategorias">
-                Administrar Categorías
+                Categorías
             </button>
             <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modalMantenedorMonedas">
-                Mantenedor de Monedas
+                Monedas
             </button>
         </div>
     </div>
@@ -41,8 +38,13 @@
                             </select>
                         </th>
                         <th>
-                            <div class="d-flex justify-content-center">
-                                <button id="reset-filtros" class="btn btn-danger">Reset</button>
+                            <div class="d-flex justify-content-center gap-2">
+                                <button id="reset-filtros" class="btn btn-danger p-2">
+                                    <i class="fas fa-redo"></i>
+                                </button>
+                                <button type="button" class="btn btn-success p-2" data-bs-toggle="modal" data-bs-target="#modalCrearServicio">
+                                    <i class="fas fa-plus"></i>
+                                </button>
                             </div>
                         </th>
                     </tr>
@@ -65,7 +67,7 @@
                         <td>${{ number_format($servicio->precio, 2, ',', '.') }}</td>
                         <td>{{ $servicio->moneda }}</td>
                         <td>{{ $servicio->categoria->nombre ?? 'Sin categoría' }}</td>
-                        <td class="d-flex gap-2">
+                        <td class="d-flex gap-2 justify-content-center">
                             <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
                                 data-bs-target="#modalEditarServicio"
                                 data-id="{{ $servicio->id }}"
@@ -73,13 +75,13 @@
                                 data-descripcion="{{ $servicio->descripcion }}"
                                 data-precio="{{ $servicio->precio }}"
                                 data-moneda="{{ $servicio->moneda_id }}">
-                                Editar
+                                <i class="fas fa-pencil-alt"></i>
                             </button>
                             <form action="{{ route('servicios.destroy', $servicio->id) }}" method="POST" style="display:inline-block;">
                                 @csrf
                                 @method('DELETE')
                                 <button class="btn btn-sm btn-danger" onclick="return confirm('¿Estás seguro de eliminar este servicio?')">
-                                    Eliminar
+                                    <i class="fas fa-trash"></i>
                                 </button>
                             </form>
                         </td>
