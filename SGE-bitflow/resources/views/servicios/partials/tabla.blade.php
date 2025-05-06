@@ -17,7 +17,36 @@
     @if(!$servicios->isEmpty())
     <div class="card">
         <div class="card-body">
+
             <table id="tabla-servicios" class="table table-striped table-bordered align-middle">
+                <thead class="table-secondary">
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th>
+                            <select class="form-select">
+                                <option value="">Moneda</option>
+                                @foreach($monedas as $moneda)
+                                <option value="{{ $moneda->nombre }}">{{ $moneda->nombre }}</option>
+                                @endforeach
+                            </select>
+                        </th>
+                        <th>
+                            <select class="form-select">
+                                <option value="">Categoría</option>
+                                @foreach($categorias as $categoria)
+                                <option value="{{ $categoria->nombre }}">{{ $categoria->nombre }}</option>
+                                @endforeach
+                            </select>
+                        </th>
+                        <th>
+                            <div class="d-flex justify-content-center">
+                                <button id="reset-filtros" class="btn btn-danger">Reset</button>
+                            </div>
+                        </th>
+                    </tr>
+                </thead>
                 <thead class="table-dark">
                     <tr>
                         <th>Nombre</th>
@@ -58,10 +87,6 @@
                     @endforeach
                 </tbody>
             </table>
-        </div>
-
-        <div class="d-flex justify-content-center">
-            {{ $servicios->appends(request()->query())->links() }}
         </div>
     </div>
     @endif

@@ -3,7 +3,7 @@
 @section('title', 'Servicios')
 
 @section('content_header')
-<h1>Listado de Servicios</h1>
+<h1></h1>
 @stop
 
 @section('css')
@@ -16,7 +16,6 @@
 @section('content')
 <div class="container mt-4">
 
-    @include('servicios.partials.filtros')
     @include('servicios.partials.alertas')
     @include('servicios.partials.tabla')
     @include('servicios.partials.modales', ['monedas' => $monedas])

@@ -1,41 +1,4 @@
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var editarModal = document.getElementById('modalEditarServicio');
-        editarModal.addEventListener('show.bs.modal', function(event) {
-            var button = event.relatedTarget;
-            var id = button.getAttribute('data-id');
-            var nombre = button.getAttribute('data-nombre');
-            var descripcion = button.getAttribute('data-descripcion');
-            var precio = button.getAttribute('data-precio');
-            var moneda = button.getAttribute('data-moneda');
-            document.getElementById('editar-id').value = id;
-            document.getElementById('editar-nombre').value = nombre;
-            document.getElementById('editar-descripcion').value = descripcion;
-            document.getElementById('editar-precio').value = precio;
-            document.getElementById('editar-moneda_id').value = moneda;
-            var form = document.getElementById('formEditarServicio');
-            form.action = '/servicios/' + id;
-        });
-
-        var modalEditarCategoria = document.getElementById('modalEditarCategoria');
-        modalEditarCategoria.addEventListener('show.bs.modal', function(event) {
-            const button = event.relatedTarget;
-            const id = button.getAttribute('data-id');
-            const nombre = button.getAttribute('data-nombre');
-            const form = document.getElementById('formEditarCategoria');
-            form.action = `/categorias/${id}`;
-            document.getElementById('editCategoriaId').value = id;
-            document.getElementById('editCategoriaNombre').value = nombre;
-        });
-
-        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-        tooltipTriggerList.map(function(el) {
-            return new bootstrap.Tooltip(el)
-        });
-    });
-</script>
-
-<script>
     document.addEventListener('DOMContentLoaded', () => {
         const modalEditarMoneda = document.getElementById('modalEditarMoneda');
         modalEditarMoneda.addEventListener('show.bs.modal', function(event) {
@@ -82,7 +45,7 @@
                 responsive: true,
                 autoWidth: false,
                 language: {
-                    url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
+                    url: "http://cdn.datatables.net/plug-ins/2.3.0/i18n/es-CL.json"
                 }
             });
             tablaCategoriasInicializada = true;
@@ -99,7 +62,7 @@
                 responsive: true,
                 autoWidth: false,
                 language: {
-                    url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
+                    url: "http://cdn.datatables.net/plug-ins/2.3.0/i18n/es-CL.json"
                 }
             });
             monedaTableInitialized = true;
@@ -109,12 +72,43 @@
 
 <script>
     $(document).ready(function() {
-        $('#tabla-servicios').DataTable({
+        var table = $('#tabla-servicios').DataTable({
             language: {
-                url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/Spanish.json'
+                url: 'http://cdn.datatables.net/plug-ins/2.3.0/i18n/es-CL.json'
             },
             responsive: true,
-            autoWidth: false
+            autoWidth: false,
+            initComplete: function() {
+                this.api().columns().every(function() {
+                    var column = this;
+                    $('input, select', column.header()).on('keyup change clear', function() {
+                        let val = $(this).val();
+                        if (column.search() !== val) {
+                            column.search(val ? '^' + val + '$' : '', true, false).draw();
+                        }
+                    });
+                });
+            }
+        });
+
+        // Evitar que el filtro se active al hacer click sobre inputs/selects
+        $('#tabla-servicios thead tr:eq(1) th').each(function(i) {
+            $('input, select', this).on('click', function(e) {
+                e.stopPropagation();
+            });
+        });
+        $('#reset-filtros').on('click', function() {
+            // Limpiar inputs
+            $('#tabla-servicios thead tr:eq(1) input').val('');
+
+            // Resetear selects a su primera opción
+            $('#tabla-servicios thead tr:eq(1) select').each(function() {
+                $(this).prop('selectedIndex', 0); // <-- vuelve al primer <option>
+            });
+
+            // Limpiar filtros del DataTable
+            var table = $('#tabla-servicios').DataTable();
+            table.columns().search('').draw();
         });
     });
 </script>
