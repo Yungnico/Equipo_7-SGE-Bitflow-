@@ -17,9 +17,10 @@
     <a href="{{ route('clientes.contactos.create', $cliente->id) }}" class="btn btn-primary">Agregar contacto</a>
 
     @if ($cliente->contactos->isEmpty())
-        <div class="alert alert-info">No hay contactos registrados.</div>
+    
+        <div class="alert alert-info mt-3">No hay contactos registrados.</div>
     @else
-        <table class="table table-bordered">
+        <table class="table table-bordered mt-3">
             <thead>
                 <tr>
                     <th>Nombre</th>
@@ -37,12 +38,13 @@
                         <td>{{ $contacto->telefono_contacto }}</td>
                         <td>{{ $contacto->tipo_contacto }}</td>
                         <td>
-                            <a href="{{ route('contactos.edit', $contacto->id) }}" class="btn btn-warning btn-sm">Editar</a>
-                            <form action="{{ route('clientes.contactos.destroy', [$cliente->id, $contacto->id]) }}" method="POST" class="d-inline">
+                            <a href="{{ route('contactos.edit', $contacto->id) }}" class="btn btn-warning btn-sm"> <i class="fa fa-edit" aria-hidden="true"></i> </a>
+                
+                            <form action="{{ route('clientes.contactos.destroy', [$cliente->id, $contacto->id]) }}" method="POST" class="form-eliminar" style="display:inline-block;">
                                 @csrf
                                 @method('DELETE')
-                                <button class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro?')">Eliminar</button>
-                            </form> 
+                                <button class="btn btn-danger btn-sm"> <i class="fas fa-trash-alt"></i> </button>
+                            </form>
                         </td>
                     </tr>
                 @endforeach
@@ -50,4 +52,34 @@
         </table>
     @endif
 </div>
+@endsection
+@section('js')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const forms = document.querySelectorAll('.form-eliminar');
+
+        forms.forEach(form => {
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+
+                Swal.fire({
+                    title: "¿Estás seguro?",
+                    text: "¡Esta acción no se puede deshacer!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Sí, eliminarlo",
+                    cancelButtonText: "Cancelar"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            });
+        });
+    });
+</script>
 @endsection

@@ -36,12 +36,15 @@ class ContactoClienteController extends Controller
         $request->validate([
             'nombre_contacto' => 'required|string|max:255',
             'email_contacto' => [
-                'required',
+                'nullable',
                 'email',
-                Rule::unique('contacto_clientes', 'email_contacto')->ignore($contacto->id),
+                Rule::unique('contacto_clientes', 'email_contacto'),
+                Rule::notIn(\App\Models\User::pluck('email')->toArray()),
             ],
+
             'telefono_contacto' => 'required|numeric',
             'tipo_contacto' => 'required|in:Comercial,TI,Contable',
+            
         ]);
 
         $contacto->update($request->all());
@@ -62,11 +65,15 @@ class ContactoClienteController extends Controller
                 Rule::unique('contacto_clientes', 'email_contacto'),
             ],
             'telefono_contacto' => 'nullable|digits_between:1,15|numeric',
-            'tipo_contacto' => 'nullable|in:Comercial,TI,Contable',
+            'tipo_contacto' => 'required|in:Comercial,TI,Contable',
         ], [
             'email_contacto.email' => 'El correo no tiene un formato válido.',
             'email_contacto.unique' => 'Este correo no puede ser ingresado.', // ✅ Tu mensaje personalizado
             'telefono_contacto.numeric' => 'El teléfono solo debe contener números.',
+            'tipo_contacto.required' => 'Debe seleccionar un tipo de contacto.',
+            'tipo_contacto.in' => 'El tipo de contacto seleccionado no es válido.',
+            
+            
         ]);
 
         $cliente = Cliente::findOrFail($clienteId);

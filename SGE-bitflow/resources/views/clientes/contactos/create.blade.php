@@ -7,6 +7,8 @@
 @stop
 
 @section('content')
+    
+
     <div class="card">
         <div class="card-body">
             <form action="{{ route('clientes.contactos.store', $cliente->id) }}" method="POST">
@@ -79,5 +81,33 @@
             </form>
         </div>
     </div>
+    {{-- SweetAlert si falta seleccionar tipo_contacto --}}
+    @if ($errors->has('tipo_contacto'))
+        <script>
+            Swal.fire({
+                icon: 'warning',
+                title: 'Campo obligatorio',
+                text: '{{ $errors->first('tipo_contacto') }}',
+                confirmButtonText: 'Aceptar'
+            });
+        </script>
+    @endif
+
 @stop
+
+@section('js')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    @if ($errors->has('tipo_contacto'))
+        <script>
+            Swal.fire({
+                icon: 'warning',
+                title: 'Campo obligatorio',
+                text: '{{ $errors->first('tipo_contacto') }}',
+                confirmButtonText: 'Aceptar'
+            });
+        </script>
+    @endif
+@endsection
+
 

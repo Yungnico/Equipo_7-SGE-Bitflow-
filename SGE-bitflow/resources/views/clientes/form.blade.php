@@ -7,11 +7,11 @@
  
  <div class="mb-3">
      <label for="rut" class="form-label">RUT*</label>
-     <input type="text" class="form-control" name="rut" value="{{ old('rut', $cliente->rut ?? '') }}" required>
+     <input type="text" placeholder="Ejemplo: 11.111.111-1" class="form-control" name="rut" value="{{ old('rut', $cliente->rut ?? '') }}" required>
  </div>
  
  <div class="mb-3">
-     <label for="nombre_fantasia" class="form-label">Nombre Fantasía</label>
+     <label for="nombre_fantasia" class="form-label">Nombre fantasía</label>
      <input type="text" class="form-control" name="nombre_fantasia" value="{{ old('nombre_fantasia', $cliente->nombre_fantasia ?? '') }}" maxlength="100">
  </div>
  

@@ -18,7 +18,7 @@
                     <div class="card-body">
                         <h5 class="card-title">Clientes</h5>
                         <p class="card-text">Ingresar, editar o eliminar clientes registrados en el sistema.</p>
-                        <a href="{{ route('clientes.index') }}" class="btn btn-outline-primary">Ir a Gestión de Clientes</a>
+                        <a href="{{ route('clientes.index') }}" class="btn btn-outline-primary">Ir a gestión de clientes</a>
                     </div>
                 </div>
             </div>
