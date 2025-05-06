@@ -23,10 +23,10 @@
                     </div>
                     <div class="mb-3">
                         <label for="moneda" class="form-label">Moneda</label>
-                        <select name="moneda" class="form-select" required>
-                            <option value="CLP">CLP</option>
-                            <option value="USD">USD</option>
-                            <option value="UF">UF</option>
+                        <select name="moneda_id" class="form-select" required>
+                            @foreach($monedas as $moneda)
+                            <option value="{{ $moneda->id }}">{{ $moneda->codigo }} - {{ $moneda->nombre }}</option>
+                            @endforeach
                         </select>
                     </div>
                     <div class="mb-3">
@@ -74,10 +74,10 @@
                     </div>
                     <div class="mb-3">
                         <label for="editar-moneda" class="form-label">Moneda</label>
-                        <select id="editar-moneda" name="moneda" class="form-select" required>
-                            <option value="CLP">CLP</option>
-                            <option value="USD">USD</option>
-                            <option value="UF">UF</option>
+                        <select id="editar-moneda_id" name="moneda_id" class="form-select" required>
+                            @foreach($monedas as $moneda)
+                            <option value="{{ $moneda->id }}">{{ $moneda->codigo }} - {{ $moneda->nombre }}</option>
+                            @endforeach
                         </select>
                     </div>
                     <div class="mb-3">

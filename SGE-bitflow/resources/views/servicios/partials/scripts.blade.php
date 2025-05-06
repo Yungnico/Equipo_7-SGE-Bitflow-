@@ -12,7 +12,7 @@
             document.getElementById('editar-nombre').value = nombre;
             document.getElementById('editar-descripcion').value = descripcion;
             document.getElementById('editar-precio').value = precio;
-            document.getElementById('editar-moneda').value = moneda;
+            document.getElementById('editar-moneda_id').value = moneda;
             var form = document.getElementById('formEditarServicio');
             form.action = '/servicios/' + id;
         });

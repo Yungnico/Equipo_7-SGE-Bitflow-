@@ -42,7 +42,7 @@
                             data-nombre="{{ $servicio->nombre_servicio }}"
                             data-descripcion="{{ $servicio->descripcion }}"
                             data-precio="{{ $servicio->precio }}"
-                            data-moneda="{{ $servicio->moneda }}">
+                            data-moneda="{{ $servicio->moneda_id }}">
                             Editar
                         </button>
                         <form action="{{ route('servicios.destroy', $servicio->id) }}" method="POST" style="display:inline-block;">

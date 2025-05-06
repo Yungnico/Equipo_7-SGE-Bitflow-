@@ -25,7 +25,7 @@ class ServicioController extends Controller
             'nombre_servicio' => 'required|string',
             'descripcion' => 'required|string',
             'precio' => 'required',
-            'moneda' => 'required|string',
+            'moneda_id' => 'required|exists:monedas,id',
             'categoria_id' => 'nullable|exists:categorias,id',
         ]);
 
@@ -50,7 +50,7 @@ class ServicioController extends Controller
             'nombre_servicio' => 'required|string|max:150|unique:servicios,nombre_servicio,' . $servicio->id,
             'descripcion' => 'required|string|max:300',
             'precio' => 'required|numeric',
-            'moneda' => 'required|in:UF,USD,CLP',
+            'moneda_id' => 'required|exists:monedas,id',
             'categoria_id' => 'required|exists:categorias,id',
         ]);
 
@@ -91,7 +91,8 @@ class ServicioController extends Controller
 
         return redirect()->route('servicios.index')->with('success', 'Servicio eliminado correctamente');
     }
-    public function getServicio($id){
+    public function getServicio($id)
+    {
         $servicio = Servicio::findOrFail($id);
         return response()->json($servicio);
     }

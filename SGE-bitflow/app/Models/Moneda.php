@@ -10,4 +10,9 @@ class Moneda extends Model
     use HasFactory;
 
     protected $fillable = ['nombre', 'valor'];
+
+    public function servicios()
+    {
+        return $this->hasMany(Servicio::class);
+    }
 }
