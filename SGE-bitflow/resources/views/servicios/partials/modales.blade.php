@@ -115,7 +115,10 @@
                                     <th></th>
                                     <th>
                                         <div class="d-flex justify-content-center">
-                                            <button class="btn btn-success p-2" data-bs-toggle="modal" data-bs-target="#modalCrearCategoria">
+                                            <button class="btn btn-success p-2"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#modalCrearCategoria"
+                                                data-parent="#modalMantenedorCategorias">
                                                 <i class="fas fa-plus"></i>
                                             </button>
                                         </div>
@@ -134,12 +137,15 @@
                                     <td>{{ $categoria->nombre }}</td>
                                     <td>
                                         <div class="d-flex justify-content-center gap-2">
-                                            <button class="btn btn-sm btn-primary" data-bs-toggle="modal"
+                                            <button class="btn btn-sm btn-primary"
+                                                data-bs-toggle="modal"
                                                 data-bs-target="#modalEditarCategoria"
                                                 data-id="{{ $categoria->id }}"
-                                                data-nombre="{{ $categoria->nombre }}">
+                                                data-nombre="{{ $categoria->nombre }}"
+                                                data-parent="#modalMantenedorCategorias">
                                                 <i class="fas fa-pencil-alt"></i>
                                             </button>
+
                                             <form action="{{ route('categorias.destroy', $categoria->id) }}" method="POST" class="d-inline-block">
                                                 @csrf
                                                 @method('DELETE')
@@ -180,7 +186,6 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                     <button type="submit" class="btn btn-success">Crear</button>
                 </div>
             </div>
@@ -207,7 +212,6 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                     <button type="submit" class="btn btn-primary">Actualizar</button>
                 </div>
             </div>
@@ -233,7 +237,10 @@
                                 <th></th>
                                 <th>
                                     <div class="d-flex justify-content-center">
-                                        <button class="btn btn-success p-2" data-bs-toggle="modal" data-bs-target="#modalCrearMoneda">
+                                        <button class="btn btn-success p-2"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#modalCrearMoneda"
+                                            data-parent="#modalMantenedorMonedas">
                                             <i class="fas fa-plus"></i>
                                         </button>
                                     </div>
@@ -253,8 +260,10 @@
                                     <td>{{ $moneda->valor }}</td>
                                     <td>
                                         <div class="d-flex justify-content-center gap-2">
-                                            <button class="btn btn-sm btn-primary" data-bs-toggle="modal"
+                                            <button class="btn btn-sm btn-primary"
+                                                data-bs-toggle="modal"
                                                 data-bs-target="#modalEditarMoneda"
+                                                data-parent="#modalMantenedorMonedas"
                                                 data-id="{{ $moneda->id }}"
                                                 data-nombre="{{ $moneda->nombre }}"
                                                 data-valor="{{ $moneda->valor }}">
@@ -304,7 +313,6 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                     <button type="submit" class="btn btn-success">Crear</button>
                 </div>
             </div>
@@ -334,7 +342,6 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                     <button type="submit" class="btn btn-primary">Actualizar</button>
                 </div>
             </div>

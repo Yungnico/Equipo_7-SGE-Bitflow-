@@ -18,17 +18,38 @@
 </script>
 
 <script>
+    document.querySelectorAll('[data-bs-target]').forEach(function(button) {
+        button.addEventListener('click', function(e) {
+            const parentModalSelector = button.getAttribute('data-parent');
+            if (parentModalSelector) {
+                const parentModal = document.querySelector(parentModalSelector);
+                const parentInstance = bootstrap.Modal.getInstance(parentModal);
+                if (parentInstance) parentInstance.hide();
+
+                // Guardamos en dataset para saber qué modal reabrir
+                const targetModalSelector = button.getAttribute('data-bs-target');
+                const targetModal = document.querySelector(targetModalSelector);
+                targetModal.dataset.parent = parentModalSelector;
+            }
+        });
+    });
+
+    // Cuando se cierra el modal hijo, volvemos a mostrar el padre
     document.querySelectorAll('.modal').forEach(function(modal) {
         modal.addEventListener('hidden.bs.modal', function() {
-            const backdrop = document.querySelector('.modal-backdrop');
-            if (backdrop) {
-                backdrop.remove(); // Elimina el fondo gris si quedó pegado
-                document.body.classList.remove('modal-open');
-                document.body.style = ''; // Limpia posibles estilos de scroll bloqueado
+            const parentSelector = modal.dataset.parent;
+            if (parentSelector) {
+                const parentModal = document.querySelector(parentSelector);
+                const parentInstance = new bootstrap.Modal(parentModal);
+                parentInstance.show();
+
+                // Limpiar para evitar loops
+                delete modal.dataset.parent;
             }
         });
     });
 </script>
+
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.datatables.net/2.3.0/js/dataTables.js"></script>
