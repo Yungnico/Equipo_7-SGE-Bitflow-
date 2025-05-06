@@ -68,13 +68,15 @@
                         <td>{{ $servicio->moneda }}</td>
                         <td>{{ $servicio->categoria->nombre ?? 'Sin categoría' }}</td>
                         <td class="d-flex gap-2 justify-content-center">
-                            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                            <button class="btn btn-sm btn-primary"
+                                data-bs-toggle="modal"
                                 data-bs-target="#modalEditarServicio"
                                 data-id="{{ $servicio->id }}"
                                 data-nombre="{{ $servicio->nombre_servicio }}"
                                 data-descripcion="{{ $servicio->descripcion }}"
                                 data-precio="{{ $servicio->precio }}"
-                                data-moneda="{{ $servicio->moneda_id }}">
+                                data-moneda="{{ $servicio->moneda }}"
+                                data-categoria="{{ $servicio->categoria_id }}">
                                 <i class="fas fa-pencil-alt"></i>
                             </button>
                             <form action="{{ route('servicios.destroy', $servicio->id) }}" method="POST" style="display:inline-block;">

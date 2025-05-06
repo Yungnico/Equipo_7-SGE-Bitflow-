@@ -1,21 +1,41 @@
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        const modalEditarMoneda = document.getElementById('modalEditarMoneda');
-        modalEditarMoneda.addEventListener('show.bs.modal', function(event) {
+        const modalEditar = document.getElementById('modalEditarServicio');
+
+        modalEditar.addEventListener('show.bs.modal', function(event) {
             const button = event.relatedTarget;
+
             const id = button.getAttribute('data-id');
             const nombre = button.getAttribute('data-nombre');
-            const valor = button.getAttribute('data-valor');
+            const descripcion = button.getAttribute('data-descripcion');
+            const precio = button.getAttribute('data-precio');
+            const monedaNombre = button.getAttribute('data-moneda');
+            const categoriaId = button.getAttribute('data-categoria');
 
-            const form = document.getElementById('formEditarMoneda');
-            form.action = `/monedas/${id}`; // Asegúrate de que la ruta coincida con tu ruta update
+            const form = document.getElementById('formEditarServicio');
+            form.action = `/servicios/${id}`; // Asegúrate de que coincide con tu ruta
 
-            document.getElementById('editMonedaId').value = id;
-            document.getElementById('editMonedaNombre').value = nombre;
-            document.getElementById('editMonedaValor').value = valor;
+            document.getElementById('editar-id').value = id;
+            document.getElementById('editar-nombre').value = nombre;
+            document.getElementById('editar-descripcion').value = descripcion;
+            document.getElementById('editar-precio').value = precio;
+
+            // Seleccionar la moneda correcta
+            const monedaSelect = form.querySelector('select[name="moneda"]'); // <-- Asegúrate que este name exista
+            for (let option of monedaSelect.options) {
+                if (option.value === monedaNombre) {
+                    option.selected = true;
+                    break;
+                }
+            }
+
+            // Seleccionar la categoría correcta
+            const categoriaSelect = form.querySelector('select[name="categoria_id"]');
+            categoriaSelect.value = categoriaId;
         });
     });
 </script>
+
 
 <script>
     document.querySelectorAll('[data-bs-target]').forEach(function(button) {
