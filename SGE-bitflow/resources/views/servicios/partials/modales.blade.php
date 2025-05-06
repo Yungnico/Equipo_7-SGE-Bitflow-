@@ -141,10 +141,10 @@
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#modalEditarCategoria"
                                                 data-id="{{ $categoria->id }}"
-                                                data-nombre="{{ $categoria->nombre }}"
-                                                data-parent="#modalMantenedorCategorias">
+                                                data-nombre="{{ $categoria->nombre }}">
                                                 <i class="fas fa-pencil-alt"></i>
                                             </button>
+
 
                                             <form action="{{ route('categorias.destroy', $categoria->id) }}" method="POST" class="d-inline-block">
                                                 @csrf
@@ -293,6 +293,7 @@
     </div>
 </div>
 
+{{-- Modal: Crear Moneda --}}
 <div class="modal fade" id="modalCrearMoneda" tabindex="-1" aria-labelledby="modalCrearMonedaLabel" aria-hidden="true">
     <div class="modal-dialog">
         <form method="POST" action="{{ route('monedas.store') }}">
@@ -320,6 +321,7 @@
     </div>
 </div>
 
+{{-- Modal: Editar Moneda --}}
 <div class="modal fade" id="modalEditarMoneda" tabindex="-1" aria-labelledby="modalEditarMonedaLabel" aria-hidden="true">
     <div class="modal-dialog">
         <form method="POST" id="formEditarMoneda">

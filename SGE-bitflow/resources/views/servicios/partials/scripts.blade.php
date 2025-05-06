@@ -1,3 +1,4 @@
+// script para editar servicios
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         const modalEditar = document.getElementById('modalEditarServicio');
@@ -36,7 +37,46 @@
     });
 </script>
 
+// script para editar categorías
 
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const modalCategoria = document.getElementById('modalEditarCategoria');
+        modalCategoria.addEventListener('show.bs.modal', function(event) {
+            const button = event.relatedTarget;
+            const id = button.getAttribute('data-id');
+            const nombre = button.getAttribute('data-nombre');
+
+            document.getElementById('editCategoriaId').value = id;
+            document.getElementById('editCategoriaNombre').value = nombre;
+
+            const form = document.getElementById('formEditarCategoria');
+            form.action = `/categorias/${id}`; // Ajusta si usas una ruta diferente
+        });
+    });
+</script>
+
+// script para editar monedas
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const modalMoneda = document.getElementById('modalEditarMoneda');
+        modalMoneda.addEventListener('show.bs.modal', function(event) {
+            const button = event.relatedTarget;
+            const id = button.getAttribute('data-id');
+            const nombre = button.getAttribute('data-nombre');
+            const valor = button.getAttribute('data-valor');
+
+            document.getElementById('editMonedaId').value = id;
+            document.getElementById('editMonedaNombre').value = nombre;
+            document.getElementById('editMonedaValor').value = valor;
+
+            const form = document.getElementById('formEditarMoneda');
+            form.action = `/monedas/${id}`; // Ajusta si usas una ruta distinta
+        });
+    });
+</script>
+
+// script para modales anidados
 <script>
     document.querySelectorAll('[data-bs-target]').forEach(function(button) {
         button.addEventListener('click', function(e) {
