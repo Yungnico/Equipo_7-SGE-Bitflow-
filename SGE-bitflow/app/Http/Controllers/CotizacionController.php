@@ -70,7 +70,8 @@ class CotizacionController extends Controller
 
         Mail::to($correo)->send($correoMailable);
         Storage::disk('public')->delete($cotizacion->codigo_cotizacion . '.pdf'); // Eliminar el PDF después de enviarlo
-        return view('cotizaciones.index')->with('success', 'Correo enviado correctamente.');
+        $cotizaciones = Cotizacion::with(['cliente', 'servicios', 'itemsLibres'])->get();
+        return view('cotizaciones.index',compact('cotizaciones'))->with('success', 'Correo enviado correctamente.');
     }
 
 
