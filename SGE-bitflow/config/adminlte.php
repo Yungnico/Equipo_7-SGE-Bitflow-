@@ -321,7 +321,7 @@ return [
             'can' => 'manage-blog',
         ],
         [
-            'text' => 'account_settings',
+            'text' => 'Cuenta',
             'icon' => 'fas fa-user-cog ',   //fa-fw fa-user para el icono del usuario fontawesone 5 usa admin lte
             'submenu' =>
             [

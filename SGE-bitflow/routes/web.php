@@ -116,9 +116,9 @@ Route::middleware('auth')->group(function () {
     Route::put('/servicios/{id}', [ServicioController::class, 'update'])->name('servicios.update');
     Route::get('/servicios', [ServicioController::class, 'index'])->name('servicios.index');
     Route::put('/servicios/{id}/toggle', [ServicioController::class, 'toggleEstado'])->name('servicios.toggleEstado');
-    Route::resource('servicios', ServicioController::class);
+    Route::delete('/servicios/{id}', [ServicioController::class, 'destroy'])->name('servicios.destroy');
+    Route::get('/servicios/{id}/info', [ServicioController::class, 'getServicio'])->name('servicios.info');
     #CATEGORIAS
-    Route::resource('categorias', CategoriaController::class);
     Route::get('/categorias', [CategoriaController::class, 'index'])->name('categorias.index');
     Route::post('/categorias', [CategoriaController::class, 'store'])->name('categorias.store');
     Route::get('/categorias/{categoria}/edit', [CategoriaController::class, 'edit'])->name('categorias.edit');
