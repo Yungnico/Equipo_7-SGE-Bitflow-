@@ -14,7 +14,7 @@ return [
     |
     */
 
-    'title' => 'AdminLTE 3',
+    'title' => '',
     'title_prefix' => '',
     'title_postfix' => '',
 
@@ -63,12 +63,12 @@ return [
     |
     */
 
-    'logo' => '<b>Admin</b>LTE',
-    'logo_img' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
+    'logo' => '<b>Bitflow</b>',
+    'logo_img' => 'images/logo-amarillo.png',
     'logo_img_class' => 'brand-image img-circle elevation-3',
     'logo_img_xl' => null,
     'logo_img_xl_class' => 'brand-image-xs',
-    'logo_img_alt' => 'Admin Logo',
+    'logo_img_alt' => 'Bitflow Logo',
 
     /*
     |--------------------------------------------------------------------------
@@ -113,11 +113,11 @@ return [
         'enabled' => true,
         'mode' => 'fullscreen',
         'img' => [
-            'path' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
+            'path' => 'images/logo-amarillo.png',
             'alt' => 'AdminLTE Preloader Image',
             'effect' => 'animation__shake',
-            'width' => 60,
-            'height' => 60,
+            'width' => 90,
+            'height' => 90,
         ],
     ],
 
@@ -313,7 +313,7 @@ return [
         // Sidebar items:
         [
             'type' => 'sidebar-menu-search',
-            'text' => 'search',
+            'text' => 'Buscar',
         ],
         [
             'text' => 'blog',
@@ -321,16 +321,9 @@ return [
             'can' => 'manage-blog',
         ],
         [
-            'text' => 'pages',
-            'url' => 'admin/pages',
-            'icon' => 'far fa-fw fa-file',
-            'label' => 4,
-            'label_color' => 'success',
-        ],
-        [
-            'text' => 'account_settings',
+            'text' => 'Cuenta',
             'icon' => 'fas fa-user-cog ',   //fa-fw fa-user para el icono del usuario fontawesone 5 usa admin lte
-            'submenu'=>
+            'submenu' =>
             [
                 [
                     'text' => 'Perfil',
@@ -345,20 +338,44 @@ return [
             ],
         ],
         [
+            'text' => 'Cotizaciones',
+            'icon' => 'fas fa-fw fa-file-invoice-dollar',
+            'submenu' => [
+                [
+                    'text' => 'Crear Cotización',
+                    'url'  => 'cotizaciones/create',
+                    'icon' => 'fas fa-fw fa-plus',
+                    'classes' => 'text-green text-bold justify-content-center',
+                ],
+                [
+                    'text' => 'Mis Cotizaciones',
+                    'url'  => 'cotizaciones',
+                    'icon' => 'fas fa-fw fa-list',
+                    'classes' => 'text-yellow text-bold justify-content-center',
+                ],
+                [
+                    'text' => 'Borrador',
+                    'url'  => 'cotizaciones/borrador',
+                    'icon' => 'fas fa-fw fa-file',
+                    'classes' => 'text-red text-bold justify-content-center',
+                ],
+            ],
+        ],
+        [
             'text' => 'Registro de usuarios',
             'url' => 'users/create',
             'icon' => 'fas fa-solid fa-user-plus',
         ],
         [
-            'text' => 'Roles',
-            'url' => 'roles',
-            'icon' => 'fas fa-users-cog',
+            'text' => 'Usuarios',
+            'url' => 'viewusers',
+            'icon' => 'fas fa-users fa-fw',
         ],
         [
             'text' => 'Servicios',
             'url' => 'servicios',
-            'icon' => 'fas fa-fw fa-user',
-        ]
+            'icon' => 'fas fa-laptop-medical',
+        ],
         /*,
         ['header' => 'labels'],
         [

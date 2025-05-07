@@ -173,6 +173,11 @@ class ClienteController extends Controller
 
 
 
+    public function getCliente($id)
+    {
+        $cliente = Cliente::findOrFail($id);
+        return response()->json($cliente);
+    }
     public function destroy(Cliente $cliente)
     {
         // Eliminar logo del storage

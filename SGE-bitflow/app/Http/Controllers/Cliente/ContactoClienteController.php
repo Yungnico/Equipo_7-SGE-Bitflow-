@@ -99,5 +99,10 @@ class ContactoClienteController extends Controller
 
 
 
+    public function getContactos($id)
+    {
+        $contactos = Contacto::where('cliente_id', $id)->get();
+        return response()->json($contactos);
+    }
 }
 

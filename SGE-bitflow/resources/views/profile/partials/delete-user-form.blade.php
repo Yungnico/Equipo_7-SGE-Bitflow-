@@ -1,11 +1,11 @@
-<section class="space-y-6 bg-gray">
+<section class="space-y-6">
     <header>
-        <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
-            {{ __('Eliminar cuenta') }}
+        <h2 class="text-lg font-medium text-black">
+            <h2>{{ __('Eliminar cuenta') }}</h2>
         </h2>
 
-        <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-            {{ __('Una vez eliminada tu cuenta toda la informacion sera eliminada permanentemente.') }}
+        <p class="mt-1 text-sm text-black">
+            <h6>{{ __('Una vez eliminada tu cuenta toda la informacion sera eliminada permanentemente.') }}</h6>
         </p>
     </header>
 
@@ -20,25 +20,24 @@
             @csrf
             @method('delete')
 
-            <h2 class="text-lg font-medium text-black-900 ">
+            <h2 class="text-lg font-medium text-black ">
                 {{ __('Estas seguro de querer eliminar tu cuenta?') }}
             </h2>
 
-            <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                {{ __('Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.') }}
+            <p class="mt-1 text-sm text-black">
+                {{ __('Una vez eliminada tu cuenta toda la informacion sera eliminada permanentemente, si deseas continuar ingresa tu contraseña para confirmar la eliminacion permanente de tu cuenta.') }}
             </p>
+            
 
             <div class="mt-6">
                 <x-input-label for="password" value="{{ __('Password') }}" class="sr-only" />
-
-                <x-text-input
-                    id="password"
-                    name="password"
-                    type="password"
+                <x-custom-text-input 
+                    id="password" 
+                    name="password" 
+                    type="password" 
                     class="mt-1 block w-3/4"
-                    placeholder="{{ __('Password') }}"
+                    placeholder="{{ __('Contraseña') }}"
                 />
-
                 <x-input-error :messages="$errors->userDeletion->get('password')" class="mt-2" />
             </div>
 
