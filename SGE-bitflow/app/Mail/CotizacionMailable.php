@@ -9,9 +9,8 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Mail\Mailables\Attachment;
-use Illuminate\Support\Facades\Storage;
 
-class ContactanosMailable extends Mailable
+class CotizacionMailable extends Mailable
 {
     use Queueable, SerializesModels;
 

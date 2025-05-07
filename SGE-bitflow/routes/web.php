@@ -28,7 +28,7 @@ Route::get('/cotizaciones/{id}/pdf', [CotizacionController::class, 'generarPDF']
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
+Route::get('/cotizaciones/{id}/Email', [CotizacionController::class, 'prepararEmail'])->name('cotizaciones.prepararEmail');
 Route::get('/cotizaciones/create', [CotizacionController::class, 'create'])->name('cotizaciones.create');
 
 Route::middleware('auth')->group(function () {
@@ -125,5 +125,5 @@ Route::middleware('auth')->group(function () {
 
 
 Route::resource('viewusers', CrudUserController::class)->names('viewusers');
-
+Route::get('/viewusers', [CrudUserController::class, 'index'])->name('viewusers.index');
 require __DIR__ . '/auth.php';

@@ -25,7 +25,7 @@
                     <td>{{ $cotizacion->estado }}</td>
                     <td>
                         <a href="{{ route('cotizaciones.prepararPDF', ['id' => $cotizacion->id_cotizacion]) }}" class="btn btn-sm btn-secondary">
-                            Preparar PDF
+                            <i class="fas fa-file-pdf"></i>
                         </a>                        
                     </td>
                 </tr>
@@ -40,9 +40,15 @@
         $(document).ready(function () {
             $('#myTable').DataTable({
                 "language": {
-                    "url": "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
+                    responsive: true,
+                    autoWidth: true,
+                    "url": "https://cdn.datatables.net/plug-ins/2.3.0/i18n/es-CL.json"
                 }
             });
         });
+
+        $(window).on('resize', function() {
+                table.columns.adjust().responsive.recalc();
+            });
     </script>
 @stop

@@ -39,13 +39,13 @@
                         @endif
                     </td>
                     <td>
-                        <a href="{{ route('clientes.edit', $cliente) }}" class="btn btn-warning btn-sm">Editar</a>
+                        <a href="{{ route('clientes.edit', $cliente) }}" class="btn btn-warning btn-sm"><i class="fa fa-edit" aria-hidden="false"></i></a>
                         <form action="{{ route('clientes.destroy', $cliente) }}" method="POST" style="display:inline-block;" onsubmit="return confirm('¿Estás seguro de eliminar este cliente?')">
                             @csrf
                             @method('DELETE')
-                            <button class="btn btn-danger btn-sm">Eliminar</button>
+                            <button class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></button>
                             <a href="{{ route('clientes.contactos.index', [$cliente->id, $cliente->nombre_fantasia]) }}" class="btn btn-primary btn-sm">
-                                Contactos
+                                <i class="fas fa-id-badge"></i>
                             </a>
                         </form>
                     </td>

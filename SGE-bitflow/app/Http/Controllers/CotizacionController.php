@@ -12,7 +12,7 @@ use Illuminate\Support\Str;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\ContactanosMailable;
+use App\Mail\CotizacionMailable;
 use Illuminate\Http\Response;
 class CotizacionController extends Controller
 {
@@ -26,11 +26,25 @@ class CotizacionController extends Controller
 
         $pdf = Pdf::loadView('cotizaciones.pdf', compact('cotizacion'));
         Storage::disk('public')->put($cotizacion->codigo_cotizacion . '.pdf', $pdf->output());
-        Mail::to($cotizacion->email)->send(new ContactanosMailable($cotizacion));
-        Storage::disk('public')->delete($cotizacion->codigo_cotizacion . '.pdf');
         return $pdf->stream('cotizacion.pdf');
     }
     
+    public function prepararEmail($id)
+    {
+        $cotizacion = Cotizacion::with(['cliente', 'servicios', 'itemsLibres'])->findOrFail($id);
+        return view('cotizaciones.cotizacionMail', compact('cotizacion'));
+    }
+
+    public function enviarEmail($id)
+    {
+        $cotizacion = Cotizacion::with(['cliente', 'servicios', 'itemsLibres'])->findOrFail($id);
+        Mail::to($cotizacion->email)->send(new CotizacionMailable($cotizacion));
+        Storage::disk('public')->delete($cotizacion->codigo_cotizacion . '.pdf');
+        return response()->json(['success' => true, 'message' => 'Email enviado exitosamente.']);
+    }
+
+
+
     public function getCotizacion($id)
     {
         $cotizacion = Cotizacion::with(['cliente', 'itemsLibres', 'servicios'])->findOrFail($id);

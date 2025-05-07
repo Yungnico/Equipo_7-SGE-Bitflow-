@@ -56,8 +56,8 @@
                 responsive: true,
                 autoWidth: false,
                 language: {
-                    url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
-                }
+                    url: 'https://cdn.datatables.net/plug-ins/2.3.0/i18n/es-CL.json'
+                },
             });
 
             // Redibujar la tabla al cambiar el tamaño de la ventana
