@@ -18,7 +18,7 @@
         @method('patch')
 
         <div>
-            <x-input-label for="name" :value="__('Nombre')" />
+            <x-custom-input-label for="name" :value="__('Nombre')" />
             <x-custom-text-input 
                 id="name" 
                 name="name" 
@@ -33,7 +33,7 @@
         </div>
 
         <div>
-            <x-input-label for="email" :value="__('Email')" />
+            <x-custom-input-label for="email" :value="__('Email')" />
             <x-custom-text-input 
                 id="email" 
                 name="email"

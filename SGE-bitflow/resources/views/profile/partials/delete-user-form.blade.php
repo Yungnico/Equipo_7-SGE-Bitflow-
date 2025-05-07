@@ -1,11 +1,11 @@
 <section class="space-y-6">
     <header>
         <h2 class="text-lg font-medium text-black">
-            {{ __('Eliminar cuenta') }}
+            <h2>{{ __('Eliminar cuenta') }}</h2>
         </h2>
 
         <p class="mt-1 text-sm text-black">
-            {{ __('Una vez eliminada tu cuenta toda la informacion sera eliminada permanentemente.') }}
+            <h6>{{ __('Una vez eliminada tu cuenta toda la informacion sera eliminada permanentemente.') }}</h6>
         </p>
     </header>
 

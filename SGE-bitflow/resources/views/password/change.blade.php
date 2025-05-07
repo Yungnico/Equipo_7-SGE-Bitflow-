@@ -4,16 +4,15 @@
 @vite(['resources/css/app.css', 'resources/js/app.js'])
 @extends('adminlte::page')
 
-@section('content')
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-            
-            <div class="p-4 sm:p-8 bg-gray dark:bg-gray-800 shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    @include('profile.partials.update-password-form')
-                </div>
-            </div>
+@section('title', 'Cambiar Contraseña')
 
+@section('content')
+    <div class="py-12 flex justify-center">
+        <div class="card shadow-lg rounded-lg p-6 bg-white max-w-xl w-full">
+            <div class="card-body">
+                @include('profile.partials.update-password-form')
+            </div>
         </div>
     </div>
+
 @endsection

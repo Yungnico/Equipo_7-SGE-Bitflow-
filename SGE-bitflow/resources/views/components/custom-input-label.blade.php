@@ -1,3 +1,5 @@
-<div>
-    <!-- Live as if you were to die tomorrow. Learn as if you were to live forever. - Mahatma Gandhi -->
-</div>
+@props(['value'])
+
+<label {{ $attributes->merge(['class' => 'block font-medium text-sm text-black  ']) }}>
+    {{ $value ?? $slot }}
+</label>

@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Dashboard')
+@section('title', 'Usuarios')
 
 @section('content_header')
     <h1>Lista de usuario</h1>
@@ -33,7 +33,7 @@
                             <td>{{ $user->id }}</td>
                             <td>{{ $user->name }}</td>
                             <td>{{ $user->email }}</td>
-                            <td width="10px"><a class="btn btn-primary" href="{{route('viewusers.edit', $user)}}">Editar</a></td>
+                            <td width="10px"><a class="btn btn-primary" href="{{route('viewusers.edit', $user)}}"><i class="fas fa-edit"></i></a></td>
                         </tr>
                     @endforeach
             </table>
