@@ -114,7 +114,7 @@
 
             @foreach($cotizacion->servicios as $servicio)
                 @php
-                    $importe = $servicio->pivot->cantidad * $servicio->precio;
+                    $importe = $servicio->pivot->cantidad * $servicio->pivot->precio_unitario;
                     $iva = $importe * 0.19;
                     $totalItem = $importe + $iva;
                     $totalItemDcto = $totalItem - ($importe * $cotizacion->descuento / 100);
@@ -176,7 +176,7 @@
 
     <div class="mt-5">
         <p><strong>OBSERVACIONES:</strong></p>
-        <p class="border p-3" style="min-height: 100px;"></p>
+        <p class="border p-3" style="min-height: 100px;">{{$cotizacion->observaciones}}</p>
     </div>
 </body>
 </html>

@@ -735,6 +735,8 @@
             productosGuardados.forEach((s, index) => {
                 formData.append(`servicios[${index}][servicio]`, s.servicio);   
                 formData.append(`servicios[${index}][cantidad]`, s.cantidad);
+                formData.append(`servicios[${index}][precio]`, s.precioConvertido);
+                console.log(s.precioConvertido);
             });
             itemslibresGuardados.forEach((s, i) => {
                 formData.append(`items_libres[${i}][nombre]`, s.itemLibre);

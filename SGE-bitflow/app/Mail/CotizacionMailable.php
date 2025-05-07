@@ -17,12 +17,14 @@ class CotizacionMailable extends Mailable
     /**
      * Create a new message instance.
      */
-    public $codigo_cotizacion, $cotizacion;
+    public $asunto, $mensaje, $id,$adjuntarPdf;
 
-    public function __construct($cotizacion)
+    public function __construct($asunto, $mensaje, $id, $adjuntarPdf)
     {
-        $this->codigo_cotizacion = $cotizacion->codigo_cotizacion;
-        $this->cotizacion = $cotizacion;
+        $this->asunto = $asunto;
+        $this->mensaje = $mensaje;
+        $this->id = $id;
+        $this->adjuntarPdf = $adjuntarPdf;
     }
 
     /**
@@ -31,7 +33,7 @@ class CotizacionMailable extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Prueba',
+            subject: $this->asunto,
             from: new \Illuminate\Mail\Mailables\Address('hola@gmail.com', 'Bitflow')
         );
     }
@@ -43,9 +45,10 @@ class CotizacionMailable extends Mailable
     {
         
         return new Content(
-            view: 'cotizaciones.pdfmail',
+            view: 'emails.cotizacion',
             with: [
-                'cotizacion' => $this->cotizacion,
+                'mensaje' => $this->mensaje,
+                'id' => $this->id,
             ],
         );
     }
@@ -57,7 +60,10 @@ class CotizacionMailable extends Mailable
      */
     public function attachments(): array
     {
-        $filePath = storage_path('app/public/' . $this->codigo_cotizacion . '.pdf'); // Ruta correcta del archivo
+        if ($this->adjuntarPdf == 0) {
+            return []; // No adjuntar nada si no se solicitó
+        }
+        $filePath = storage_path('app/public/' . $this->id . '.pdf'); // Ruta correcta del archivo
         if (!file_exists($filePath)) {
             throw new \Exception('El archivo no existe: ' . $filePath); // Manejo de error si el archivo no existe
         }

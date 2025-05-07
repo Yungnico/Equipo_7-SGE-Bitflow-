@@ -13,34 +13,64 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\CotizacionMailable;
-use Illuminate\Http\Response;
+use App\Models\CotizacionDetalle;
 class CotizacionController extends Controller
 {
     public function prepararPDF($id){
-        return view('cotizaciones.prepararPDF', compact('id'));
+        $cotizacion = Cotizacion::with(['cliente', 'itemsLibres', 'servicios'])->findOrFail($id);
+        return view('cotizaciones.prepararPDF', compact('cotizacion'));
     }
 
-    public function generarPDF($id)
+    public function generarPDF(Request $request,$id)
     {
         $cotizacion = Cotizacion::with(['cliente', 'servicios', 'itemsLibres'])->findOrFail($id);
-
-        $pdf = Pdf::loadView('cotizaciones.pdf', compact('cotizacion'));
+        $observaciones = $request->input('observaciones', '');
+        $cotizacion->update(['observaciones' => $observaciones]);
+        $cotizacion->save();
+        $pdf = Pdf::loadView('cotizaciones.pdf', compact('cotizacion','observaciones'));
         Storage::disk('public')->put($cotizacion->codigo_cotizacion . '.pdf', $pdf->output());
-        return $pdf->stream('cotizacion.pdf');
+        if ($request->input('accion')) {
+            return $pdf->download("cotizacion_{$cotizacion->codigo_cotizacion}.pdf");
+        }
+    
+        return $pdf->stream("cotizacion_{$cotizacion->codigo_cotizacion}.pdf");
     }
     
     public function prepararEmail($id)
     {
         $cotizacion = Cotizacion::with(['cliente', 'servicios', 'itemsLibres'])->findOrFail($id);
+        
         return view('cotizaciones.cotizacionMail', compact('cotizacion'));
     }
 
-    public function enviarEmail($id)
+    public function enviarCorreo(Request $request, $id)
     {
+        $request->validate([
+            'correo_destino' => 'required|email',
+            'asunto' => 'required|string|max:255',
+            'mensaje' => 'required|string',
+        ]);
+
+        $correo = $request->correo_destino;
+        $asunto = $request->asunto;
+        $mensaje = $request->mensaje;
+        $adjuntarPdf = $request->adjuntarPdf;
+
         $cotizacion = Cotizacion::with(['cliente', 'servicios', 'itemsLibres'])->findOrFail($id);
-        Mail::to($cotizacion->email)->send(new CotizacionMailable($cotizacion));
-        Storage::disk('public')->delete($cotizacion->codigo_cotizacion . '.pdf');
-        return response()->json(['success' => true, 'message' => 'Email enviado exitosamente.']);
+        $cotizacion->update(['estado' => 'Enviada']);
+        $cotizacion->save();
+        if ($adjuntarPdf == 1) {
+            $pdf = Pdf::loadView('cotizaciones.pdf', compact('cotizacion'));
+            Storage::disk('public')->put($cotizacion->codigo_cotizacion . '.pdf', $pdf->output());
+        }
+
+        $correoMailable = new CotizacionMailable($asunto, $mensaje, $cotizacion->codigo_cotizacion, $adjuntarPdf);
+        
+
+
+        Mail::to($correo)->send($correoMailable);
+        Storage::disk('public')->delete($cotizacion->codigo_cotizacion . '.pdf'); // Eliminar el PDF después de enviarlo
+        return view('cotizaciones.index')->with('success', 'Correo enviado correctamente.');
     }
 
 
@@ -51,18 +81,58 @@ class CotizacionController extends Controller
         return response()->json($cotizacion);
     }
     
+    public function update(Request $request, $id)
+    {
+        $cotizacion = Cotizacion::findOrFail($id);
+        $request->validate([
+            'estado' => 'required|string',
+            'motivo' => 'nullable|string',
+            'archivo_cliente.*' => 'nullable|file|mimes:pdf,jpg,jpeg,png,doc,docx',
+            'facturas' => 'nullable|string',
+        ]);
+
+        $cotizacion->estado = $request->estado;
+        $cotizacion->save();
+
+        // Guardar detalle
+        $detalle = new CotizacionDetalle([
+            'estado' => $request->estado,
+            'motivo' => $request->motivo,
+            'factura_asociada' => $request->facturas,
+        ]);
+        $detalle->id_cotizacion = $cotizacion->id_cotizacion;
+$detalle->save();
+        // Guardar archivo si hay
+        if ($request->hasFile('archivo_cliente')) {
+            $path = $request->file('archivo_cliente')[0]->store('cotizaciones/' . $cotizacion->id_cotizacion, 'public');
+            $detalle->archivo = $path;
+        }
+
+        $cotizacion->detalles()->save($detalle);
+        $cotizacion->estado = $request->estado;
+        $cotizacion->save();
+        return redirect()->route('cotizaciones.index', $cotizacion->id_cotizacion)
+                        ->with('success', 'Cotización actualizada y detalle guardado.');
+    }
 
     public function index()
     {
-        $cotizaciones = Cotizacion::with('itemsLibres')->get();
+        $cotizaciones = Cotizacion::all();
         return view('cotizaciones.index', compact('cotizaciones'));
     }
-
+    public function showBorrador(){
+        $cotizaciones = Cotizacion::where('estado', 'Borrador')->get();
+        return view('cotizaciones.Borradores', compact('cotizaciones'));
+    }
     public function create()
     {
         $clientes = Cliente::all();
         $servicios = Servicio::all();
-        $ultimoId = Cotizacion::max('id_cotizacion') + 1;
+        if (cotizacion::max('id_cotizacion') == null) {
+            $ultimoId = 1000;
+        } else {
+            $ultimoId = Cotizacion::max('id_cotizacion') + 1;
+        }
 
         return view('cotizaciones.create', compact('servicios','clientes', 'ultimoId'));
     }
@@ -89,7 +159,11 @@ class CotizacionController extends Controller
             DB::beginTransaction();
 
             $cliente = Cliente::findOrFail($request->id_cliente);
-            $ultimoId = Cotizacion::max('id_cotizacion') + 1;
+            if (cotizacion::max('id_cotizacion') == null) {
+                $ultimoId = 1000;
+            } else {
+                $ultimoId = Cotizacion::max('id_cotizacion') + 1;
+            }
             $iniciales = collect(explode(' ', $cliente->razon_social))
                             ->map(fn($p) => Str::upper(Str::substr($p, 0, 1)))
                             ->implode('');
@@ -114,7 +188,7 @@ class CotizacionController extends Controller
                 $subtotal = $servicioModel->precio * $servicio['cantidad'];
                 $cotizacion->servicios()->attach($servicioModel->id, [
                     'cantidad' => $servicio['cantidad'],
-                    'precio_unitario' => $servicioModel->precio,
+                    'precio_unitario' => $servicio['precio'],
                 ]);
                 $total += $subtotal;
             }
@@ -157,5 +231,21 @@ class CotizacionController extends Controller
     {
         $cotizacion = Cotizacion::with('itemsLibres')->findOrFail($id);
         return view('cotizaciones.show', compact('cotizacion'));
+    }
+
+    
+    public function destroy($id)
+    {
+        $cotizacion = Cotizacion::findOrFail($id);
+        $cotizacion->delete();
+        return redirect()->route('cotizaciones.index')->with('success', 'Cotización eliminada correctamente.');
+    }   
+
+    public function edit($id)
+    {
+        $cotizacion = Cotizacion::with(['cliente', 'servicios', 'itemsLibres'])->findOrFail($id);
+        $clientes = Cliente::all();
+        $servicios = Servicio::all();
+        return view('cotizaciones.edit', compact('cotizacion', 'clientes', 'servicios'));
     }
 }

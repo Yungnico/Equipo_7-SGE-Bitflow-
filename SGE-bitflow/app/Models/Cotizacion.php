@@ -26,6 +26,7 @@ class Cotizacion extends Model
         'email',
         'telefono',
         'moneda_cotizacion',
+        'observaciones',
     ];
     
 
@@ -46,6 +47,11 @@ class Cotizacion extends Model
         return $this->belongsToMany(Servicio::class, 'cotizacion_servicio', 'cotizacion_id', 'servicio_id')
                     ->withPivot('cantidad', 'precio_unitario')
                     ->withTimestamps();
+    }
+
+    public function detalles()
+    {
+        return $this->hasMany(CotizacionDetalle::class, 'id_cotizacion', 'id_cotizacion');
     }
 
 }

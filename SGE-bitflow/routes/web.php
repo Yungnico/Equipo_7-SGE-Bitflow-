@@ -15,9 +15,14 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 
 // Ruta para VER el PDF en el navegador
-Route::get('/cotizaciones/{id}/preparar-pdf', [CotizacionController::class, 'prepararPDF'])->name('cotizaciones.prepararPDF');
-Route::get('/cotizaciones/{id}/pdf', [CotizacionController::class, 'generarPDF']);
-
+Route::post('/cotizaciones/{id}/pdf', [CotizacionController::class, 'generarPDF'])->name('cotizaciones.generarPDFobservaciones');
+Route::get('/cotizaciones/{id}/pdf', [CotizacionController::class, 'generarPDF'])->name('cotizaciones.generarPDF');
+Route::get('/cotizaciones/{id}/preparar-pdf', [CotizacionController::class, 'prepararPDF'])->name('cotizaciones.prepararPDF')->middleware('auth');
+Route::post('cotizaciones/{id}/enviar', [CotizacionController::class, 'enviarCorreo'])->name('cotizaciones.enviar')->middleware('auth');
+Route::get('/cotizaciones/{id}/Email', [CotizacionController::class, 'prepararEmail'])->name('cotizaciones.prepararEmail');
+Route::get('/cotizaciones/borrador', [CotizacionController::class, 'showBorrador'])->name('cotizaciones.borrador');
+Route::get('/cotizaciones/{id}/edit', [CotizacionController::class, 'edit'])->name('cotizaciones.edit');
+Route::put('/cotizaciones/{id}', [CotizacionController::class, 'update'])->name('cotizaciones.editarestado');
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -32,7 +37,7 @@ Route::get('/cotizaciones/{id}/Email', [CotizacionController::class, 'prepararEm
 Route::get('/cotizaciones/create', [CotizacionController::class, 'create'])->name('cotizaciones.create');
 
 Route::middleware('auth')->group(function () {
-    Route::resource('cotizaciones', CotizacionController::class);
+    Route::resource('cotizaciones', CotizacionController::class)->except(['edit']);
     Route::get('/cotizaciones/{id}/info', [CotizacionController::class, 'getCotizacion'])->name('cotizaciones.info');
 });
 
