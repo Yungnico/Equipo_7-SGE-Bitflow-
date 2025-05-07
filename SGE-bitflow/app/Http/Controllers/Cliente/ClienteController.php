@@ -10,7 +10,7 @@ use App\Http\Requests\UpdateClienteRequest;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ClientesExport;
-use PDF;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 
 class ClienteController extends Controller

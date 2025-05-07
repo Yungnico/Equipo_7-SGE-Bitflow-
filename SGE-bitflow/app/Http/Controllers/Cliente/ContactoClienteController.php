@@ -38,7 +38,7 @@ class ContactoClienteController extends Controller
             'email_contacto' => [
                 'nullable',
                 'email',
-                Rule::unique('contacto_clientes', 'email_contacto'),
+                Rule::unique('contacto_clientes', 'email_contacto')->ignore($contacto->id),
                 Rule::notIn(\App\Models\User::pluck('email')->toArray()),
             ],
 
