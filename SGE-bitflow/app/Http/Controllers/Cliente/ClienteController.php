@@ -93,7 +93,6 @@ class ClienteController extends Controller
         return view('clientes.create');
     }
 
-    // app/Http/Controllers/ClienteController.php
 
     public function buscar(Request $request)
     {

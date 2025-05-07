@@ -32,8 +32,8 @@ class UpdateClienteRequest extends FormRequest
                 'regex:/^\d{1,2}\.\d{3}\.\d{3}-[0-9kK]{1}$/',
                 Rule::unique('clientes')->ignore($this->cliente),
             ],
-            'nombre_fantasia' => 'nullable|string|max:100',
-            'giro' => 'nullable|string|max:100',
+            'nombre_fantasia' => 'required|string|max:100',
+            'giro' => 'required|string|max:100',
             'direccion' => 'nullable|string|max:150',
             'logo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ];

@@ -58,18 +58,18 @@ class ContactoClienteController extends Controller
     public function store(Request $request, $clienteId)
     {
         $request->validate([
-            'nombre_contacto' => 'nullable|string|max:50',
+            'nombre_contacto' => 'required|string|max:50',
             'email_contacto' => [
                 'nullable',
                 'email',
                 Rule::unique('contacto_clientes', 'email_contacto'),
             ],
-            'telefono_contacto' => 'nullable|digits_between:1,15|numeric',
+            'telefono_contacto' => 'required|digits_between:1,15|numeric',
             'tipo_contacto' => 'required|in:Comercial,TI,Contable',
         ], [
-            'email_contacto.email' => 'El correo no tiene un formato válido.',
-            'email_contacto.unique' => 'Este correo no puede ser ingresado.', // ✅ Tu mensaje personalizado
-            'telefono_contacto.numeric' => 'El teléfono solo debe contener números.',
+            'email_contacto.email.required' => 'El correo no tiene un formato válido.',
+            'email_contacto.unique.required' => 'Este correo no puede ser ingresado.', // ✅ Tu mensaje personalizado
+            'telefono_contacto.numeric.required' => 'El teléfono solo debe contener números.',
             'tipo_contacto.required' => 'Debe seleccionar un tipo de contacto.',
             'tipo_contacto.in' => 'El tipo de contacto seleccionado no es válido.',
             
