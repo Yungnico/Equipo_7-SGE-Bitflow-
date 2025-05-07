@@ -2,8 +2,7 @@
 
 
 @section('content')
-<div class="container">
-    <h1>Crear Cliente</h1>
+<div class="container pt-3">	
 
     @if($errors->any())
         <div class="alert alert-danger">

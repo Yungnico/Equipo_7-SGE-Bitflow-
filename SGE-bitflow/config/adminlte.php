@@ -367,6 +367,11 @@ return [
             'icon' => 'fas fa-solid fa-user-plus',
         ],
         [
+            'text' => 'Registro de clientes',
+            'url' => 'clientes/create',
+            'icon' => 'fas fa-solid fa-user-plus',
+        ],
+        [
             'text' => 'Usuarios',
             'url' => 'viewusers',
             'icon' => 'fas fa-users fa-fw',
