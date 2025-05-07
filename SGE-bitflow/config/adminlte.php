@@ -14,7 +14,7 @@ return [
     |
     */
 
-    'title' => 'AdminLTE 3',
+    'title' => '',
     'title_prefix' => '',
     'title_postfix' => '',
 
@@ -313,7 +313,7 @@ return [
         // Sidebar items:
         [
             'type' => 'sidebar-menu-search',
-            'text' => 'search',
+            'text' => 'Buscar',
         ],
         [
             'text' => 'blog',
@@ -321,9 +321,9 @@ return [
             'can' => 'manage-blog',
         ],
         [
-            'text' => 'account_settings',
+            'text' => 'Cuenta',
             'icon' => 'fas fa-user-cog ',   //fa-fw fa-user para el icono del usuario fontawesone 5 usa admin lte
-            'submenu'=>
+            'submenu' =>
             [
                 [
                     'text' => 'Perfil',
@@ -338,7 +338,7 @@ return [
             ],
         ],
         [
-            'text' => 'Cotizaciones',   
+            'text' => 'Cotizaciones',
             'icon' => 'fas fa-fw fa-file-invoice-dollar',
             'submenu' => [
                 [
@@ -372,15 +372,10 @@ return [
             'icon' => 'fas fa-users fa-fw',
         ],
         [
-            'text' => 'Roles',
-            'url' => 'roles',
-            'icon' => 'fas fa-users-cog',
-        ],
-        [
             'text' => 'Servicios',
             'url' => 'servicios',
-            'icon' => 'fas fa-fw fa-user',
-        ]
+            'icon' => 'fas fa-laptop-medical',
+        ],
         /*,
         ['header' => 'labels'],
         [

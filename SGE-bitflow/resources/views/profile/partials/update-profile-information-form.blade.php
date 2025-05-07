@@ -1,10 +1,10 @@
 <section>
     <header>
-        <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+        <h2 class="text-lg font-medium text-gray-900 ">
             <h2>{{ __('Informacion del perfil') }}</h2>
         </h2>
 
-        <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+        <p class="mt-1 text-sm text-gray-600 ">
             <h6>{{ __("Actualiza tu información del perfil y tu dirección de correo electronico.") }}</h6>
         </p>
     </header>
@@ -18,14 +18,31 @@
         @method('patch')
 
         <div>
-            <x-input-label for="name" :value="__('Nombre')" />
-            <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name', $user->name)" required autofocus autocomplete="name" />
+            <x-custom-input-label for="name" :value="__('Nombre')" />
+            <x-custom-text-input 
+                id="name" 
+                name="name" 
+                :value="old('name', $user->name)" 
+                required 
+                autofocus
+                autocomplete="off" 
+                type="text"
+                class="mt-1 block w-full"
+            />
             <x-input-error class="mt-2" :messages="$errors->get('name')" />
         </div>
 
         <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" :value="old('email', $user->email)" required autocomplete="username" />
+            <x-custom-input-label for="email" :value="__('Email')" />
+            <x-custom-text-input 
+                id="email" 
+                name="email"
+                type="email"
+                :value="old('email', $user->email)" 
+                required 
+                autocomplete="username" 
+                class="mt-1 block w-full"
+            />
             <x-input-error class="mt-2" :messages="$errors->get('email')" />
 
             @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail())
@@ -48,16 +65,16 @@
         </div>
 
         <div class="flex items-center gap-4">
-            <x-primary-button>{{ __('Guardar') }}</x-primary-button>
+            <x-custom-button>{{ __('Guardar') }}</x-primary-button>
 
             @if (session('status') === 'profile-updated')
                 <p
                     x-data="{ show: true }"
                     x-show="show"
                     x-transition
-                    x-init="setTimeout(() => show = false, 2000)"
-                    class="text-sm text-gray-600 dark:text-gray-400"
-                >{{ __('Saved.') }}</p>
+                    x-init="setTimeout(() => show = false, 3000)"
+                    class="text-sm text-gray-600"
+                >{{ __('¡Guardado correctamente!') }}</p>
             @endif
         </div>
     </form>

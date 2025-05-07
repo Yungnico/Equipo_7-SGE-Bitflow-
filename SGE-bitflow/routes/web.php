@@ -9,6 +9,8 @@ use App\Http\Controllers\ServicioController;
 use App\Http\Controllers\CrudUserController;
 
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\CategoriaController;
+use App\Http\Controllers\MonedaController;
 use App\Http\Controllers\CotizacionController;
 use App\Models\Cotizacion;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -67,10 +69,6 @@ Route::middleware('auth')->group(function () {
         return view('dashboard');
     })->middleware('verified')->name('dashboard');
 
-    // Roles
-    Route::get('/roles', function () {
-        return view('roles');
-    })->middleware('verified')->name('roles');
 });
 
 // Página de bienvenida
@@ -79,7 +77,7 @@ Route::get('/', function () {
     return view('auth.login');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
@@ -125,7 +123,14 @@ Route::middleware('auth')->group(function () {
     Route::put('/servicios/{id}/toggle', [ServicioController::class, 'toggleEstado'])->name('servicios.toggleEstado');
     Route::delete('/servicios/{id}', [ServicioController::class, 'destroy'])->name('servicios.destroy');
     Route::get('/servicios/{id}/info', [ServicioController::class, 'getServicio'])->name('servicios.info');
+    #CATEGORIAS
+    Route::get('/categorias', [CategoriaController::class, 'index'])->name('categorias.index');
+    Route::post('/categorias', [CategoriaController::class, 'store'])->name('categorias.store');
+    Route::get('/categorias/{categoria}/edit', [CategoriaController::class, 'edit'])->name('categorias.edit');
+    Route::put('/categorias/{categoria}', [CategoriaController::class, 'update'])->name('categorias.update');
+    Route::delete('/categorias/{categoria}', [CategoriaController::class, 'destroy'])->name('categorias.destroy');
 
+    Route::resource('monedas', MonedaController::class)->only(['index', 'store', 'update', 'destroy']);
 });
 
 

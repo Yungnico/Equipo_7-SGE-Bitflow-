@@ -3,6 +3,7 @@
 @section('plugins.Sweetalert2', true)
 @section('plugins.Select2Plugin', true)
 @section('content')
+@section('title', 'Crear Cotización')
 @if ($errors->any())
     <div class="alert alert-danger">
         <ul>
