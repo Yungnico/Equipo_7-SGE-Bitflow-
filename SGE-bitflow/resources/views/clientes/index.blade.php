@@ -87,7 +87,7 @@
                                 <button class="btn btn-danger btn-sm"> <i class="fas fa-trash-alt"></i> </button>
                             </form>
 
-                            <a href="{{ route('clientes.contactos.index', [$cliente->id, $cliente->nombre_fantasia]) }}" class="btn btn-primary btn-sm mt-1"> <i class="fas fa-id-badge"></i></a>
+                            <a href="{{ route('clientes.contactos.index', [$cliente->id, $cliente->nombre_fantasia]) }}" class="btn btn-primary btn-sm"> <i class="fas fa-id-badge"></i></a>
                         </td>
                     </tr>
                 @endforeach

@@ -85,12 +85,12 @@ class ContactoClienteController extends Controller
             'tipo_contacto' => $request->tipo_contacto,
         ]);
 
-        return redirect()->back()->with('success', 'Contacto creado correctamente');
+        return redirect()->route('clientes.contactos.index' ,$clienteId)->with('success', 'Contacto creado correctamente');
     }
     
     public function destroy($clienteId, $contactoId)
     {
-        $contacto = ContactoCliente::where('cliente_id', $clienteId)->findOrFail($contactoId);
+        $contacto = ContactoCliente::where('cliente_id' , $clienteId)->findOrFail($contactoId);
         $contacto->delete();
 
         return redirect()->route('clientes.contactos.index', $clienteId)
