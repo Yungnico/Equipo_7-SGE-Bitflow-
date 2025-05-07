@@ -323,7 +323,7 @@ return [
         [
             'text' => 'account_settings',
             'icon' => 'fas fa-user-cog ',   //fa-fw fa-user para el icono del usuario fontawesone 5 usa admin lte
-            'submenu'=>
+            'submenu' =>
             [
                 [
                     'text' => 'Perfil',
@@ -338,7 +338,7 @@ return [
             ],
         ],
         [
-            'text' => 'Cotizaciones',   
+            'text' => 'Cotizaciones',
             'icon' => 'fas fa-fw fa-file-invoice-dollar',
             'submenu' => [
                 [
@@ -374,8 +374,8 @@ return [
         [
             'text' => 'Servicios',
             'url' => 'servicios',
-            'icon' => 'fas fa-fw fa-user',
-        ]
+            'icon' => 'fas fa-laptop-medical',
+        ],
         /*,
         ['header' => 'labels'],
         [
