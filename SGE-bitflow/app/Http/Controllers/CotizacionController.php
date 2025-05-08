@@ -123,7 +123,7 @@ $detalle->save();
     }
     public function showBorrador(){
         $cotizaciones = Cotizacion::where('estado', 'Borrador')->get();
-        return view('cotizaciones.Borradores', compact('cotizaciones'));
+        return view('cotizaciones.borradores', compact('cotizaciones'));
     }
     public function create()
     {
