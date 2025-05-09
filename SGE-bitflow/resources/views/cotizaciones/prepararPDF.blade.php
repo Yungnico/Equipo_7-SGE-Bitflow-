@@ -42,8 +42,8 @@
                 @endphp
             </tr>
         @endforeach
-        @if($cotizacion->items_libres!==null)         
-            @foreach($cotizacion->items_libres as $item_libre)
+        @if($cotizacion->itemslibres!==null)         
+            @foreach($cotizacion->itemslibres as $item_libre)
             <tr>
                 <td>{{$item_libre->nombre}}</td>
                 <td>{{$item_libre->cantidad}}</td>
