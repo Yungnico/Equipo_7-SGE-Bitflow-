@@ -1,9 +1,8 @@
 @extends('adminlte::page')
 
 @section('content')
-<div class="container">
+<div class="container-fluid">
 
-    {{-- Mensaje de éxito después de actualizar o crear --}}
     @if(session('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             {{ session('success') }}
@@ -13,46 +12,52 @@
         </div>
     @endif
 
-    <h2>Contactos de {{ $cliente->nombre_fantasia }}</h2>
-    
-    <a href="{{ route('clientes.contactos.create', $cliente->id) }}" class="btn btn-primary">Agregar contacto</a>
+    <h2 class="mb-3">Contactos de {{ $cliente->nombre_fantasia }}</h2>
+
+    <a href="{{ route('clientes.contactos.create', $cliente->id) }}" class="btn btn-primary mb-3">Agregar contacto</a>
 
     @if ($cliente->contactos->isEmpty())
-        <div class="alert alert-info mt-3">No hay contactos registrados.</div>
+        <div class="alert alert-info">No hay contactos registrados.</div>
     @else
-        <table id="contactos-table" class="table table-bordered mt-3">
-            <thead>
-                <tr>
-                    <th>Nombre</th>
-                    <th>Email</th>
-                    <th>Teléfono</th>
-                    <th>Tipo</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($cliente->contactos as $contacto)
-                    <tr>
-                        <td>{{ $contacto->nombre_contacto }}</td>
-                        <td>{{ $contacto->email_contacto }}</td>
-                        <td>{{ $contacto->telefono_contacto }}</td>
-                        <td>{{ $contacto->tipo_contacto }}</td>
-                        <td>
-                            <a href="{{ route('contactos.edit', $contacto->id) }}" class="btn btn-warning btn-sm">
-                                <i class="fa fa-edit" aria-hidden="true"></i>
-                            </a>
-                            <form action="{{ route('clientes.contactos.destroy', [$cliente->id, $contacto->id]) }}" method="POST" class="form-eliminar" style="display:inline-block;">
-                                @csrf
-                                @method('DELETE')
-                                <button class="btn btn-danger btn-sm">
-                                    <i class="fas fa-trash-alt"></i>
-                                </button>
-                            </form>
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="contactos-table" class="table table-bordered table-hover w-100">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Email</th>
+                                <th>Teléfono</th>
+                                <th>Tipo</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($cliente->contactos as $contacto)
+                                <tr>
+                                    <td>{{ $contacto->nombre_contacto }}</td>
+                                    <td>{{ $contacto->email_contacto }}</td>
+                                    <td>{{ $contacto->telefono_contacto }}</td>
+                                    <td>{{ $contacto->tipo_contacto }}</td>
+                                    <td class="text-nowrap">
+                                        <a href="{{ route('contactos.edit', $contacto->id) }}" class="btn btn-warning btn-sm mb-1">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
+                                        <form action="{{ route('clientes.contactos.destroy', [$cliente->id, $contacto->id]) }}" method="POST" class="form-eliminar d-inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button class="btn btn-danger btn-sm">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     @endif
 </div>
 @endsection
@@ -70,14 +75,12 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Inicializar DataTable
         $('#contactos-table').DataTable({
             language: {
                 url: "//cdn.datatables.net/plug-ins/1.13.4/i18n/es-ES.json"
             }
         });
 
-        // Confirmación con SweetAlert
         const forms = document.querySelectorAll('.form-eliminar');
         forms.forEach(form => {
             form.addEventListener('submit', function (e) {

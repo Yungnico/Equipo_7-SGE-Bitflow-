@@ -24,6 +24,4 @@ class Cliente extends Model
         return $this->hasMany(ContactoCliente::class);
     }
 
-    
-
 }
