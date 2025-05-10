@@ -16,6 +16,7 @@ class Contacto extends Model
         'tipo_contacto',
         'cliente_id',
     ];
+    protected $table = 'contacto';
 
     public function cliente()
     {

@@ -16,7 +16,7 @@ class ContactoClienteController extends Controller
     // Mostrar todos los contactos de un cliente
     public function index($clienteId)
     {
-        $cliente = Cliente::with('contactos')->findOrFail($clienteId);
+        $cliente = Cliente::with('contacto')->findOrFail($clienteId);
         return view('clientes.contactos.index', compact('cliente'));
 
     }
