@@ -54,7 +54,6 @@ Route::middleware(['auth'])->group(function () {
     // Clientes
     Route::resource('clientes', ClienteController::class);
     Route::get('/clientes/{id}/info', [ClienteController::class, 'getCliente'])->name('clientes.info');
-    Route::get('clientes/exportar', [ClienteController::class, 'exportar'])->name('clientes.exportar');
     Route::get('/clientes/buscar', [ClienteController::class, 'buscar'])->name('clientes.buscar');
     Route::get('/clientes/resultados', [ClienteController::class, 'buscar']);
 
@@ -113,7 +112,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/viewusers', [CrudUserController::class, 'index'])->name('viewusers.index');
 
 });
-
+Route::get('clientes/exportar', [ClienteController::class, 'exportar'])->name('clientes.exportar');
 // Vista de roles
 Route::get('/roles', function () {
     return view('roles');
