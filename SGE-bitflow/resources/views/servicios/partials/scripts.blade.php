@@ -1,4 +1,4 @@
-// script para editar servicios
+
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         const modalEditar = document.getElementById('modalEditarServicio');

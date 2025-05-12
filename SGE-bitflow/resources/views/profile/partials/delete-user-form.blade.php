@@ -5,7 +5,7 @@
         </h2>
 
         <p class="mt-1 text-sm text-black">
-            <h6>{{ __('Una vez eliminada tu cuenta toda la informacion sera eliminada permanentemente.') }}</h6>
+            <h6>{{ __('Una vez eliminada tu cuenta toda la información sera eliminada permanentemente.') }}</h6>
         </p>
     </header>
 

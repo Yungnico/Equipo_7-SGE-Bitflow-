@@ -96,7 +96,7 @@
                         <div class="form-row">
                             <!-- Telefono -->
                             <div class="form-group col-md-6">
-                                <label for="telefono">Telefono - Cliente:</label>
+                                <label for="telefono">Teléfono - Cliente:</label>
                                 <div class="input-group">
                                     <select class="form-control" id="telefono" name="telefono">
                                         <option value="">Seleccione un telefono</option>
@@ -229,7 +229,7 @@
             <div class="card-header text-center" id="headingTwo">
                 <h5 class="mb-0">
                     <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#ItemsL" aria-expanded="false" aria-controls="collapseTwo">
-                        <h4>ItemsLibres</h4> 
+                        <h4>ÍtemsLibres</h4> 
                     </button>
                     <span data-toggle="tooltip" data-placement="top" title="No es necesario agregar items libres" style="cursor: help;
                         color: #ff0000;">
@@ -243,7 +243,7 @@
                     <form id="ItemsLform">
                         <div class="form-row">
                             <div class="form-group col-md-6">
-                                <label for="itemL">Items Libres:</label>
+                                <label for="itemL">Ítems Libres:</label>
                                 <div class="input-group">
                                     <input type="text" class="form-control" id="itemsL" name="itemsL" value="" required>
                                     <div class="input-group-append">

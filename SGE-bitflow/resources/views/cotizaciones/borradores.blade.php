@@ -6,7 +6,7 @@
     <table id="myTable" class="table table-bordered table-striped">
         <thead>
             <tr>
-                <th>Codigo Cotizacion</th>
+                <th>Código Cotización</th>
                 <th>Cliente </th>
                 <th>Fecha</th>
                 <th>Moneda</th>

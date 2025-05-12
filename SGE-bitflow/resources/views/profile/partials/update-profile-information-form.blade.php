@@ -1,11 +1,11 @@
 <section>
     <header>
         <h2 class="text-lg font-medium text-gray-900 ">
-            <h2>{{ __('Informacion del perfil') }}</h2>
+            <h2>{{ __('Información del perfil') }}</h2>
         </h2>
 
         <p class="mt-1 text-sm text-gray-600 ">
-            <h6>{{ __("Actualiza tu información del perfil y tu dirección de correo electronico.") }}</h6>
+            <h6>{{ __("Actualiza tu información del perfil y tu dirección de correo electrónico.") }}</h6>
         </p>
     </header>
 
