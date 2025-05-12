@@ -51,7 +51,7 @@ class ContactoClienteController extends Controller
             'email_contacto' => [
                 'nullable',
                 'email',
-                Rule::unique('contacto_clientes', 'email_contacto')->ignore($contacto->id),
+                Rule::unique('contacto', 'email_contacto')->ignore($contacto->id),
                 Rule::notIn(\App\Models\User::pluck('email')->toArray()),
             ],
 
@@ -63,7 +63,7 @@ class ContactoClienteController extends Controller
         $contacto->update($request->all());
 
         return redirect()
-            ->route('clientes.contactos.index', $contacto->cliente_id) // 👈 Redirige a la tabla de contactos del cliente
+            ->route('clientes.contactos.index', $contacto->cliente_id) 
             ->with('success', 'Contacto actualizado correctamente.');
     }
 
@@ -75,13 +75,13 @@ class ContactoClienteController extends Controller
             'email_contacto' => [
                 'nullable',
                 'email',
-                Rule::unique('contacto_clientes', 'email_contacto'),
+                Rule::unique('contacto', 'email_contacto'),
             ],
             'telefono_contacto' => 'required|digits_between:1,15|numeric',
             'tipo_contacto' => 'required|in:Comercial,TI,Contable',
         ], [
             'email_contacto.email.required' => 'El correo no tiene un formato válido.',
-            'email_contacto.unique.required' => 'Este correo no puede ser ingresado.', // ✅ Tu mensaje personalizado
+            'email_contacto.unique.required' => 'Este correo no puede ser ingresado.', 
             'telefono_contacto.numeric.required' => 'El teléfono solo debe contener números.',
             'tipo_contacto.required' => 'Debe seleccionar un tipo de contacto.',
             'tipo_contacto.in' => 'El tipo de contacto seleccionado no es válido.',
