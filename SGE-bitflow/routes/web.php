@@ -28,34 +28,33 @@ use App\Http\Controllers\ClienteExportController;
 
 
 Route::middleware('auth')->group(function () {
-    Route::resource('cotizaciones', CotizacionController::class)->except(['edit']);
+    Route::resource('cotizaciones', CotizacionController::class)->except(['edit','show']);
     Route::get('/cotizaciones/{id}/info', [CotizacionController::class, 'getCotizacion'])->name('cotizaciones.info');
     Route::get('/cotizaciones/{id}/Email', [CotizacionController::class, 'prepararEmail'])->name('cotizaciones.prepararEmail');
     Route::get('/cotizaciones/create', [CotizacionController::class, 'create'])->name('cotizaciones.create');
+    
+    Route::get('/cotizaciones/borrador', [CotizacionController::class, 'showBorrador'])->name('cotizaciones.borrador');
 });
 
 Route::middleware('auth')->group(function () {
-
+    
     Route::get('clientes/exportar', [ClienteController::class, 'exportar'])->name('clientes.exportar');
-
+    
     Route::get('/contactos/{contacto}/edit', [ContactoClienteController::class, 'edit'])->name('contactos.edit');
     Route::put('/contactos/{contacto}', [ContactoClienteController::class, 'update'])->name('contactos.update');
-
+    
     Route::resource('clientes.contactos', ContactoClienteController::class)->except(['show']);
-
-
+    
+    
     Route::get('/clientes/buscar', [ClienteController::class, 'buscar'])->name('clientes.buscar');
     Route::get('/clientes/resultados', [ClienteController::class, 'buscar']);
-
-
-
+    
     // Ruta para VER el PDF en el navegador
     Route::post('/cotizaciones/{id}/pdf', [CotizacionController::class, 'generarPDF'])->name('cotizaciones.generarPDFobservaciones');
     Route::get('/cotizaciones/{id}/pdf', [CotizacionController::class, 'generarPDF'])->name('cotizaciones.generarPDF');
     Route::get('/cotizaciones/{id}/preparar-pdf', [CotizacionController::class, 'prepararPDF'])->name('cotizaciones.prepararPDF')->middleware('auth');
     Route::post('cotizaciones/{id}/enviar', [CotizacionController::class, 'enviarCorreo'])->name('cotizaciones.enviar')->middleware('auth');
     Route::get('/cotizaciones/{id}/Email', [CotizacionController::class, 'prepararEmail'])->name('cotizaciones.prepararEmail');
-    Route::get('/cotizaciones/borrador', [CotizacionController::class, 'showBorrador'])->name('cotizaciones.borrador');
     Route::get('/cotizaciones/{id}/edit', [CotizacionController::class, 'edit'])->name('cotizaciones.edit');
     Route::put('/cotizaciones/{id}', [CotizacionController::class, 'update'])->name('cotizaciones.editarestado');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

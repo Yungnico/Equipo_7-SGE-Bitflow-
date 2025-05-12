@@ -102,7 +102,7 @@ class CotizacionController extends Controller
             'factura_asociada' => $request->facturas,
         ]);
         $detalle->id_cotizacion = $cotizacion->id_cotizacion;
-$detalle->save();
+        $detalle->save();
         // Guardar archivo si hay
         if ($request->hasFile('archivo_cliente')) {
             $path = $request->file('archivo_cliente')[0]->store('cotizaciones/' . $cotizacion->id_cotizacion, 'public');
