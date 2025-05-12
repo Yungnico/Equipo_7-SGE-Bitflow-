@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Cliente;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Cliente;
-use App\Models\ContactoCliente;
 use Illuminate\Validation\Rule;
 use App\Models\Contacto;
 
@@ -25,13 +24,13 @@ class ContactoClienteController extends Controller
         $cliente = Cliente::findOrFail($clienteId);
         return view('clientes.contactos.create', compact('cliente'));
     }
-    public function edit(ContactoCliente $contacto)
+    public function edit(Contacto $contacto)
     {
         // Si necesitas, puedes cargar el cliente relacionado
         return view('clientes.contactos.edit', compact('contacto'));
     }
 
-    public function update(Request $request, ContactoCliente $contacto)
+    public function update(Request $request, Contacto $contacto)
     {
         $request->validate([
             'nombre_contacto' => 'required|string|max:255',
@@ -90,7 +89,7 @@ class ContactoClienteController extends Controller
     
     public function destroy($clienteId, $contactoId)
     {
-        $contacto = ContactoCliente::where('cliente_id' , $clienteId)->findOrFail($contactoId);
+        $contacto = Contacto::where('cliente_id' , $clienteId)->findOrFail($contactoId);
         $contacto->delete();
 
         return redirect()->route('clientes.contactos.index', $clienteId)

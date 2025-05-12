@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\ContactoCliente;
+use App\Models\Contacto;
 
 
 // app/Models/Cliente.php
@@ -21,7 +21,7 @@ class Cliente extends Model
     
     public function contactos()
     {
-        return $this->hasMany(ContactoCliente::class);
+        return $this->hasMany(Contacto::class);
     }
 
 }
