@@ -37,7 +37,6 @@
     });
 </script>
 
-// script para editar categorías
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -56,7 +55,7 @@
     });
 </script>
 
-// script para editar monedas
+
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         const modalMoneda = document.getElementById('modalEditarMoneda');
@@ -76,7 +75,6 @@
     });
 </script>
 
-// script para modales anidados
 <script>
     document.querySelectorAll('[data-bs-target]').forEach(function(button) {
         button.addEventListener('click', function(e) {
