@@ -29,17 +29,13 @@ class ServicioController extends Controller
             'categoria_id' => 'nullable|exists:categorias,id',
         ]);
 
-        // Convertir el precio a tipo float
         $validated['precio'] = (float) $precio;
 
-        // Obtener el nombre de la moneda a partir del ID
         $moneda = Moneda::findOrFail($validated['moneda_id']);
         $validated['moneda'] = $moneda->nombre;
 
-        // Eliminar el campo moneda_id ya que no existe en la tabla servicios
         unset($validated['moneda_id']);
 
-        // Crear el servicio con los datos validados
         Servicio::create($validated);
 
         return redirect()->route('servicios.index')->with('success', 'Servicio registrado exitosamente');
