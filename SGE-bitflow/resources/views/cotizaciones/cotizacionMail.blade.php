@@ -7,7 +7,7 @@
         <div class="card-body">
             <div class="email-window bg-white text-dark">
                 <div class="email-header">
-                    <strong>Enviar Cotizacion N°: {{$cotizacion->codigo_cotizacion}}</strong>
+                    <strong>Enviar Cotización N°: {{$cotizacion->codigo_cotizacion}}</strong>
                 </div>
                 <form action="{{ route('cotizaciones.enviar', $cotizacion->id_cotizacion) }}" method="POST">
                     @csrf

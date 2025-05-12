@@ -144,7 +144,7 @@
                                 <div class="input-group">
                                     <input type="number" id="dcto" name="dcto" class="form-control" min="0" max="100" step="0.01" placeholder="Ingrese el descuento (máx. 100%)">
                                     <div class="input-group-append">    
-                                        <button class="btn btn-outline-secondary" type="button" data-toggle="tooltip" data-placement="top"  title="Aqui debe ir el descuento en % que se le va a aplicar a la cotización.">
+                                        <button class="btn btn-outline-secondary" type="button" data-toggle="tooltip" data-placement="top"  title="Aquí debe ir el descuento en % que se le va a aplicar a la cotización.">
                                             <i class="fas fa-question-circle"></i>
                                         </button>
                                     </div>
@@ -199,7 +199,7 @@
                                 <div class="input-group">
                                     <input type="text" class="form-control" id="descripcion" name="descripcion" value="" disabled>
                                     <div class="input-group-append">
-                                        <button class="btn btn-outline-secondary" type="button" data-toggle="tooltip" data-placement="top"  title="Aquí se mostrara la descripcion del servicio seleccionado.">
+                                        <button class="btn btn-outline-secondary" type="button" data-toggle="tooltip" data-placement="top"  title="Aquí se mostrara la descripción del servicio seleccionado.">
                                             <i class="fas fa-question-circle"></i>
                                         </button>
                                     </div>
