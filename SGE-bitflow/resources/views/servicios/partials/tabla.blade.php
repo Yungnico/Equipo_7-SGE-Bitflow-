@@ -11,10 +11,8 @@
         </div>
     </div>
 
-    @if(!$servicios->isEmpty())
     <div class="card">
         <div class="card-body">
-
             <table id="tabla-servicios" class="table table-striped table-bordered align-middle">
                 <thead class="table-secondary">
                     <tr>
@@ -60,12 +58,12 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($servicios as $servicio)
+                    @forelse($servicios as $servicio)
                     <tr>
                         <td>{{ $servicio->nombre_servicio }}</td>
                         <td>{{ $servicio->descripcion }}</td>
                         <td>${{ number_format($servicio->precio, 2, ',', '.') }}</td>
-                        <td>{{ $servicio->moneda }}</td>
+                        <td>{{ $servicio->moneda->nombre ?? 'Sin moneda' }}</td>
                         <td>{{ $servicio->categoria->nombre ?? 'Sin categoría' }}</td>
                         <td class="d-flex gap-2 justify-content-center">
                             <button class="btn btn-sm btn-primary"
@@ -88,10 +86,19 @@
                             </form>
                         </td>
                     </tr>
-                    @endforeach
+                    @empty
+                    <tr>
+                        <td colspan="1">-</td>
+                        <td colspan="1">-</td>
+                        <td colspan="1">-</td>
+                        <td colspan="1">-</td>
+                        <td colspan="1">-</td>
+                        <td class="text-center text-muted">No hay servicios</td>
+                    </tr>
+
+                    @endforelse
                 </tbody>
             </table>
         </div>
     </div>
-    @endif
 </div>

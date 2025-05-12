@@ -24,7 +24,7 @@ class ServicioController extends Controller
         $validated = $request->validate([
             'nombre_servicio' => 'required|string',
             'descripcion' => 'required|string',
-            'precio' => 'required',
+            'precio' => 'required|numeric',
             'moneda_id' => 'required|exists:monedas,id',
             'categoria_id' => 'nullable|exists:categorias,id',
         ]);
@@ -36,6 +36,7 @@ class ServicioController extends Controller
         return redirect()->route('servicios.index')->with('success', 'Servicio registrado exitosamente');
     }
 
+
     public function edit($id)
     {
         $servicio = Servicio::findOrFail($id);
@@ -46,18 +47,23 @@ class ServicioController extends Controller
     {
         $servicio = Servicio::findOrFail($id);
 
+        $precio = str_replace(',', '.', $request->input('precio'));
+
         $validated = $request->validate([
             'nombre_servicio' => 'required|string|max:150|unique:servicios,nombre_servicio,' . $servicio->id,
             'descripcion' => 'required|string|max:300',
             'precio' => 'required|numeric',
             'moneda_id' => 'required|exists:monedas,id',
-            'categoria_id' => 'required|exists:categorias,id',
+            'categoria_id' => 'nullable|exists:categorias,id',
         ]);
+
+        $validated['precio'] = (float) $precio;
 
         $servicio->update($validated);
 
         return redirect()->route('servicios.index')->with('success', 'Servicio actualizado correctamente');
     }
+
 
     public function index(Request $request)
     {
