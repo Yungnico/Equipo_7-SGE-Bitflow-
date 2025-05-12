@@ -181,7 +181,7 @@
                                 <label for="servicio">Servicios:</label>
                                 <div class="input-group">
                                     <select class="form-control" id="servicio" name="servicio" required>
-                                        <option value="" >Seleccione un producto</option>
+                                        <option value="" >Seleccione un Servicio</option>
                                         @foreach ($servicios as $servicio)
                                             <option value="{{ $servicio->id }}">{{$servicio->id}} - {{$servicio->nombre_servicio }}</option>
                                         @endforeach
