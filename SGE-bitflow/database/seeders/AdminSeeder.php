@@ -13,6 +13,6 @@ class AdminSeeder extends Seeder
      */
     public function run(): void
     {
-        $admin = User::Create(['name' => 'Admin','email' => 'admin@admin.com', 'password' => 'admin123']);
+        $admin = User::firstOrCreate(['name' => 'Admin','email' => 'admin@admin.com', 'password' => 'admin123']);
     }
 }

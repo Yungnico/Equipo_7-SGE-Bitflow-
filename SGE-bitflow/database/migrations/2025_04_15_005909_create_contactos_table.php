@@ -9,17 +9,20 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::create('contactos', function (Blueprint $table) {
+        Schema::create('contacto', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre_contacto', 50)->nullable();
-            $table->string('email_contacto')->unique()->nullable();
-            $table->string('telefono_contacto', 15)->nullable();
-            $table->enum('tipo_contacto', ['Comercial', 'TI', 'Contable'])->nullable();
-            $table->unsignedBigInteger('cliente_id'); // relación con cliente
+            $table->unsignedBigInteger('cliente_id');
+            $table->string('nombre_contacto');
+            $table->string('email_contacto')->unique();
+            $table->string('telefono_contacto')->nullable();
+            $table->string('tipo_contacto');
             $table->timestamps();
+
             $table->foreign('cliente_id')->references('id')->on('clientes')->onDelete('cascade');
         });
     }
+    
+
     /**
      * Run the migrations.
      */
@@ -30,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('contactos');
+        Schema::dropIfExists('contacto');
     }
 };

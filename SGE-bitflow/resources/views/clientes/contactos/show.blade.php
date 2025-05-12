@@ -1,4 +1,5 @@
 @extends('adminlte::page')
+
 <a href="{{ route('clientes.contactos.create', $cliente->id) }}" class="btn btn-primary">
     Agregar Contacto
 </a>

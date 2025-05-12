@@ -14,22 +14,23 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
-        $role1 = Role::create(['name' =>'Admin']);
-        $role2 = Role::create(['name' =>'Comercial']);
+        $role1 = Role::firstOrCreate(['name' => 'Admin']);
+        $role2 = Role::firstOrCreate(['name' => 'Comercial']);
 
-        Permission::create(['name' => 'dashboard'])->syncRoles([$role1, $role2]);
+        Permission::firstOrCreate(['name' => 'dashboard'])->syncRoles([$role1, $role2]);
 
-        Permission::create(['name' => 'servicios.index'])->syncRoles([$role1, $role2]);
-        Permission::create(['name' => 'servicios.create'])->syncRoles([$role1, $role2]);
-        Permission::create(['name' => 'servicios.edit'])->syncRoles([$role1, $role2]);
-        Permission::create(['name' => 'servicios.destroy'])->syncRoles([$role1, $role2]);
+        Permission::firstOrCreate(['name' => 'servicios.index'])->syncRoles([$role1, $role2]);
+        Permission::firstOrCreate(['name' => 'servicios.create'])->syncRoles([$role1, $role2]);
+        Permission::firstOrCreate(['name' => 'servicios.edit'])->syncRoles([$role1, $role2]);
+        Permission::firstOrCreate(['name' => 'servicios.destroy'])->syncRoles([$role1, $role2]);
 
-        Permission::create(['name' => 'perfil.index'])->syncRoles([$role1, $role2]);
-        Permission::create(['name' => 'perfil.edit'])->syncRoles([$role1, $role2]);
-        Permission::create(['name' => 'perfil.destroy'])->syncRoles([$role1, $role2]);
+        Permission::firstOrCreate(['name' => 'perfil.index'])->syncRoles([$role1, $role2]);
+        Permission::firstOrCreate(['name' => 'perfil.edit'])->syncRoles([$role1, $role2]);
+        Permission::firstOrCreate(['name' => 'perfil.destroy'])->syncRoles([$role1, $role2]);
 
-        Permission::create(['name' => 'cambioContraseña.index'])->syncRoles([$role1, $role2]);
-        Permission::create(['name' => 'cambioContraseña.edit'])->syncRoles([$role1, $role2]);
+        Permission::firstOrCreate(['name' => 'cambioContraseña.index'])->syncRoles([$role1, $role2]);
+        Permission::firstOrCreate(['name' => 'cambioContraseña.edit'])->syncRoles([$role1, $role2]);
+
         
     }
 }

@@ -7,13 +7,24 @@ use App\Http\Controllers\Cliente\ClienteController;
 use App\Http\Controllers\Cliente\ContactoClienteController;
 use App\Http\Controllers\ServicioController;
 use App\Http\Controllers\CrudUserController;
-
-use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\MonedaController;
 use App\Http\Controllers\CotizacionController;
 use App\Models\Cotizacion;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\ClienteExportController;
+
+Route::get('clientes/exportar', [ClienteController::class, 'exportar'])->name('clientes.exportar');
+
+Route::get('/contactos/{contacto}/edit', [ContactoClienteController::class, 'edit'])->name('contactos.edit');
+Route::put('/contactos/{contacto}', [ContactoClienteController::class, 'update'])->name('contactos.update');
+
+Route::resource('clientes.contactos', ContactoClienteController::class);
+
+Route::get('/clientes/buscar', [ClienteController::class, 'buscar'])->name('clientes.buscar');
+Route::get('/clientes/resultados', [ClienteController::class, 'buscar']);
+
 
 
 // Ruta para VER el PDF en el navegador
