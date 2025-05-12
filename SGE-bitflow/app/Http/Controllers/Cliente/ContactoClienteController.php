@@ -12,6 +12,20 @@ use App\Models\Contacto;
 
 class ContactoClienteController extends Controller
 {
+
+    public function getContactosPorCliente($clienteId)
+    {
+        $cliente = Cliente::with('contactos')->findOrFail($clienteId);
+        return response()->json($cliente->contactos);
+    }
+
+
+    public function show($clienteId, $contactoId)
+    {
+        $contacto = Contacto::where('cliente_id', $clienteId)->findOrFail($contactoId);
+        return view('clientes.contactos.show', compact('contacto'));
+    }
+
     // Mostrar todos los contactos de un cliente
     public function index($clienteId)
     {
@@ -96,10 +110,5 @@ class ContactoClienteController extends Controller
                         ->with('success', 'Contacto eliminado correctamente.');
     }
 
-    public function getContactos($id)
-    {
-        $contactos = Contacto::where('cliente_id', $id)->get();
-        return response()->json($contactos);
-    }
 }
 
