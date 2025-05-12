@@ -56,7 +56,7 @@
                 responsive: true,
                 autoWidth: false,
                 language: {
-                    url: 'https://cdn.datatables.net/plug-ins/2.3.0/i18n/es-CL.json'
+                    url: '{{ asset("datatables/es-CL.json")}}'
                 },
             });
 
@@ -67,23 +67,3 @@
         });
     </script>
 @stop
-
-@section('css')
-    @font-face {
-        font-family: 'Gilb';
-        src: url('/fonts/GILB____.TTF') format('truetype');
-        font-weight: normal;
-        font-style: normal;
-    }
-
-    @font-face {
-        font-family: 'Inter';
-        src: url('/fonts/Inter-VariableFont_slnt,wght.ttf') format('truetype');
-        font-weight: 100 900;
-        font-style: normal;
-    }
-
-    body {
-        font-family: 'Inter', sans-serif;
-    }
-@stop 

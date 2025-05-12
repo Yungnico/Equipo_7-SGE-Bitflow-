@@ -126,7 +126,7 @@
                 responsive: true,
                 autoWidth: false,
                 language: {
-                    url: "http://cdn.datatables.net/plug-ins/2.3.0/i18n/es-CL.json"
+                    url: '{{ asset("datatables/es-CL.json")}}'
                 }
             });
             tablaCategoriasInicializada = true;
@@ -143,7 +143,7 @@
                 responsive: true,
                 autoWidth: false,
                 language: {
-                    url: "http://cdn.datatables.net/plug-ins/2.3.0/i18n/es-CL.json"
+                    url: '{{ asset("datatables/es-CL.json")}}'
                 }
             });
             monedaTableInitialized = true;
@@ -155,7 +155,7 @@
     $(document).ready(function() {
         var table = $('#tabla-servicios').DataTable({
             language: {
-                url: 'http://cdn.datatables.net/plug-ins/2.3.0/i18n/es-CL.json'
+                url: '{{ asset("datatables/es-CL.json")}}'
             },
             responsive: true,
             autoWidth: false,

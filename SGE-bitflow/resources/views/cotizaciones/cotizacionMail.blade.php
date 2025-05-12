@@ -16,11 +16,11 @@
                             <input type="email" class="form-control email-input" placeholder="" name="correo_destino" value="{{$cotizacion->email}}">
                         </div>
                         <div class="mb-3">
-                            <input type="text" class="form-control email-input" placeholder="Asunto" name="asunto">
+                            <input type="text" class="form-control email-input" placeholder="Asunto" name="asunto" required>
                         </div>
                         <div class="mb-3">
                             <label for="message" class="form-label">Mensaje</label>
-                            <textarea class="form-control" rows="10" placeholder="Escribe tu mensaje..." name="mensaje"></textarea>
+                            <textarea class="form-control" rows="10" placeholder="Escribe tu mensaje..." name="mensaje" required></textarea>
                         </div>
                         <div class="form-check mb-2">
                             <input class="form-check-input" type="checkbox" value="1" id="adjuntarPdf" name="adjuntarPdf">

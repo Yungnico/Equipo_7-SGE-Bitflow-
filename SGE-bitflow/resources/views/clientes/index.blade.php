@@ -93,7 +93,7 @@
                                                 <i class="fas fa-trash-alt"></i>
                                             </button>
                                         </form>
-                                        <a href="{{ route('clientes.contactos.index', [$cliente->id, $cliente->nombre_fantasia]) }}" class="btn btn-primary btn-sm">
+                                        <a href="{{ route('clientes.contactos.index', [$cliente->id, $cliente->nombre_fantasia]) }}" class="btn btn-primary btn-sm mb-1">
                                             <i class="fas fa-id-badge"></i>
                                         </a>
                                     </td>
@@ -127,7 +127,7 @@
         // Inicializar DataTable
         $('#clientes-table').DataTable({
             language: {
-                url: "//cdn.datatables.net/plug-ins/1.13.4/i18n/es-ES.json"
+                url: '{{ asset("datatables/es-CL.json")}}'
             }
         });
 
