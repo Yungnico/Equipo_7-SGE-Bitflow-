@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Servicio extends Model
 {
     use HasFactory;
-    protected $fillable = ['nombre_servicio', 'descripcion', 'precio', 'moneda', 'categoria_id'];
+    protected $fillable = ['nombre_servicio', 'descripcion', 'precio', 'moneda_id', 'categoria_id'];
 
 
     public function cotizaciones()

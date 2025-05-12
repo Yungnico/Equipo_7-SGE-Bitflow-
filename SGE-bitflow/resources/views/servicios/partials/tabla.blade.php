@@ -63,7 +63,7 @@
                         <td>{{ $servicio->nombre_servicio }}</td>
                         <td>{{ $servicio->descripcion }}</td>
                         <td>${{ number_format($servicio->precio, 2, ',', '.') }}</td>
-                        <td>{{ $servicio->moneda ?? 'Sin moneda' }}</td>
+                        <td>{{ $servicio->moneda->nombre ?? 'Sin moneda' }}</td>
                         <td>{{ $servicio->categoria->nombre ?? 'Sin categoría' }}</td>
                         <td class="d-flex gap-2 justify-content-center">
                             <button class="btn btn-sm btn-primary"
