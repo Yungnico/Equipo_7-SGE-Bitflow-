@@ -20,7 +20,8 @@ Route::get('clientes/exportar', [ClienteController::class, 'exportar'])->name('c
 Route::get('/contactos/{contacto}/edit', [ContactoClienteController::class, 'edit'])->name('contactos.edit');
 Route::put('/contactos/{contacto}', [ContactoClienteController::class, 'update'])->name('contactos.update');
 
-Route::resource('clientes.contactos', ContactoClienteController::class);
+Route::resource('clientes.contactos', ContactoClienteController::class)->except(['show']);
+
 
 Route::get('/clientes/buscar', [ClienteController::class, 'buscar'])->name('clientes.buscar');
 Route::get('/clientes/resultados', [ClienteController::class, 'buscar']);
