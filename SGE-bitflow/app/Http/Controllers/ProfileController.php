@@ -36,7 +36,24 @@ class ProfileController extends Controller
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
-    
+    public function updatePassword(Request $request)
+    {
+        // Validar la entrada
+        $request->validate([
+            'current_password' => ['required', 'current_password'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+        ]);
+
+        // Obtener el usuario autenticado
+        $user = $request->user();
+
+        // Cambiar la contraseña
+        $user->password = bcrypt($request->password);
+        $user->save();
+
+        // Redirigir al perfil con un mensaje de éxito
+        return redirect()->route('profile.edit')->with('status', 'Contraseña actualizada correctamente.');
+    }
     /**
      * Delete the user's account.
      */
@@ -57,4 +74,6 @@ class ProfileController extends Controller
 
         return Redirect::to('/');
     }
+
+    
 }
