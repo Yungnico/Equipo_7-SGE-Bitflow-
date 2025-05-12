@@ -20,7 +20,7 @@ Route::get('clientes/exportar', [ClienteController::class, 'exportar'])->name('c
 Route::get('/contactos/{contacto}/edit', [ContactoClienteController::class, 'edit'])->name('contactos.edit');
 Route::put('/contactos/{contacto}', [ContactoClienteController::class, 'update'])->name('contactos.update');
 
-Route::get('/clientes/{cliente}/contactos/info', [ContactoClienteController::class, 'getContactosPorCliente'])->name('clientes.contactos.info');
+Route::resource('clientes.contactos', ContactoClienteController::class);
 
 Route::get('/clientes/buscar', [ClienteController::class, 'buscar'])->name('clientes.buscar');
 Route::get('/clientes/resultados', [ClienteController::class, 'buscar']);
@@ -64,7 +64,8 @@ Route::middleware('auth')->group(function () {
     Route::prefix('clientes/{cliente}')->name('clientes.')->group(function () {
         Route::get('contactos/create', [ContactoClienteController::class, 'create'])->name('contactos.create');
         Route::post('contactos', [ContactoClienteController::class, 'store'])->name('contactos.store');
-        Route::resource('contactos', ContactoClienteController::class)->except(['create', 'store']);
+        Route::resource('contactos', ContactoClienteController::class)->except(['create', 'show', 'store']);
+        Route::get('contactos/info', [ContactoClienteController::class, 'getContactos'])->name('contactos.info');
     });
 
     // Rutas del perfil

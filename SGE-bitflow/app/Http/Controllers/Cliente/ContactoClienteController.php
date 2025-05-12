@@ -12,20 +12,6 @@ use App\Models\Contacto;
 
 class ContactoClienteController extends Controller
 {
-
-    public function getContactosPorCliente($clienteId)
-    {
-        $cliente = Cliente::with('contactos')->findOrFail($clienteId);
-        return response()->json($cliente->contactos);
-    }
-
-
-    public function show($clienteId, $contactoId)
-    {
-        $contacto = Contacto::where('cliente_id', $clienteId)->findOrFail($contactoId);
-        return view('clientes.contactos.show', compact('contacto'));
-    }
-
     // Mostrar todos los contactos de un cliente
     public function index($clienteId)
     {
@@ -51,7 +37,7 @@ class ContactoClienteController extends Controller
             'email_contacto' => [
                 'nullable',
                 'email',
-                Rule::unique('contacto', 'email_contacto')->ignore($contacto->id),
+                Rule::unique('contacto_clientes', 'email_contacto')->ignore($contacto->id),
                 Rule::notIn(\App\Models\User::pluck('email')->toArray()),
             ],
 
@@ -63,7 +49,7 @@ class ContactoClienteController extends Controller
         $contacto->update($request->all());
 
         return redirect()
-            ->route('clientes.contactos.index', $contacto->cliente_id) 
+            ->route('clientes.contactos.index', $contacto->cliente_id) // 👈 Redirige a la tabla de contactos del cliente
             ->with('success', 'Contacto actualizado correctamente.');
     }
 
@@ -75,13 +61,13 @@ class ContactoClienteController extends Controller
             'email_contacto' => [
                 'nullable',
                 'email',
-                Rule::unique('contacto', 'email_contacto'),
+                Rule::unique('contacto_clientes', 'email_contacto'),
             ],
             'telefono_contacto' => 'required|digits_between:1,15|numeric',
             'tipo_contacto' => 'required|in:Comercial,TI,Contable',
         ], [
             'email_contacto.email.required' => 'El correo no tiene un formato válido.',
-            'email_contacto.unique.required' => 'Este correo no puede ser ingresado.', 
+            'email_contacto.unique.required' => 'Este correo no puede ser ingresado.', // ✅ Tu mensaje personalizado
             'telefono_contacto.numeric.required' => 'El teléfono solo debe contener números.',
             'tipo_contacto.required' => 'Debe seleccionar un tipo de contacto.',
             'tipo_contacto.in' => 'El tipo de contacto seleccionado no es válido.',
@@ -110,5 +96,10 @@ class ContactoClienteController extends Controller
                         ->with('success', 'Contacto eliminado correctamente.');
     }
 
+    public function getContactos($id)
+    {
+        $contactos = Contacto::where('cliente_id', $id)->get();
+        return response()->json($contactos);
+    }
 }
 
