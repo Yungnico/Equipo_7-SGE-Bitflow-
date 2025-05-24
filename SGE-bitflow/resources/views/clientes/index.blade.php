@@ -1,5 +1,12 @@
 @extends('adminlte::page')
 
+@section('title', 'Clientes')
+
+@section('css')
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap4.min.css">
+@stop
+
 @section('content')
 <div class="container-fluid">
     <h1 class="mb-4">Clientes</h1>
@@ -54,8 +61,8 @@
     @if($clientes->count())
         <div class="card">
             <div class="card-body">
-                <div class="table-responsive">
-                    <table id="clientes-table" class="table table-bordered table-hover w-100">
+                
+                    <table id="clientes-table" class="table table-bordered table-striped dt-responsive nowrap" style="width:100%">
                         <thead class="thead-light">
                             <tr>
                                 <th>Razón social</th>
@@ -101,7 +108,7 @@
                             @endforeach
                         </tbody>
                     </table>
-                </div>
+                
             </div>
         </div>
     @else
@@ -114,44 +121,48 @@
 
 
 @section('js')
-<!-- SweetAlert2 -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<!-- DataTables -->
-<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap4.min.js"></script>
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap4.min.css"/>
+    <!-- DataTables -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap4.min.js"></script>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Inicializar DataTable
-        $('#clientes-table').DataTable({
-            language: {
-                url: '{{ asset("datatables/es-CL.json")}}'
-            }
-        });
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Inicializar DataTable
+            $('#clientes-table').DataTable({
+                language: {
+                    responsive: true,
+                    autoWidth: false,
+                    url: '{{ asset("datatables/es-CL.json")}}'
+                }
+            });
 
-        // Confirmación SweetAlert
-        const forms = document.querySelectorAll('.form-eliminar');
-        forms.forEach(form => {
-            form.addEventListener('submit', function (e) {
-                e.preventDefault();
-                Swal.fire({
-                    title: "¿Estás seguro?",
-                    text: "¡Esta acción no se puede deshacer!",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#3085d6",
-                    cancelButtonColor: "#d33",
-                    confirmButtonText: "Sí, eliminarlo",
-                    cancelButtonText: "Cancelar"
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        form.submit();
-                    }
+            // Confirmación SweetAlert
+            const forms = document.querySelectorAll('.form-eliminar');
+            forms.forEach(form => {
+                form.addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    Swal.fire({
+                        title: "¿Estás seguro?",
+                        text: "¡Esta acción no se puede deshacer!",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: "Sí, eliminarlo",
+                        cancelButtonText: "Cancelar"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit();
+                        }
+                    });
                 });
             });
         });
-    });
-</script>
+    </script>
 @endsection
