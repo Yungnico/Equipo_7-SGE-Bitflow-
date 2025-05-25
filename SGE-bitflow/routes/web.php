@@ -83,6 +83,9 @@ Route::middleware('auth')->group(function () {
     #cuenta corrienete
     Route::get('/transferencias', [TransferenciaController::class, 'index'])->name('transferencias.index');
     Route::post('/transferencias/importar', [TransferenciaController::class, 'importarExcel'])->name('transferencias.importar');
+    Route::post('/transferencias', [TransferenciaController::class, 'store'])->name('transferencias.store');
+
+
 
     //Cambio de contraseñas
     Route::get('/cambiar-password', function () {

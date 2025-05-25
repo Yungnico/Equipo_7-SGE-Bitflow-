@@ -22,6 +22,12 @@
         </form>
     </div>
 
+    <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#modalAgregarTransferencia">
+        Agregar transferencia
+    </button>
+
+
+
     <div class="card">
         <div class="card-body">
             <div class="table-responsive">
@@ -89,6 +95,88 @@
         </div>
     </div>
 </div>
+
+<!-- Modal -->
+<div class="modal fade" id="modalAgregarTransferencia" tabindex="-1" aria-labelledby="modalAgregarTransferenciaLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <form action="{{ route('transferencias.store') }}" method="POST">
+                @csrf
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalAgregarTransferenciaLabel">Agregar Transferencia Manual</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Nombre</label>
+                        <input type="text" name="nombre" class="form-control" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">RUT</label>
+                        <input type="text" name="rut" class="form-control">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Fecha Transacción</label>
+                        <input type="date" name="fecha_transaccion" class="form-control">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Hora</label>
+                        <input type="time" name="hora_transaccion" class="form-control">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Fecha Contable</label>
+                        <input type="date" name="fecha_contable" class="form-control">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Número de Cuenta</label>
+                        <input type="text" name="numero_cuenta" class="form-control">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Tipo Cuenta</label>
+                        <input type="text" name="tipo_cuenta" class="form-control">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Banco</label>
+                        <input type="text" name="banco" class="form-control">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Código Transferencia</label>
+                        <input type="text" name="codigo_transferencia" class="form-control">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Tipo Transacción</label>
+                        <input type="text" name="tipo_transaccion" class="form-control">
+                    </div>
+                    <div class="col-md-12 mb-3">
+                        <label class="form-label">Glosa Detalle</label>
+                        <textarea name="glosa_detalle" class="form-control" rows="2"></textarea>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Ingreso</label>
+                        <input type="number" step="0.01" name="ingreso" class="form-control">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Egreso</label>
+                        <input type="number" step="0.01" name="egreso" class="form-control">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Saldo Contable</label>
+                        <input type="number" step="0.01" name="saldo_contable" class="form-control">
+                    </div>
+                    <div class="col-md-12 mb-3">
+                        <label class="form-label">Comentario Transferencia</label>
+                        <textarea name="comentario_transferencia" class="form-control" rows="2"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-success">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @section('js')
@@ -98,6 +186,7 @@
 <script src="https://cdn.datatables.net/2.3.0/js/dataTables.bootstrap5.js"></script>
 <script src="https://cdn.datatables.net/responsive/3.0.4/js/dataTables.responsive.js"></script>
 <script src="https://cdn.datatables.net/responsive/3.0.4/js/responsive.bootstrap5.js"></script>
+
 
 <script>
     $(document).ready(function() {
@@ -109,4 +198,5 @@
         });
     });
 </script>
+
 @endsection

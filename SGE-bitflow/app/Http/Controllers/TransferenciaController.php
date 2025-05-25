@@ -15,6 +15,31 @@ class TransferenciaController extends Controller
         return view('transferencias.index', compact('transferencias'));
     }
 
+    public function store(Request $request)
+    {
+        $request->validate([
+            'nombre' => 'required|string|max:255',
+            'rut' => 'nullable|string|max:20',
+            'fecha_transaccion' => 'required|date',
+            'hora_transaccion' => 'nullable|string|max:10',
+            'fecha_contable' => 'nullable|date',
+            'numero_cuenta' => 'nullable|string|max:50',
+            'tipo_cuenta' => 'nullable|string|max:50',
+            'banco' => 'nullable|string|max:100',
+            'codigo_transferencia' => 'nullable|string|max:100',
+            'tipo_transaccion' => 'nullable|string|max:100',
+            'glosa_detalle' => 'nullable|string',
+            'ingreso' => 'nullable|numeric',
+            'egreso' => 'nullable|numeric',
+            'saldo_contable' => 'nullable|numeric',
+            'comentario_transferencia' => 'nullable|string',
+        ]);
+
+        TransferenciaBancaria::create($request->all());
+
+        return redirect()->back()->with('success', 'Transferencia agregada correctamente.');
+    }
+
 
     public function importarExcel(Request $request)
     {
