@@ -66,11 +66,24 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="15" class="text-center text-muted">No hay transferencias cargadas</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td class="text-center text-muted">No hay datos</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
                         </tr>
                         @endforelse
                     </tbody>
-
                 </table>
             </div>
         </div>
