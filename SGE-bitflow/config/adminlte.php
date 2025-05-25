@@ -381,6 +381,11 @@ return [
             'url' => 'servicios',
             'icon' => 'fas fa-laptop-medical',
         ],
+        [
+            'text' => 'Cuenta corriente',
+            'url' => 'transferencias',
+            'icon' => 'fas fa-laptop-medical',
+        ],
         /*,
         ['header' => 'labels'],
         [
