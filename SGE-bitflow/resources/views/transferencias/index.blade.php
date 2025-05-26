@@ -35,6 +35,7 @@
         Agregar transferencia
     </button>
 
+
     <div class="card">
         <div class="card-body">
             <div class="table-responsive">
@@ -67,7 +68,7 @@
                                 </select>
                             </th>
                             <th>
-                                <select class="form-select filtro-select" data-columna="1">
+                                <select class="form-select filtro-select" data-columna="1" style="min-width: 150px;">
                                     <option value="">RUT</option>
                                     @foreach($transferencias->pluck('rut')->unique() as $rut)
                                     <option value="{{ $rut }}">{{ $rut }}</option>
