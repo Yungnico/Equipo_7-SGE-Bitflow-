@@ -14,7 +14,16 @@
     <div class="card">
         <div class="card-body">
             <table id="tabla-servicios" class="table table-striped table-bordered align-middle">
-                <thead class="table-secondary">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Descripción</th>
+                        <th>Precio</th>
+                        <th>Moneda</th>
+                        <th>Categoría</th>
+                        <th>Acciones</th>
+                    </tr>
+
                     <tr>
                         <th></th>
                         <th></th>
@@ -45,16 +54,6 @@
                                 </button>
                             </div>
                         </th>
-                    </tr>
-                </thead>
-                <thead class="table-dark">
-                    <tr>
-                        <th>Nombre</th>
-                        <th>Descripción</th>
-                        <th>Precio</th>
-                        <th>Moneda</th>
-                        <th>Categoría</th>
-                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
