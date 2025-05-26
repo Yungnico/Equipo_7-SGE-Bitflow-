@@ -11,13 +11,8 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/2.3.0/css/dataTables.bootstrap5.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.4/css/responsive.bootstrap5.css">
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-<style>
-    thead input,
-    thead select {
-        width: 100%;
-        box-sizing: border-box;
-    }
-</style>
+<link href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@1.5.2/dist/select2-bootstrap4.min.css" rel="stylesheet" />
+
 @endsection
 
 @section('content')
@@ -59,6 +54,7 @@
                             <th>Saldo</th>
                             <th>Comentario</th>
                         </tr>
+
                         <tr class="filtros">
                             <th>
                                 <select class="form-select filtro-select" data-columna="0">
@@ -212,17 +208,18 @@
             scrollX: true,
             paging: true,
             autoWidth: false,
-            orderCellsTop: true // 👈 Esto es CLAVE
+            orderCellsTop: true
         });
 
         $('.filtro-select').select2({
             width: '100%'
         });
 
-        $('.filtro-select').on('change', function() {
-            const col = $(this).data('columna');
-            const val = $(this).val();
-            tabla.column(col).search(val).draw();
+        $('.filtro-select').select2({
+            theme: 'bootstrap4',
+            placeholder: 'Seleccione una opción',
+            allowClear: true,
+            width: '100%'
         });
     });
 </script>

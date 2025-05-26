@@ -27,7 +27,7 @@
                 </thead>
 
                 {{-- Fila de filtros --}}
-                <thead class="table-secondary filtros">
+                <thead class="table-dark filtros">
                     <tr>
                         <th></th>
                         <th></th>
