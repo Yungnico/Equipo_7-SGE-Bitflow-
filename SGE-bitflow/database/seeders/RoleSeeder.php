@@ -6,6 +6,7 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use App\Models\User;
 
 class RoleSeeder extends Seeder
 {
@@ -26,16 +27,21 @@ class RoleSeeder extends Seeder
         Permission::firstOrCreate(['name' => 'cambioContraseña.index'])->syncRoles([$role1, $role2]);
         Permission::firstOrCreate(['name' => 'cambioContraseña.edit'])->syncRoles([$role1, $role2]);
 
-        Permission::firstOrCreate(['name' => 'admin.viewusers.index'])->syncRoles([$role1]);
-        Permission::firstOrCreate(['name' => 'admin.viewusers.edit'])->syncRoles([$role1]);//tengo que poner middleware en la ruta de editar usuario
+        Permission::firstOrCreate(['name' => 'admin.viewusers.index'])->syncRoles([$role1]);//middleware puesto
+        Permission::firstOrCreate(['name' => 'admin.viewusers.edit'])->syncRoles([$role1]);
         Permission::firstOrCreate(['name' => 'admin.viewusers.update'])->syncRoles([$role1]);
 
-        Permission::firstOrCreate(['name' => 'user.create'])->syncRoles([$role1]);
+        Permission::firstOrCreate(['name' => 'user.create'])->syncRoles([$role1]);//middleware puesto
 
         Permission::firstOrCreate(['name' => 'servicios.index'])->syncRoles([$role1, $role2]);
         Permission::firstOrCreate(['name' => 'servicios.create'])->syncRoles([$role1, $role2]);
         Permission::firstOrCreate(['name' => 'servicios.edit'])->syncRoles([$role1, $role2]);
         Permission::firstOrCreate(['name' => 'servicios.destroy'])->syncRoles([$role1, $role2]);
+
+        $adminUser = User::where('email', 'admin@admin.com')->first();
+        if ($adminUser) {
+            $adminUser->assignRole($role1);
+        }
 
 
 
