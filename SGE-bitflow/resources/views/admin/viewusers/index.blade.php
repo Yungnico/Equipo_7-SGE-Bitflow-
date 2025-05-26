@@ -32,7 +32,11 @@
                             <td>{{ $user->id }}</td>
                             <td>{{ $user->name }}</td>
                             <td>{{ $user->email }}</td>
-                            <td width="10px"><a class="btn btn-primary" href="{{route('viewusers.edit', $user)}}"><i class="fas fa-edit"></i></a></td>
+                            <td width="10px">
+                                @can('admin.viewusers.edit')     
+                                    <a class="btn btn-primary" href="{{route('viewusers.edit', $user)}}"><i class="fas fa-edit"></i></a>
+                                @endcan
+                            </td>
                         </tr>
                     @endforeach
             </table>
@@ -54,7 +58,7 @@
                 responsive: true,
                 autoWidth: false,
                 language: {
-                    url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'
+                    url: '{{ asset("datatables/es-CL.json")}}'
                 }
             });
         });

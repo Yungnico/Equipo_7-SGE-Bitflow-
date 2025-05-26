@@ -365,6 +365,7 @@ return [
             'text' => 'Registro de usuarios',
             'url' => 'users/create',
             'icon' => 'fas fa-solid fa-user-plus',
+            'can' => 'user.create',
         ],
         [
             'text' => 'Clientes',
@@ -375,29 +376,14 @@ return [
             'text' => 'Usuarios',
             'url' => 'viewusers',
             'icon' => 'fas fa-users fa-fw',
+            'can' => 'admin.viewusers.index',
         ],
         [
             'text' => 'Servicios',
             'url' => 'servicios',
             'icon' => 'fas fa-laptop-medical',
         ],
-        /*,
-        ['header' => 'labels'],
-        [
-            'text' => 'important',
-            'icon_color' => 'red',
-            'url' => '#',
-        ],
-        [
-            'text' => 'warning',
-            'icon_color' => 'yellow',
-            'url' => '#',
-        ],
-        [
-            'text' => 'information',
-            'icon_color' => 'cyan',
-            'url' => '#',
-        ], */
+
     ],
 
     /*
