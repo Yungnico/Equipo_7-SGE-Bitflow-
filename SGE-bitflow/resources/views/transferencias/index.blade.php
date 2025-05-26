@@ -5,10 +5,19 @@
 @section('content_header')
 <h1></h1>
 @stop
+
 @section('css')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/2.3.0/css/dataTables.bootstrap5.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.4/css/responsive.bootstrap5.css">
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<style>
+    thead input,
+    thead select {
+        width: 100%;
+        box-sizing: border-box;
+    }
+</style>
 @endsection
 
 @section('content')
@@ -25,8 +34,6 @@
     <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#modalAgregarTransferencia">
         Agregar transferencia
     </button>
-
-
 
     <div class="card">
         <div class="card-body">
@@ -50,6 +57,28 @@
                             <th>Saldo</th>
                             <th>Comentario</th>
                         </tr>
+                        <tr class="filtros">
+                            <th>
+                                <select class="form-select filtro-select" data-columna="0">
+                                    <option value="">Nombre</option>
+                                    @foreach($transferencias->pluck('nombre')->unique() as $nombre)
+                                    <option value="{{ $nombre }}">{{ $nombre }}</option>
+                                    @endforeach
+                                </select>
+                            </th>
+                            <th>
+                                <select class="form-select filtro-select" data-columna="1">
+                                    <option value="">RUT</option>
+                                    @foreach($transferencias->pluck('rut')->unique() as $rut)
+                                    <option value="{{ $rut }}">{{ $rut }}</option>
+                                    @endforeach
+                                </select>
+                            </th>
+                            @for($i = 2; $i < 15; $i++)
+                                <th>
+                                </th>
+                                @endfor
+                        </tr>
                     </thead>
                     <tbody>
                         @forelse($transferencias as $t)
@@ -72,21 +101,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td class="text-center text-muted">No hay datos</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
+                            <td colspan="15" class="text-center text-muted">No hay datos</td>
                         </tr>
                         @endforelse
                     </tbody>
@@ -186,15 +201,26 @@
 <script src="https://cdn.datatables.net/2.3.0/js/dataTables.bootstrap5.js"></script>
 <script src="https://cdn.datatables.net/responsive/3.0.4/js/dataTables.responsive.js"></script>
 <script src="https://cdn.datatables.net/responsive/3.0.4/js/responsive.bootstrap5.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 <script>
     $(document).ready(function() {
-        $('#tabla-transferencias').DataTable({
+        const tabla = $('#tabla-transferencias').DataTable({
             responsive: false,
             scrollX: true,
             paging: true,
-            autoWidth: false
+            autoWidth: false,
+            orderCellsTop: true // 👈 Esto es CLAVE
+        });
+
+        $('.filtro-select').select2({
+            width: '100%'
+        });
+
+        $('.filtro-select').on('change', function() {
+            const col = $(this).data('columna');
+            const val = $(this).val();
+            tabla.column(col).search(val).draw();
         });
     });
 </script>
