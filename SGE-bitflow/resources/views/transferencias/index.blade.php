@@ -57,7 +57,7 @@
 
                         <tr class="filtros">
                             <th>
-                                <select class="form-select filtro-select" data-columna="0">
+                                <select class="form-select filtro-select" data-columna="0" style="min-width: 150px;">
                                     <option value="">Nombre</option>
                                     @foreach($transferencias->pluck('nombre')->unique() as $nombre)
                                     <option value="{{ $nombre }}">{{ $nombre }}</option>
@@ -99,7 +99,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="1" class="text-center text-muted"></td>
+                            <td colspan="15" class="text-center text-muted"></td>
                         </tr>
                         @endforelse
                     </tbody>
@@ -202,6 +202,8 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 <script>
+    $.fn.dataTable.ext.errMode = 'throw';
+
     $(document).ready(function() {
         const tabla = $('#tabla-transferencias').DataTable({
             responsive: false,
@@ -209,10 +211,6 @@
             paging: true,
             autoWidth: false,
             orderCellsTop: true
-        });
-
-        $('.filtro-select').select2({
-            width: '100%'
         });
 
         $('.filtro-select').select2({
