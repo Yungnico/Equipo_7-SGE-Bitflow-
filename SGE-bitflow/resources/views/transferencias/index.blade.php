@@ -204,8 +204,10 @@
 <script>
     $.fn.dataTable.ext.errMode = 'throw';
 
+    let tabla; // definimos fuera para que sea accesible
+
     $(document).ready(function() {
-        const tabla = $('#tabla-transferencias').DataTable({
+        tabla = $('#tabla-transferencias').DataTable({
             responsive: false,
             scrollX: true,
             paging: true,
@@ -219,14 +221,19 @@
             allowClear: true,
             width: '100%'
         });
-    });
-</script>
 
-<script>
+        // Aplicar el filtro al cambiar el select
+        $('.filtro-select').on('change', function() {
+            const columna = $(this).data('columna');
+            const valor = $(this).val();
+            tabla.column(columna).search(valor ? '^' + valor + '$' : '', true, false).draw();
+        });
+    });
+
+    // Resetear filtros
     $('#reset-filtros').on('click', function() {
         $('.filtro-select').val('').trigger('change');
         tabla.columns().search('').draw();
     });
 </script>
-
 @endsection
