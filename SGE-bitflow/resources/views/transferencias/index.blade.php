@@ -35,6 +35,7 @@
         Agregar transferencia
     </button>
 
+    <button type="button" id="reset-filtros" class="btn btn-secondary mb-3">Resetear Filtros</button>
 
     <div class="card">
         <div class="card-body">
@@ -223,6 +224,13 @@
             const val = $(this).val();
             tabla.column(col).search(val).draw();
         });
+    });
+</script>
+
+<script>
+    $('#reset-filtros').on('click', function() {
+        $('.filtro-select').val('').trigger('change');
+        tabla.columns().search('').draw();
     });
 </script>
 
