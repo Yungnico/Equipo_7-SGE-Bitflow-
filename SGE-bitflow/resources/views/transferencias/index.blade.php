@@ -30,6 +30,11 @@
         Agregar transferencia
     </button>
 
+    <a href="{{ route('transferencias.conciliar') }}" class="btn btn-success">
+        Conciliar Transferencias
+    </a>
+
+
     <button type="button" id="reset-filtros" class="btn btn-secondary mb-3">Resetear Filtros</button>
 
     <div class="card">
@@ -40,6 +45,7 @@
                         <tr>
                             <th>Nombre</th>
                             <th>RUT</th>
+                            <th>Estado</th>
                             <th>Fecha Transacción</th>
                             <th>Hora</th>
                             <th>Fecha Contable</th>
@@ -72,7 +78,7 @@
                                     @endforeach
                                 </select>
                             </th>
-                            @for($i = 2; $i < 15; $i++)
+                            @for($i = 2; $i < 16; $i++)
                                 <th>
                                 </th>
                                 @endfor
@@ -83,6 +89,7 @@
                         <tr>
                             <td>{{ $t->nombre }}</td>
                             <td>{{ $t->rut }}</td>
+                            <td>{{$t->estado}}</td>
                             <td>{{ $t->fecha_transaccion }}</td>
                             <td>{{ $t->hora_transaccion }}</td>
                             <td>{{ $t->fecha_contable }}</td>
@@ -99,7 +106,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="15" class="text-center text-muted"></td>
+                            <td colspan="16" class="text-center text-muted"></td>
                         </tr>
                         @endforelse
                     </tbody>

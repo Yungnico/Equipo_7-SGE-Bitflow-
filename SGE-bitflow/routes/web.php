@@ -84,6 +84,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/transferencias', [TransferenciaController::class, 'index'])->name('transferencias.index');
     Route::post('/transferencias/importar', [TransferenciaController::class, 'importarExcel'])->name('transferencias.importar');
     Route::post('/transferencias', [TransferenciaController::class, 'store'])->name('transferencias.store');
+    Route::get('/transferencias/conciliar', [TransferenciaController::class, 'conciliarTransferencias'])->name('transferencias.conciliar');
+
 
 
 

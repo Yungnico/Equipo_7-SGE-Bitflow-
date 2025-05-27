@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\TransferenciaBancaria;
+use App\Models\Cliente;
+use App\Models\Cotizacion;
 use Illuminate\Http\Request;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
@@ -91,5 +93,44 @@ class TransferenciaController extends Controller
         }
 
         return back()->with('success', 'Archivo importado correctamente.');
+    }
+
+    public function conciliarTransferencias()
+    {
+        // Obtener transferencias no conciliadas
+        $transferencias = TransferenciaBancaria::where('estado', 'Pendiente')->get();
+
+        foreach ($transferencias as $transferencia) {
+            if (empty($transferencia->rut)) {
+                continue; // Saltar si no hay RUT
+            }
+
+            // Buscar cliente con el mismo RUT
+            $cliente = Cliente::where('rut', $transferencia->rut)->first();
+            if (!$cliente) {
+                continue; // No hay cliente con ese RUT
+            }
+
+            // Buscar cotizaciones no pagadas de ese cliente
+            $cotizaciones = Cotizacion::where('id_cliente', $cliente->id)
+                ->where('estado', '!=', 'Pagada')
+                ->get();
+
+            foreach ($cotizaciones as $cotizacion) {
+                if (floatval($cotizacion->total) === floatval($transferencia->ingreso)) {
+                    // Coincidencia válida: conciliar
+                    $cotizacion->estado = 'Pagada';
+                    $cotizacion->id_transferencia = $transferencia->id;
+                    $cotizacion->save();
+
+                    $transferencia->estado = 'Conciliada';
+                    $transferencia->save();
+
+                    break; // Solo una cotización por transferencia
+                }
+            }
+        }
+
+        return back()->with('success', 'Transferencias conciliadas por RUT correctamente.');
     }
 }
