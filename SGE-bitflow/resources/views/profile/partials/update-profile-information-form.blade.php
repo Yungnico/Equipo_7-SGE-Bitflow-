@@ -5,7 +5,7 @@
         </h2>
 
         <p class="mt-1 text-sm text-gray-600 ">
-            <h6>{{ __("Actualiza tu información del perfil y tu dirección de correo electrónico.") }}</h6>
+            <h6>{{ __("Actualiza tu información del perfil o tu dirección de correo electrónico.") }}</h6>
         </p>
     </header>
 
@@ -45,6 +45,7 @@
             />
             <x-input-error class="mt-2" :messages="$errors->get('email')" />
 
+            <!--
             @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail())
                 <div>
                     <p class="text-sm mt-2 text-gray-800 dark:text-gray-200">
@@ -62,6 +63,7 @@
                     @endif
                 </div>
             @endif
+            -->
         </div>
 
         <div class="flex items-center gap-4">
