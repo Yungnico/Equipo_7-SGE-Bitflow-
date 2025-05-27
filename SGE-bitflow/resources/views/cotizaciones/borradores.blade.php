@@ -1,4 +1,5 @@
 @extends('adminlte::page')
+@section('title', 'Borradores')
 @section('plugins.Datatables', true)
 
 @section('content')
