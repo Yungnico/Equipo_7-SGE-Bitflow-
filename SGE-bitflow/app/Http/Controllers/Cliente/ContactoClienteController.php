@@ -37,7 +37,7 @@ class ContactoClienteController extends Controller
             'email_contacto' => [
                 'nullable',
                 'email',
-                Rule::unique('contactos', 'email_contacto')->ignore($contacto->id),
+                Rule::unique('contacto', 'email_contacto')->ignore($contacto->id),
                 Rule::notIn(\App\Models\User::pluck('email')->toArray()),
             ],
 
@@ -61,7 +61,7 @@ class ContactoClienteController extends Controller
             'email_contacto' => [
                 'nullable',
                 'email',
-                Rule::unique('contactos', 'email_contacto'),
+                Rule::unique('contacto', 'email_contacto'),
             ],
             'telefono_contacto' => 'required|digits_between:1,15|numeric',
             'tipo_contacto' => 'required|in:Comercial,TI,Contable',
@@ -102,4 +102,3 @@ class ContactoClienteController extends Controller
         return response()->json($contactos);
     }
 }
-
