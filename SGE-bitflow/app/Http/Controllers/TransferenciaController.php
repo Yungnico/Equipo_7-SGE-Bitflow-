@@ -97,28 +97,24 @@ class TransferenciaController extends Controller
 
     public function conciliarTransferencias()
     {
-        // Obtener transferencias no conciliadas
         $transferencias = TransferenciaBancaria::where('estado', 'Pendiente')->get();
 
         foreach ($transferencias as $transferencia) {
-            if (empty($transferencia->rut)) {
-                continue; // Saltar si no hay RUT
-            }
+            $rut = trim(strtolower($transferencia->rut));
+            $nombre = trim(strtolower($transferencia->nombre));
+            $comentario = trim($transferencia->comentario_transferencia);
+            $monto = floatval($transferencia->ingreso);
 
-            // Buscar cliente con el mismo RUT
-            $cliente = Cliente::where('rut', $transferencia->rut)->first();
-            if (!$cliente) {
-                continue; // No hay cliente con ese RUT
-            }
+            $conciliada = false;
 
-            // Buscar cotizaciones no pagadas de ese cliente
-            $cotizaciones = Cotizacion::where('id_cliente', $cliente->id)
-                ->where('estado', '!=', 'Pagada')
-                ->get();
+            // (1) Buscar por ID en el comentario
+            if (preg_match('/\d+/', $comentario, $matches)) {
+                $idCotizacion = $matches[0];
+                $cotizacion = Cotizacion::where('id_cotizacion', $idCotizacion)
+                    ->where('estado', '!=', 'Pagada')
+                    ->first();
 
-            foreach ($cotizaciones as $cotizacion) {
-                if (floatval($cotizacion->total) === floatval($transferencia->ingreso)) {
-                    // Coincidencia válida: conciliar
+                if ($cotizacion && floatval($cotizacion->total) === $monto) {
                     $cotizacion->estado = 'Pagada';
                     $cotizacion->id_transferencia = $transferencia->id;
                     $cotizacion->save();
@@ -126,11 +122,47 @@ class TransferenciaController extends Controller
                     $transferencia->estado = 'Conciliada';
                     $transferencia->save();
 
-                    break; // Solo una cotización por transferencia
+                    $conciliada = true;
+                    continue; // Pasar a la siguiente transferencia
+                }
+            }
+
+            // (2 y 3) Buscar cliente por RUT o nombre
+            $cliente = null;
+
+            if (!$conciliada && !empty($rut)) {
+                $cliente = Cliente::whereRaw('LOWER(rut) = ?', [$rut])->first();
+            }
+
+            if (!$cliente && !empty($nombre)) {
+                $cliente = Cliente::whereRaw('LOWER(nombre_fantasia) = ?', [$nombre])
+                    ->orWhereRaw('LOWER(razon_social) = ?', [$nombre])
+                    ->first();
+            }
+
+            if (!$cliente) {
+                continue; // No se encontró cliente por ningún criterio
+            }
+
+            // Buscar cotizaciones no pagadas del cliente
+            $cotizaciones = Cotizacion::where('id_cliente', $cliente->id)
+                ->where('estado', '!=', 'Pagada')
+                ->get();
+
+            foreach ($cotizaciones as $cotizacion) {
+                if (floatval($cotizacion->total) === $monto) {
+                    $cotizacion->estado = 'Pagada';
+                    $cotizacion->id_transferencia = $transferencia->id;
+                    $cotizacion->save();
+
+                    $transferencia->estado = 'Conciliada';
+                    $transferencia->save();
+
+                    break;
                 }
             }
         }
 
-        return back()->with('success', 'Transferencias conciliadas por RUT correctamente.');
+        return back()->with('success', 'Transferencias conciliadas correctamente.');
     }
 }
