@@ -26,11 +26,7 @@
         </form>
     </div>
 
-    <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#modalAgregarTransferencia">
-        Agregar transferencia
-    </button>
-
-    <a href="{{ route('transferencias.conciliar') }}" class="btn btn-success">
+    <a href="{{ route('transferencias.conciliar') }}" class="btn btn-success mb-3">
         Conciliar Transferencias
     </a>
 
