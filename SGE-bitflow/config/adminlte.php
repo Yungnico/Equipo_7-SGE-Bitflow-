@@ -368,15 +368,15 @@ return [
             'can' => 'user.create',
         ],
         [
-            'text' => 'Clientes',
-            'url' => 'clientes',
-            'icon' => 'fas fa-solid fa-user-plus',
-        ],
-        [
             'text' => 'Usuarios',
             'url' => 'viewusers',
             'icon' => 'fas fa-users fa-fw',
             'can' => 'admin.viewusers.index',
+        ],
+        [
+            'text' => 'Clientes',
+            'url' => 'clientes',
+            'icon' => 'fas fa-solid fa-user-plus',
         ],
         [
             'text' => 'Servicios',

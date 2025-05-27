@@ -9,7 +9,7 @@
         </p>
     </header>
 
-    <form method="post" action="{{ route('password.update') }}" class="mt-6 space-y-6">
+    <form method="post" action="{{ route('password.update') }}" class="mt-6 space-y-6" id="actualizar_contraseña">
         @csrf
         @method('put')
 
@@ -41,8 +41,30 @@
                     x-transition
                     x-init="setTimeout(() => show = false, 2000)"
                     class="text-sm text-gray-600"
-                >{{ __('¡Cambio exitoso!') }}</p>
+                ></p> <!-- Mensaje de éxito {{ __('¡Cambio exitoso!') }}-->
             @endif
         </div>
     </form>
 </section>
+
+@section('js')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+document.getElementById('actualizar_contraseña').addEventListener('submit', function(e) {
+    e.preventDefault(); // Evita el envío inmediato
+    
+
+
+    Swal.fire({
+        title: "Guardado!",
+        text: "Se ha actualizado su contraseña correctamente.",
+        icon: "success",
+        confirmButtonColor: "#3085d6"
+    }).then(() => {
+        e.target.submit(); // Envía el formulario después de cerrar el SweetAlert de éxito
+    });
+        
+    
+});
+</script>
+@endsection
