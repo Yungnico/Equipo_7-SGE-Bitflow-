@@ -36,6 +36,11 @@
                                 @can('admin.viewusers.edit')     
                                     <a class="btn btn-primary" href="{{route('viewusers.edit', $user)}}"><i class="fas fa-edit"></i></a>
                                 @endcan
+                                <form id="eliminar_usuario_{{ $user->id }}" action="{{ route('viewusers.destroy', $user) }}" method="POST" class="d-inline eliminar-usuario-form">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger btn-eliminar-usuario"><i class="fas fa-trash"></i></button>
+                                </form>
                             </td>
                         </tr>
                     @endforeach
@@ -63,4 +68,27 @@
             });
         });
     </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        $('.eliminar-usuario-form').on('submit', function(e){
+            e.preventDefault();
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: "¡Esta acción eliminará al usuario!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    this.submit();
+                }
+            });
+        });
+    </script>
+
 @stop
+

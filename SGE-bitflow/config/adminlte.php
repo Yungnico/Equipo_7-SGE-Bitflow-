@@ -316,11 +316,6 @@ return [
             'text' => 'Buscar',
         ],
         [
-            'text' => 'blog',
-            'url' => 'admin/blog',
-            'can' => 'manage-blog',
-        ],
-        [
             'text' => 'Cuenta',
             'icon' => 'fas fa-user-cog ',   //fa-fw fa-user para el icono del usuario fontawesone 5 usa admin lte
             'submenu' =>
@@ -377,6 +372,7 @@ return [
             'text' => 'Clientes',
             'url' => 'clientes',
             'icon' => 'fas fa-solid fa-user-plus',
+            'can' => 'clientes.index',
         ],
         [
             'text' => 'Servicios',

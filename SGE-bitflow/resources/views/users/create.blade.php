@@ -7,10 +7,11 @@
 @endsection
 
 @section('content')
+    <!--
     @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
-
+    -->
     <div class="py-5">
         <div class="card">
             <h2 class="p-3">Crear Usuario</h2>
@@ -18,7 +19,7 @@
             <div class="card-body">
     
     
-                <form action="{{ route('users.store') }}" method="POST">
+                <form action="{{ route('users.store') }}" method="POST" id="registrar_usuario">
                     @csrf
     
                     <div class="row mb-3">
@@ -59,3 +60,17 @@
     
 
 @endsection
+
+@section('js')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+@if(session('success'))
+<script>
+Swal.fire({
+    title: "Guardado!",
+    text: "{{ session('success') }}",
+    icon: "success",
+    confirmButtonColor: "#3085d6"
+});
+</script>
+@endif
+@endsection 

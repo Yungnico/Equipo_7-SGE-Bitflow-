@@ -77,15 +77,17 @@ Route::middleware('auth')->group(function () {
     Route::delete('/categorias/{categoria}', [CategoriaController::class, 'destroy'])->name('categorias.destroy');
 
     Route::resource('monedas', MonedaController::class)->only(['index', 'store', 'update', 'destroy']);
-    Route::resource('viewusers', CrudUserController::class)->middleware('can:admin.viewusers.index')->names('viewusers');
-    Route::get('/viewusers', [CrudUserController::class, 'index'])->middleware('can:admin.viewusers.index')->name('viewusers.index');
+
+
+    Route::resource('viewusers', CrudUserController::class)->middleware('can:admin.viewusers.index')->names('viewusers');//tiene permisos
+    Route::get('/viewusers', [CrudUserController::class, 'index'])->middleware('can:admin.viewusers.index')->name('viewusers.index');//tiene permisos
 
     //Cambio de contraseñas
     Route::get('/cambiar-password', function () {
         return view('password.change');
     })->name('password.change');
-
     Route::put('/password', [ProfileController::class, 'updatePassword'])->name('password.update');
+    
     // Rutas de Clientes
     Route::resource('clientes', ClienteController::class);
     Route::get('/clientes/{id}/info', [ClienteController::class, 'getCliente'])->name('clientes.info');
