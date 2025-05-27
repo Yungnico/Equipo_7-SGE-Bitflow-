@@ -14,39 +14,7 @@
     <div class="card">
         <div class="card-body">
             <table id="tabla-servicios" class="table table-striped table-bordered align-middle">
-                <thead class="table-secondary">
-                    <tr>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th>
-                            <select class="form-select">
-                                <option value="">Moneda</option>
-                                @foreach($monedas as $moneda)
-                                <option value="{{ $moneda->nombre }}">{{ $moneda->nombre }}</option>
-                                @endforeach
-                            </select>
-                        </th>
-                        <th>
-                            <select class="form-select">
-                                <option value="">Categoría</option>
-                                @foreach($categorias as $categoria)
-                                <option value="{{ $categoria->nombre }}">{{ $categoria->nombre }}</option>
-                                @endforeach
-                            </select>
-                        </th>
-                        <th>
-                            <div class="d-flex justify-content-center gap-2">
-                                <button id="reset-filtros" class="btn btn-danger p-2">
-                                    <i class="fas fa-redo"></i>
-                                </button>
-                                <button type="button" class="btn btn-success p-2" data-bs-toggle="modal" data-bs-target="#modalCrearServicio">
-                                    <i class="fas fa-plus"></i>
-                                </button>
-                            </div>
-                        </th>
-                    </tr>
-                </thead>
+                {{-- Fila de encabezados --}}
                 <thead class="table-dark">
                     <tr>
                         <th>Nombre</th>
@@ -57,6 +25,43 @@
                         <th>Acciones</th>
                     </tr>
                 </thead>
+
+                {{-- Fila de filtros --}}
+                <thead class="table-dark filtros">
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th>
+                            <select class="form-select filtro-select" data-columna="3">
+                                <option value="">Moneda</option>
+                                @foreach($monedas as $moneda)
+                                <option value="{{ $moneda->nombre }}">{{ $moneda->nombre }}</option>
+                                @endforeach
+                            </select>
+                        </th>
+                        <th>
+                            <select class="form-select filtro-select" data-columna="4">
+                                <option value="">Categoría</option>
+                                @foreach($categorias as $categoria)
+                                <option value="{{ $categoria->nombre }}">{{ $categoria->nombre }}</option>
+                                @endforeach
+                            </select>
+                        </th>
+                        <th class="text-center">
+                            <div class="d-flex justify-content-center gap-2">
+                                <button id="reset-filtros" class="btn btn-danger p-2" title="Resetear filtros">
+                                    <i class="fas fa-redo"></i>
+                                </button>
+                                <button type="button" class="btn btn-success p-2" title="Crear servicio" data-bs-toggle="modal" data-bs-target="#modalCrearServicio">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        </th>
+                    </tr>
+                </thead>
+
+                {{-- Cuerpo de la tabla --}}
                 <tbody>
                     @forelse($servicios as $servicio)
                     <tr>
@@ -88,14 +93,8 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="1">-</td>
-                        <td colspan="1">-</td>
-                        <td colspan="1">-</td>
-                        <td colspan="1">-</td>
-                        <td colspan="1">-</td>
-                        <td class="text-center text-muted">No hay servicios</td>
+                        <td colspan="6" class="text-center text-muted">No hay servicios</td>
                     </tr>
-
                     @endforelse
                 </tbody>
             </table>

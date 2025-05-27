@@ -14,7 +14,7 @@ use App\Models\Cotizacion;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ClienteExportController;
-
+use App\Http\Controllers\TransferenciaController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -28,11 +28,11 @@ use App\Http\Controllers\ClienteExportController;
 
 
 Route::middleware('auth')->group(function () {
-    Route::resource('cotizaciones', CotizacionController::class)->except(['edit','show']);
+    Route::resource('cotizaciones', CotizacionController::class)->except(['edit', 'show']);
     Route::get('/cotizaciones/{id}/info', [CotizacionController::class, 'getCotizacion'])->name('cotizaciones.info');
     Route::get('/cotizaciones/{id}/Email', [CotizacionController::class, 'prepararEmail'])->name('cotizaciones.prepararEmail');
     Route::get('/cotizaciones/create', [CotizacionController::class, 'create'])->name('cotizaciones.create');
-    
+
     Route::get('/cotizaciones/borrador', [CotizacionController::class, 'showBorrador'])->name('cotizaciones.borrador');
 });
 //RUTAS DE PARIDAD
@@ -43,18 +43,18 @@ Route::resource('paridades', App\Http\Controllers\ParidadController::class);
 
 //rutas de clientes
 Route::middleware('auth')->group(function () {
-    
+
     Route::get('clientes/exportar', [ClienteController::class, 'exportar'])->name('clientes.exportar');
-    
+
     Route::get('/contactos/{contacto}/edit', [ContactoClienteController::class, 'edit'])->name('contactos.edit');
     Route::put('/contactos/{contacto}', [ContactoClienteController::class, 'update'])->name('contactos.update');
-    
+
     Route::resource('clientes.contactos', ContactoClienteController::class)->except(['show']);
-    
-    
+
+
     Route::get('/clientes/buscar', [ClienteController::class, 'buscar'])->name('clientes.buscar');
     Route::get('/clientes/resultados', [ClienteController::class, 'buscar']);
-    
+
     // Ruta para VER el PDF en el navegador
     Route::post('/cotizaciones/{id}/pdf', [CotizacionController::class, 'generarPDF'])->name('cotizaciones.generarPDFobservaciones');
     Route::get('/cotizaciones/{id}/pdf', [CotizacionController::class, 'generarPDF'])->name('cotizaciones.generarPDF');
@@ -86,6 +86,13 @@ Route::middleware('auth')->group(function () {
     Route::resource('viewusers', CrudUserController::class)->names('viewusers');
     Route::get('/viewusers', [CrudUserController::class, 'index'])->name('viewusers.index');
 
+    #cuenta corrienete
+    Route::get('/transferencias', [TransferenciaController::class, 'index'])->name('transferencias.index');
+    Route::post('/transferencias/importar', [TransferenciaController::class, 'importarExcel'])->name('transferencias.importar');
+    Route::post('/transferencias', [TransferenciaController::class, 'store'])->name('transferencias.store');
+
+
+
     //Cambio de contraseñas
     Route::get('/cambiar-password', function () {
         return view('password.change');
@@ -115,7 +122,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->middleware('verified')->name('dashboard');
-
 });
 
 // Página de bienvenida

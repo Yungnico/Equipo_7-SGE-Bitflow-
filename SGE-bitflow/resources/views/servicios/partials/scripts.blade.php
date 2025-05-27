@@ -1,4 +1,3 @@
-
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         const modalEditar = document.getElementById('modalEditarServicio');
@@ -114,6 +113,8 @@
 <script src="https://cdn.datatables.net/2.3.0/js/dataTables.bootstrap5.js"></script>
 <script src="https://cdn.datatables.net/responsive/3.0.4/js/dataTables.responsive.js"></script>
 <script src="https://cdn.datatables.net/responsive/3.0.4/js/responsive.bootstrap5.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
 <script>
     let tablaCategoriasInicializada = false;
@@ -189,5 +190,14 @@
             var table = $('#tabla-servicios').DataTable();
             table.columns().search('').draw();
         });
+    });
+</script>
+
+<script>
+    $('.filtro-select').select2({
+        theme: 'bootstrap4',
+        placeholder: 'Seleccione una opción',
+        allowClear: true,
+        width: '100%'
     });
 </script>
