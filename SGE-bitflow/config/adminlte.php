@@ -362,6 +362,16 @@ return [
             ],
         ],
         [
+            'text' => 'Facturas',
+            'url' => 'facturas',
+            'icon' => 'fas fa-fw fa-file-invoice',
+        ],
+        [
+            'text' => 'Reportes',
+            'url' => 'reportes',
+            'icon' => 'fas fa-fw fa-chart-bar',            
+        ],
+        [
             'text' => 'Registro de usuarios',
             'url' => 'users/create',
             'icon' => 'fas fa-solid fa-user-plus',
