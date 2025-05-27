@@ -1,41 +1,43 @@
 <?php
-
 namespace App\Http\Controllers;
-
 use App\Models\Paridad;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Http;
+use App\Http\Controllers\Controller;
 
 class ParidadController extends Controller
 {
     public function index()
     {
-        $paridades = Paridad::orderBy('fecha', 'desc')->get();
+        $paridades = Paridad::all();
 
-        // Alerta simple si alguna paridad es demasiado distinta al promedio
-        $promedio = Paridad::avg('valor');
         $alerta = null;
-        foreach ($paridades as $p) {
-            if ($p->valor > $promedio * 1.5 || $p->valor < $promedio * 0.5) {
-                $alerta = "Valor anómalo detectado en fecha: {$p->fecha} con moneda: {$p->moneda}";
-                break;
-            }
+        $fechaActual = now()->toDateString();
+        $existeHoy = $paridades->where('fecha', $fechaActual)->count();
+
+        if ($existeHoy === 0) {
+            $alerta = "No se ha ingresado la paridad del día de hoy ($fechaActual).";
         }
 
         return view('paridades.index', compact('paridades', 'alerta'));
     }
 
+    public function create()
+    {
+        return view('paridades.create');
+    }
+
     public function store(Request $request)
     {
         $request->validate([
-            'moneda' => 'required',
+            'moneda' => 'required|max:10',
             'valor' => 'required|numeric',
-            'fecha' => 'required|date',
+            'fecha' => 'required|date'
         ]);
 
-        Paridad::create($request->only(['moneda', 'valor', 'fecha']));
+        Paridad::create($request->all());
 
-        return redirect()->route('paridades.index')->with('success', 'Paridad registrada');
+        return redirect()->route('paridades.index')->with('success', 'Paridad creada correctamente.');
     }
 
     public function edit($id)
@@ -47,15 +49,15 @@ class ParidadController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'moneda' => 'required',
+            'moneda' => 'required|max:10',
             'valor' => 'required|numeric',
-            'fecha' => 'required|date',
+            'fecha' => 'required|date'
         ]);
 
         $paridad = Paridad::findOrFail($id);
-        $paridad->update($request->only(['moneda', 'valor', 'fecha']));
+        $paridad->update($request->all());
 
-        return redirect()->route('paridades.index')->with('success', 'Paridad actualizada');
+        return redirect()->route('paridades.index')->with('success', 'Paridad actualizada correctamente.');
     }
 
     public function destroy($id)
@@ -63,48 +65,6 @@ class ParidadController extends Controller
         $paridad = Paridad::findOrFail($id);
         $paridad->delete();
 
-        return redirect()->route('paridades.index')->with('success', 'Paridad eliminada');
-    }
-
-    public function convertir(Request $request)
-    {
-        $request->validate([
-            'monto' => 'required|numeric',
-            'moneda' => 'required',
-            'fecha' => 'required|date',
-        ]);
-
-        $paridad = Paridad::where('moneda', $request->moneda)
-                           ->where('fecha', $request->fecha)
-                           ->first();
-
-        if (!$paridad) {
-            return redirect()->route('paridades.index')->with('resultado', 'No se encontró tasa para esa fecha');
-        }
-
-        $resultado = $request->monto * $paridad->valor;
-
-        return redirect()->route('paridades.index')->with('resultado', $resultado);
-    }
-
-    public function ajustar(Request $request)
-    {
-        $request->validate([
-            'moneda' => 'required',
-            'fecha' => 'required|date',
-            'valor' => 'required|numeric',
-        ]);
-
-        $paridad = Paridad::where('moneda', $request->moneda)
-                           ->where('fecha', $request->fecha)
-                           ->first();
-
-        if ($paridad) {
-            $paridad->update(['valor' => $request->valor]);
-        } else {
-            Paridad::create($request->only(['moneda', 'valor', 'fecha']));
-        }
-
-        return redirect()->route('paridades.index')->with('success', 'Paridad ajustada');
+        return redirect()->route('paridades.index')->with('success', 'Paridad eliminada correctamente.');
     }
 }

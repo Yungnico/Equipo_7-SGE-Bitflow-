@@ -36,10 +36,15 @@ Route::middleware('auth')->group(function () {
     Route::get('/cotizaciones/borrador', [CotizacionController::class, 'showBorrador'])->name('cotizaciones.borrador');
 });
 //RUTAS DE PARIDAD
-Route::resource('paridades', ParidadController::class);
-Route::post('paridades/convertir', [ParidadController::class, 'convertir'])->name('paridades.convertir');
-Route::post('paridades/ajustar', [ParidadController::class, 'ajustar'])->name('paridades.ajustar');
-Route::resource('paridades', App\Http\Controllers\ParidadController::class);
+use App\Http\Controllers\ParidadController;
+
+Route::get('/paridades/importar', [ParidadController::class, 'importar'])->name('paridades.importar');
+Route::get('/paridades', [ParidadController::class, 'index'])->name('paridades.index');
+Route::post('/paridades', [ParidadController::class, 'store'])->name('paridades.store');
+Route::get('/paridades/create', [ParidadController::class, 'create'])->name('paridades.create');
+Route::get('/paridades/{id}/edit', [ParidadController::class, 'edit'])->name('paridades.edit');
+Route::put('/paridades/{id}', [ParidadController::class, 'update'])->name('paridades.update');
+Route::delete('/paridades/{id}', [ParidadController::class, 'destroy'])->name('paridades.destroy');
 
 //rutas de clientes
 Route::middleware('auth')->group(function () {
