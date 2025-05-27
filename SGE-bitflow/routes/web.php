@@ -35,12 +35,11 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/cotizaciones/borrador', [CotizacionController::class, 'showBorrador'])->name('cotizaciones.borrador');
 });
-
-//rutas paridades
-use App\Http\Controllers\ParidadController;
-
-Route::get('/paridades', [ParidadController::class, 'index'])->name('paridades.index');
-Route::post('/paridades', [ParidadController::class, 'store'])->name('paridades.store');
+//RUTAS DE PARIDAD
+Route::resource('paridades', ParidadController::class);
+Route::post('paridades/convertir', [ParidadController::class, 'convertir'])->name('paridades.convertir');
+Route::post('paridades/ajustar', [ParidadController::class, 'ajustar'])->name('paridades.ajustar');
+Route::resource('paridades', App\Http\Controllers\ParidadController::class);
 
 //rutas de clientes
 Route::middleware('auth')->group(function () {
