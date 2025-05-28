@@ -85,7 +85,21 @@
                         <tr>
                             <td>{{ $t->nombre }}</td>
                             <td>{{ $t->rut }}</td>
-                            <td>{{$t->estado}}</td>
+                            <td>
+                                @if($t->estado === 'Pendiente')
+                                <button
+                                    class="btn btn-sm btn-warning btn-conciliar"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#modalConciliar"
+                                    data-id="{{ $t->id }}">
+                                    Pendiente
+                                </button>
+                                @elseif($t->estado === 'Conciliada')
+                                <span class="badge bg-success">Conciliada</span>
+                                @else
+                                {{ $t->estado }}
+                                @endif
+                            </td>
                             <td>{{ $t->fecha_transaccion }}</td>
                             <td>{{ $t->hora_transaccion }}</td>
                             <td>{{ $t->fecha_contable }}</td>
@@ -193,6 +207,39 @@
     </div>
 </div>
 
+<!-- Modal Conciliar Transferencia -->
+<div class="modal fade" id="modalConciliar" tabindex="-1" aria-labelledby="modalConciliarLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <form id="formConciliar" method="POST" action="{{ route('transferencias.conciliar.manual') }}">
+            @csrf
+            <input type="hidden" name="transferencias_bancarias_id" id="transferencia_id">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Conciliar Transferencia Manualmente</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="cotizacion_id" class="form-label">Seleccionar Cotización</label>
+                        <select name="cotizaciones_id_cotizacion" id="cotizacion_id" class="form-select select2" required>
+                            <option value="">Seleccione una cotización</option>
+                            @foreach($cotizacionesDisponibles as $cotizacion)
+                            <option value="{{ $cotizacion->id_cotizacion }}">
+                                #{{ $cotizacion->id_cotizacion}} - {{ $cotizacion->cliente->razon_social }}
+                            </option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Conciliar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
 @endsection
 
 @section('js')
@@ -206,6 +253,8 @@
 
 <script>
     $.fn.dataTable.ext.errMode = 'throw';
+
+
 
     let tabla; // definimos fuera para que sea accesible
 
@@ -237,6 +286,16 @@
     $('#reset-filtros').on('click', function() {
         $('.filtro-select').val('').trigger('change');
         tabla.columns().search('').draw();
+    });
+
+    $(document).on('click', '.btn-conciliar', function() {
+        const transferenciaId = $(this).data('id');
+        const cotizacionId = $('#cotizacion_id_cotizacion').val();
+        console.log('Transferencia ID:', transferenciaId);
+        console.log('ID cotización:', cotizacionId);
+
+        $('#transferencia_id').val(transferenciaId);
+        $('#cotizacion_id').val('').trigger('change');
     });
 </script>
 @endsection

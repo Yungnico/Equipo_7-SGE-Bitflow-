@@ -22,7 +22,7 @@ return new class extends Migration
             $table->date('fecha_cotizacion');
             $table->decimal('descuento', 10, 2)->nullable();
 
-            $table->unsignedBigInteger('id_transferencia')->nullable(); // NUEVO
+            $table->unsignedBigInteger('id_transferencia')->nullable();
             $table->foreign('id_transferencia')->references('id')->on('transferencias_bancarias')->onDelete('set null');
 
             $table->timestamps();

@@ -14,7 +14,12 @@ class TransferenciaController extends Controller
     public function index()
     {
         $transferencias = TransferenciaBancaria::all();
-        return view('transferencias.index', compact('transferencias'));
+
+        $cotizacionesDisponibles = Cotizacion::whereNull('id_transferencia')
+            ->whereIn('estado', ['Borrador', 'Aceptada'])
+            ->get();
+
+        return view('transferencias.index', compact('transferencias', 'cotizacionesDisponibles'));
     }
 
     public function store(Request $request)
@@ -193,5 +198,30 @@ class TransferenciaController extends Controller
         }
 
         return back()->with('success', 'Transferencias conciliadas correctamente.');
+    }
+
+    public function conciliarManual(Request $request)
+    {
+        // Validación de los campos del formulario
+        $request->validate([
+            'transferencias_bancarias_id' => 'required|exists:transferencias_bancarias,id',
+            'cotizaciones_id_cotizacion' => 'required|exists:cotizaciones,id_cotizacion',
+        ]);
+
+        // Buscar cotización por su clave primaria personalizada
+        $cotizacion = Cotizacion::where('id_cotizacion', $request->cotizaciones_id_cotizacion)->firstOrFail();
+
+        // Asignar la transferencia a la cotización
+        $cotizacion->id_transferencia = $request->transferencias_bancarias_id;
+        $cotizacion->estado = 'Pagada';
+        $cotizacion->save();
+
+        // Buscar la transferencia y marcarla como conciliada
+        $transferencia = TransferenciaBancaria::findOrFail($request->transferencias_bancarias_id);
+        $transferencia->estado = 'Conciliada';
+        $transferencia->save();
+
+        // Redireccionar con mensaje
+        return redirect()->back()->with('success', 'Cotización conciliada exitosamente.');
     }
 }

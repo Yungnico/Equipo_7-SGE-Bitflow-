@@ -85,9 +85,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/transferencias/importar', [TransferenciaController::class, 'importarExcel'])->name('transferencias.importar');
     Route::post('/transferencias', [TransferenciaController::class, 'store'])->name('transferencias.store');
     Route::get('/transferencias/conciliar', [TransferenciaController::class, 'conciliarTransferencias'])->name('transferencias.conciliar');
-
-
-
+    Route::post('/transferencias/conciliar-manual', [TransferenciaController::class, 'conciliarManual'])->name('transferencias.conciliar.manual');
 
     //Cambio de contraseñas
     Route::get('/cambiar-password', function () {
