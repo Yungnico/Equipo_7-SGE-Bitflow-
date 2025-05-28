@@ -4,55 +4,48 @@
 
 @section('content_header')
     <h1>Paridades</h1>
-@stop
+@endsection
 
 @section('content')
-    @if (session('success'))
-        <x-adminlte-alert theme="success">{{ session('success') }}</x-adminlte-alert>
-    @endif
-    @if (session('warning'))
-        <x-adminlte-alert theme="warning">{{ session('warning') }}</x-adminlte-alert>
-    @endif
-    @if (session('error'))
-        <x-adminlte-alert theme="danger">{{ session('error') }}</x-adminlte-alert>
+    @if($alerta)
+        <div class="alert alert-danger">
+            {{ $alerta }}
+        </div>
     @endif
 
-    <a href="{{ route('paridades.fetch') }}" class="btn btn-success mb-3">Actualizar</a>
-    
+    <a href="{{ route('paridades.create') }}" class="btn btn-primary mb-3">Agregar nueva paridad</a>
 
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>Moneda</th>
-                <th>Valor</th>
-                <th>Fecha</th>
-                <th>Acción</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($paridades as $grupo)
-                @php
-                    $p = $grupo->first(); // Tomamos el primer registro de cada grupo
-                @endphp
+    @if($paridades->isEmpty())
+        <p>No hay paridades registradas.</p>
+    @else
+        <table class="table table-bordered">
+            <thead>
                 <tr>
-                    <td>{{ $p->moneda }}</td>
-                    <td>${{ number_format($p->valor, 2, ',', '.') }}</td>
-                    <td>{{ \Carbon\Carbon::parse($p->fecha)->format('d/m/Y') }}</td>
-                    <td>
-                        <a href="{{ route('paridades.edit', $p) }}" class="btn btn-warning btn-sm"><i class="fas fa-edit" style="color: white"></i></a>
-                    </td>
+                    <th>ID</th>
+                    <th>Moneda</th>
+                    <th>Valor</th>
+                    <th>Fecha</th>
+                    <th>Acciones</th>
                 </tr>
-            @endforeach
-            @if ($paridades->isEmpty())
-                <tr>
-                    <td colspan="4" class="text-center">No hay paridades registradas.</td>
-                </tr>
-            @endif
-
-            
-        </tbody>
-    </table>
-@stop
-
-
-
+            </thead>
+            <tbody>
+                @foreach($paridades as $p)
+                    <tr>
+                        <td>{{ $p->id }}</td>
+                        <td>{{ $p->moneda }}</td>
+                        <td>{{ $p->valor }}</td>
+                        <td>{{ $p->fecha }}</td>
+                        <td>
+                            <a href="{{ route('paridades.edit', $p->id) }}" class="btn btn-sm btn-warning">Editar</a>
+                            <form action="{{ route('paridades.destroy', $p->id) }}" method="POST" style="display:inline-block;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Seguro que quieres eliminar esta paridad?')">Eliminar</button>
+                            </form>
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    @endif
+@endsection
