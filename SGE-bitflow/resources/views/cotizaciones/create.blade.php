@@ -411,14 +411,15 @@
                                 <button class="btn btn-sm btn-danger eliminar-btn" data-index="${index}"><i class="fas fa-trash"></i></button>
                                 </td>
                             </tr>`;
-                            //console.log('fila', i);
+                            console.log('fila', index);
 
                 tabla.insertAdjacentHTML('beforeend', fila);
                 document.querySelectorAll('.eliminar-btn').forEach(btn => {
                     btn.addEventListener('click', function () {
-                        const index = this.getAttribute('data-index');
-                        itemslibresGuardados.splice(index, 1);
-                        //console.log('productosGuardados', productosGuardados);
+                        const index_eliminar = this.getAttribute('data-index');
+                        console.log('index_eliminar', index_eliminar);
+                        console.log('eliminados', itemslibresGuardados.splice(0, 1));
+                        itemslibresGuardados.splice(index_eliminar, 1);
                         if (itemslibresGuardados.length == 0) {
                             document.getElementById('moneda_cotizacion').disabled = false;
                         }
@@ -499,7 +500,21 @@
                     /* Read more about isConfirmed, isDenied below */
                     if (result.isConfirmed) {
                         if(document.getElementById('moneda_cotizacion').disabled == true){
-                            Swal.fire("Saved!", "", "success");
+                            const Toast = Swal.mixin({
+                                        toast: true,
+                                        position: "top-end",
+                                        showConfirmButton: false,
+                                        timer: 3000,
+                                        timerProgressBar: true,
+                                        didOpen: (toast) => {
+                                            toast.onmouseenter = Swal.stopTimer;
+                                            toast.onmouseleave = Swal.resumeTimer;
+                                        }
+                                    });
+                            Toast.fire({
+                                icon: "success",
+                                title: "Conversión de moneda realizada correctamente"
+                            });
                             const precioConvertido = conversorMoneda(precio, moneda, moneda_cotizacion);
                             ///console.log('precio', precioConvertido);
                             productosGuardados.push({
@@ -521,7 +536,21 @@
                                 denyButtonText: "Cancelar",
                             }).then((result) => {
                                 if (result.isConfirmed) {
-                                    Swal.fire("Saved!", "", "success");
+                                    const Toast = Swal.mixin({
+                                        toast: true,
+                                        position: "top-end",
+                                        showConfirmButton: false,
+                                        timer: 3000,
+                                        timerProgressBar: true,
+                                        didOpen: (toast) => {
+                                            toast.onmouseenter = Swal.stopTimer;
+                                            toast.onmouseleave = Swal.resumeTimer;
+                                        }
+                                    });
+                                    Toast.fire({
+                                        icon: "success",
+                                        title: "Conversión de moneda realizada correctamente"
+                                    });
                                     document.getElementById('moneda_cotizacion').disabled = true;
                                     const precioConvertido = conversorMoneda(precio, moneda, moneda_cotizacion);
                                     ///console.log('precio', precioConvertido);
@@ -545,7 +574,21 @@
                 });
             }else{
                 if(document.getElementById('moneda_cotizacion').disabled == true){
-                    Swal.fire("Saved!", "", "success");
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: "top-end",
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.onmouseenter = Swal.stopTimer;
+                            toast.onmouseleave = Swal.resumeTimer;
+                        }
+                    });
+                    Toast.fire({
+                        icon: "success",
+                        title: "Serivicio/Item agregado correctamente"
+                    });
                     const precioConvertido = precio;
                     ///console.log('precio', precioConvertido);
                     productosGuardados.push({
@@ -567,7 +610,21 @@
                         denyButtonText: "Cancelar",
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            Swal.fire("Saved!", "", "success");
+                            const Toast = Swal.mixin({
+                                        toast: true,
+                                        position: "top-end",
+                                        showConfirmButton: false,
+                                        timer: 3000,
+                                        timerProgressBar: true,
+                                        didOpen: (toast) => {
+                                            toast.onmouseenter = Swal.stopTimer;
+                                            toast.onmouseleave = Swal.resumeTimer;
+                                        }
+                                    });
+                            Toast.fire({
+                                icon: "success",
+                                title: "Serivicio/Item agregado correctamente"
+                            });
                             document.getElementById('moneda_cotizacion').disabled = true;
                             const precioConvertido = precio;
                             ///console.log('precio', precioConvertido);
