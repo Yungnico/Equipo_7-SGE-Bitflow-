@@ -2,12 +2,18 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Paridad extends Model
 {
-    use HasFactory;
-
     protected $fillable = ['moneda', 'valor', 'fecha'];
+
+    protected $dates = ['fecha'];
+
+    public static function obtenerActual($moneda)
+    {
+        return self::where('moneda', $moneda)
+            ->orderBy('fecha', 'desc')
+            ->first();
+    }
 }

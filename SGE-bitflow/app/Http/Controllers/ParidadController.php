@@ -1,70 +1,100 @@
 <?php
+
 namespace App\Http\Controllers;
-use App\Models\Paridad;
+
 use Illuminate\Http\Request;
+use App\Models\Paridad;
 use Illuminate\Support\Facades\Http;
-use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Session;
 
 class ParidadController extends Controller
 {
+    private const MONEDAS_VALIDAS = ['USD', 'UF'];
+
     public function index()
     {
-        $paridades = Paridad::all();
+        $paridades = Paridad::whereIn('moneda', self::MONEDAS_VALIDAS)
+            ->orderBy('fecha', 'desc')
+            ->get()
+            ->groupBy(function ($item) {
+                return $item->moneda . '-' . \Carbon\Carbon::parse($item->fecha)->format('Y-m'); // Agrupar por mes
+            });
 
-        $alerta = null;
-        $fechaActual = now()->toDateString();
-        $existeHoy = $paridades->where('fecha', $fechaActual)->count();
+        return view('paridades.index', compact('paridades'));
+    }
 
-        if ($existeHoy === 0) {
-            $alerta = "No se ha ingresado la paridad del día de hoy ($fechaActual).";
+
+    public function fetchFromAPI()
+    {
+        $response = Http::get('https://mindicador.cl/api');
+        if ($response->successful()) {
+            $data = $response->json();
+            $fechaHoy = now()->toDateString();
+
+            foreach (['dolar' => 'USD', 'uf' => 'UF'] as $apiKey => $moneda){
+                $valor = $data[$apiKey]['valor'];
+
+                $paridad = Paridad::where('moneda', $moneda)
+                    ->whereDate('fecha', $fechaHoy)
+                    ->first();
+
+                if ($paridad) {
+                    if ($valor < $paridad->valor) {
+                        Session::flash('warning', "⚠️ La nueva paridad de {$moneda} es menor que la anterior.");
+                    }
+                    $paridad->update(['valor' => $valor]);
+                } else {
+                    Paridad::create([
+                        'moneda' => $moneda,
+                        'valor' => $valor,
+                        'fecha' => $fechaHoy
+                    ]);
+                }
+            }
+
+            return redirect()->back()->with('success', 'Paridades actualizadas correctamente.');
         }
 
-        return view('paridades.index', compact('paridades', 'alerta'));
+        return redirect()->back()->with('error', 'No se pudo conectar con la API.');
     }
 
-    public function create()
+    public function edit(Paridad $paridad)
     {
-        return view('paridades.create');
-    }
-
-    public function store(Request $request)
-    {
-        $request->validate([
-            'moneda' => 'required|max:10',
-            'valor' => 'required|numeric',
-            'fecha' => 'required|date'
-        ]);
-
-        Paridad::create($request->all());
-
-        return redirect()->route('paridades.index')->with('success', 'Paridad creada correctamente.');
-    }
-
-    public function edit($id)
-    {
-        $paridad = Paridad::findOrFail($id);
         return view('paridades.edit', compact('paridad'));
     }
 
-    public function update(Request $request, $id)
+    // Actualizar valor de paridad manualmente
+    public function update(Request $request, Paridad $paridad)
     {
         $request->validate([
-            'moneda' => 'required|max:10',
-            'valor' => 'required|numeric',
-            'fecha' => 'required|date'
+            'valor' => 'required|numeric|min:0',
         ]);
 
-        $paridad = Paridad::findOrFail($id);
-        $paridad->update($request->all());
+        $nuevoValor = $request->input('valor');
 
-        return redirect()->route('paridades.index')->with('success', 'Paridad actualizada correctamente.');
+        if ($nuevoValor < $paridad->valor) {
+            Session::flash('warning', "El nuevo valor es menor que el valor anterior.");
+        }
+
+        $paridad->valor = $nuevoValor;
+        $paridad->save();
+
+        Session::flash('success', 'Paridad actualizada correctamente.');
+
+        return redirect()->route('paridades.index');
     }
 
-    public function destroy($id)
+    public function checkRecordatorioAnual()
     {
-        $paridad = Paridad::findOrFail($id);
-        $paridad->delete();
+        $anio = now()->year;
+        $faltan = !Paridad::whereYear('fecha', $anio)
+            ->whereIn('moneda', self::MONEDAS_VALIDAS)
+            ->exists();
 
-        return redirect()->route('paridades.index')->with('success', 'Paridad eliminada correctamente.');
+        if ($faltan) {
+            Session::flash('warning', '🕒 Aún no se han ingresado paridades USD o UF para este año. Recuerda ajustarlas manualmente.');
+        }
+
+        return redirect()->route('paridades.index');
     }
 }

@@ -4,48 +4,78 @@
 
 @section('content_header')
     <h1>Paridades</h1>
-@endsection
+@stop
 
 @section('content')
-    @if($alerta)
-        <div class="alert alert-danger">
-            {{ $alerta }}
+    @if (session('success'))
+        <x-adminlte-alert theme="success">{{ session('success') }}</x-adminlte-alert>
+    @endif
+    @if (session('warning'))
+        <x-adminlte-alert theme="warning">{{ session('warning') }}</x-adminlte-alert>
+    @endif
+    @if (session('error'))
+        <x-adminlte-alert theme="danger">{{ session('error') }}</x-adminlte-alert>
+    @endif
+
+    <a href="{{ route('paridades.fetch') }}" class="btn btn-success mb-3">Actualizar</a>
+
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Listado de Paridades</h3>
         </div>
-    @endif
-
-    <a href="{{ route('paridades.create') }}" class="btn btn-primary mb-3">Agregar nueva paridad</a>
-
-    @if($paridades->isEmpty())
-        <p>No hay paridades registradas.</p>
-    @else
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Moneda</th>
-                    <th>Valor</th>
-                    <th>Fecha</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($paridades as $p)
+        <div class="card-body">
+            <table id="tabla-paridades" class="table table-bordered table-striped">
+                <thead>
                     <tr>
-                        <td>{{ $p->id }}</td>
-                        <td>{{ $p->moneda }}</td>
-                        <td>{{ $p->valor }}</td>
-                        <td>{{ $p->fecha }}</td>
-                        <td>
-                            <a href="{{ route('paridades.edit', $p->id) }}" class="btn btn-sm btn-warning">Editar</a>
-                            <form action="{{ route('paridades.destroy', $p->id) }}" method="POST" style="display:inline-block;">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Seguro que quieres eliminar esta paridad?')">Eliminar</button>
-                            </form>
-                        </td>
+                        <th>Moneda</th>
+                        <th>Valor</th>
+                        <th>Fecha</th>
+                        <th>Acción</th>
                     </tr>
-                @endforeach
-            </tbody>
-        </table>
-    @endif
-@endsection
+                </thead>
+                <tbody>
+                    @foreach ($paridades as $grupo)
+                        @php
+                            $p = $grupo->first(); // Tomamos el primer registro de cada grupo
+                        @endphp
+                        <tr>
+                            <td>{{ $p->moneda }}</td>
+                            <td>${{ number_format($p->valor, 2, ',', '.') }}</td>
+                            <td>{{ \Carbon\Carbon::parse($p->fecha)->format('d/m/Y') }}</td>
+                            <td>
+                                <a href="{{ route('paridades.edit', $p) }}" class="btn btn-warning btn-sm">
+                                    <i class="fas fa-edit" style="color: white"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    @endforeach
+                    @if ($paridades->isEmpty())
+                        <tr>
+                            <td colspan="4" class="text-center">No hay paridades registradas.</td>
+                        </tr>
+                    @endif
+                </tbody>
+            </table>
+        </div>
+    </div>
+@stop
+
+@section('js')
+    {{-- CDN de DataTables --}}
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap4.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#tabla-paridades').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/es-ES.json'
+                }
+            });
+        });
+    </script>
+@stop
+
+@section('css')
+    {{-- CDN de DataTables CSS --}}
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap4.min.css">
+@stop
