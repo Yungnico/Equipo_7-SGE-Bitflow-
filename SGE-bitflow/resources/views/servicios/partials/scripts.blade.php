@@ -178,16 +178,16 @@
                 e.stopPropagation();
             });
         });
-        $('#reset-filtros').on('click', function() {
-            $('#tabla-servicios thead tr:eq(1) input').val('');
 
+        $('#reset-filtros').on('click', function() {
             $('#tabla-servicios thead tr:eq(1) select').each(function() {
-                $(this).prop('selectedIndex', 0);
+                $(this).val('').trigger('change'); // Limpia y dispara evento
             });
 
             var table = $('#tabla-servicios').DataTable();
-            table.columns().search('').draw();
+            table.columns().search('').draw(); // Limpia todas las búsquedas y redibuja
         });
+
 
         $('#filtro-moneda').select2({
             theme: 'bootstrap4',
