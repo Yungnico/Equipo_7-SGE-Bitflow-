@@ -276,7 +276,10 @@
             scrollX: true,
             paging: true,
             autoWidth: false,
-            orderCellsTop: true
+            orderCellsTop: true,
+            language: {
+                url: '{{ asset("datatables/es-CL.json")}}'
+            }
         });
 
         $('.filtro-select').select2({
@@ -312,13 +315,13 @@
             });
         });
 
-        // Inicializar DataTable
         $('#tabla-cotizaciones').DataTable({
             responsive: true,
             language: {
-                url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/es-ES.json'
+                url: '{{ asset("datatables/es-CL.json")}}'
             }
         });
+
     });
 </script>
 @endsection
