@@ -38,13 +38,15 @@ Route::middleware('auth')->group(function () {
 //RUTAS DE PARIDAD
 use App\Http\Controllers\ParidadController;
 
-Route::get('/paridades/importar', [ParidadController::class, 'importar'])->name('paridades.importar');
+
+//Route::resource('paridades', ParidadController::class)->except(['create', 'store', 'destroy', 'show']);
 Route::get('/paridades', [ParidadController::class, 'index'])->name('paridades.index');
-Route::post('/paridades', [ParidadController::class, 'store'])->name('paridades.store');
-Route::get('/paridades/create', [ParidadController::class, 'create'])->name('paridades.create');
-Route::get('/paridades/{id}/edit', [ParidadController::class, 'edit'])->name('paridades.edit');
-Route::put('/paridades/{id}', [ParidadController::class, 'update'])->name('paridades.update');
-Route::delete('/paridades/{id}', [ParidadController::class, 'destroy'])->name('paridades.destroy');
+Route::get('/paridades/fetch', [ParidadController::class, 'fetchFromAPI'])->name('paridades.fetch');
+Route::get('/paridades/{paridad}/edit', [ParidadController::class, 'edit'])->name('paridades.edit');
+Route::put('/paridades/{paridad}', [ParidadController::class, 'update'])->name('paridades.update');
+Route::get('/paridades/recordatorio', [ParidadController::class, 'checkRecordatorioAnual'])->name('paridades.recordatorio');
+Route::get('/paridades/{paridad}/edit', [ParidadController::class, 'edit'])->name('paridades.edit');
+Route::put('/paridades/{paridad}', [ParidadController::class, 'update'])->name('paridades.update');
 
 //rutas de clientes
 Route::middleware('auth')->group(function () {
