@@ -106,13 +106,16 @@
 
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+
+<!-- DataTables -->
 <script src="https://cdn.datatables.net/2.3.0/js/dataTables.js"></script>
 <script src="https://cdn.datatables.net/2.3.0/js/dataTables.bootstrap5.js"></script>
 <script src="https://cdn.datatables.net/responsive/3.0.4/js/dataTables.responsive.js"></script>
 <script src="https://cdn.datatables.net/responsive/3.0.4/js/responsive.bootstrap5.js"></script>
+
+<!-- Select2 -->
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
 
 
 <script>
@@ -185,14 +188,19 @@
             var table = $('#tabla-servicios').DataTable();
             table.columns().search('').draw();
         });
-    });
-</script>
 
-<script>
-    $('.filtro-select').select2({
-        theme: 'bootstrap4',
-        placeholder: 'Seleccione una opción',
-        allowClear: true,
-        width: '100%'
+        $('#filtro-moneda').select2({
+            theme: 'bootstrap4',
+            placeholder: 'Seleccione una opción',
+            allowClear: true,
+            width: '100%'
+        });
+
+        $('#filtro-categoria').select2({
+            theme: 'bootstrap4',
+            placeholder: 'Seleccione una opción',
+            allowClear: true,
+            width: '100%'
+        });
     });
 </script>

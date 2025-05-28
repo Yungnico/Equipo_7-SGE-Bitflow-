@@ -29,7 +29,7 @@
                         <th></th>
                         <th></th>
                         <th>
-                            <select class="form-select">
+                            <select id="filtro-moneda" class="form-select">
                                 <option value="">Moneda</option>
                                 @foreach($monedas as $moneda)
                                 <option value="{{ $moneda->nombre }}">{{ $moneda->nombre }}</option>
@@ -37,7 +37,7 @@
                             </select>
                         </th>
                         <th>
-                            <select class="form-select">
+                            <select id="filtro-categoria" class="form-select">
                                 <option value="">Categoría</option>
                                 @foreach($categorias as $categoria)
                                 <option value="{{ $categoria->nombre }}">{{ $categoria->nombre }}</option>

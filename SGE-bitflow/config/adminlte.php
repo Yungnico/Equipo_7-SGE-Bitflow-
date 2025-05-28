@@ -384,7 +384,7 @@ return [
         [
             'text' => 'Cuenta corriente',
             'url' => 'transferencias',
-            'icon' => 'fas fa-laptop-medical',
+            'icon' => 'fas fa-file-invoice-dollar',
         ],
         /*,
         ['header' => 'labels'],
