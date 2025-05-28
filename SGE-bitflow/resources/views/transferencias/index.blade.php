@@ -209,35 +209,47 @@
 
 <!-- Modal Conciliar Transferencia -->
 <div class="modal fade" id="modalConciliar" tabindex="-1" aria-labelledby="modalConciliarLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <form id="formConciliar" method="POST" action="{{ route('transferencias.conciliar.manual') }}">
-            @csrf
-            <input type="hidden" name="transferencias_bancarias_id" id="transferencia_id">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Conciliar Transferencia Manualmente</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="cotizacion_id" class="form-label">Seleccionar Cotización</label>
-                        <select name="cotizaciones_id_cotizacion" id="cotizacion_id" class="form-select select2" required>
-                            <option value="">Seleccione una cotización</option>
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Seleccionar Cotización para Conciliar</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table id="tabla-cotizaciones" class="table table-striped table-bordered nowrap w-100">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Fecha Cotización</th>
+                                <th>Total</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
                             @foreach($cotizacionesDisponibles as $cotizacion)
-                            <option value="{{ $cotizacion->id_cotizacion }}">
-                                #{{ $cotizacion->id_cotizacion}} - {{ $cotizacion->cliente->razon_social }}
-                            </option>
+                            <tr>
+                                <td>{{ $cotizacion->cliente->razon_social }}</td>
+                                <td>{{ $cotizacion->fecha_cotizacion }}</td>
+                                <td>${{ number_format($cotizacion->total, 0, ',', '.') }}</td>
+                                <td>
+                                    <form method="POST" action="{{ route('transferencias.conciliar.manual') }}" class="d-inline">
+                                        @csrf
+                                        <input type="hidden" name="transferencias_bancarias_id" class="input-transferencia-id">
+                                        <input type="hidden" name="cotizaciones_id_cotizacion" value="{{ $cotizacion->id_cotizacion }}">
+                                        <button type="submit" class="btn btn-sm btn-primary">Conciliar</button>
+                                    </form>
+                                </td>
+                            </tr>
                             @endforeach
-                        </select>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Conciliar</button>
+                        </tbody>
+                    </table>
                 </div>
             </div>
-        </form>
+        </div>
     </div>
 </div>
+
 
 
 @endsection
@@ -256,7 +268,7 @@
 
 
 
-    let tabla; // definimos fuera para que sea accesible
+    let tabla;
 
     $(document).ready(function() {
         tabla = $('#tabla-transferencias').DataTable({
@@ -274,7 +286,6 @@
             width: '100%'
         });
 
-        // Aplicar el filtro al cambiar el select
         $('.filtro-select').on('change', function() {
             const columna = $(this).data('columna');
             const valor = $(this).val();
@@ -282,20 +293,32 @@
         });
     });
 
-    // Resetear filtros
     $('#reset-filtros').on('click', function() {
         $('.filtro-select').val('').trigger('change');
         tabla.columns().search('').draw();
     });
 
-    $(document).on('click', '.btn-conciliar', function() {
-        const transferenciaId = $(this).data('id');
-        const cotizacionId = $('#cotizacion_id_cotizacion').val();
-        console.log('Transferencia ID:', transferenciaId);
-        console.log('ID cotización:', cotizacionId);
+    document.addEventListener('DOMContentLoaded', function() {
+        let modal = document.getElementById('modalConciliar');
 
-        $('#transferencia_id').val(transferenciaId);
-        $('#cotizacion_id').val('').trigger('change');
+        modal.addEventListener('show.bs.modal', function(event) {
+            let button = event.relatedTarget;
+            let transferenciaId = button.getAttribute('data-id');
+
+            // Asignar el id de transferencia a todos los formularios dentro del modal
+            let inputs = modal.querySelectorAll('.input-transferencia-id');
+            inputs.forEach(input => {
+                input.value = transferenciaId;
+            });
+        });
+
+        // Inicializar DataTable
+        $('#tabla-cotizaciones').DataTable({
+            responsive: true,
+            language: {
+                url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/es-ES.json'
+            }
+        });
     });
 </script>
 @endsection
