@@ -20,12 +20,15 @@ class RoleSeeder extends Seeder
 
         Permission::firstOrCreate(['name' => 'dashboard'])->syncRoles([$role1, $role2]);
 
-        Permission::firstOrCreate(['name' => 'perfil.index'])->syncRoles([$role1, $role2]);//creo que no se usara
-        Permission::firstOrCreate(['name' => 'perfil.edit'])->syncRoles([$role1, $role2]); //creo que no se usara
-        Permission::firstOrCreate(['name' => 'perfil.destroy'])->syncRoles([$role1, $role2]);//creo que no se usara
+        Permission::firstOrCreate(['name' => 'cotizaciones.menu'])->syncRoles([$role1, $role2]);//middleware puesto
+        Permission::firstOrCreate(['name' => 'cotizaciones.create'])->syncRoles([$role1, $role2]);//middleware puesto
+        Permission::firstOrCreate(['name' => 'cotizaciones.index'])->syncRoles([$role1, $role2]);//middleware puesto
+        Permission::firstOrCreate(['name' => 'cotizaciones.borrador'])->syncRoles([$role1, $role2]);//middleware puesto
+        Permission::firstOrCreate(['name' => 'cotizaciones.edit'])->syncRoles([$role1, $role2]);//middleware puesto
+        Permission::firstOrCreate(['name' => 'cotizaciones.prepararpdf'])->syncRoles([$role1, $role2]);//middleware puesto
+        Permission::firstOrCreate(['name' => 'cotizaciones.email'])->syncRoles([$role1, $role2]);//middleware puesto
+        Permission::firstOrCreate(['name' => 'cotizaciones.info'])->syncRoles([$role1, $role2]);//middleware puesto
 
-        Permission::firstOrCreate(['name' => 'cambioContraseña.index'])->syncRoles([$role1, $role2]);//creo que no se usara
-        Permission::firstOrCreate(['name' => 'cambioContraseña.edit'])->syncRoles([$role1, $role2]);//creo que no se usara
 
         Permission::firstOrCreate(['name' => 'admin.viewusers.index'])->syncRoles([$role1]);//middleware puesto
         Permission::firstOrCreate(['name' => 'admin.viewusers.edit'])->syncRoles([$role1]);

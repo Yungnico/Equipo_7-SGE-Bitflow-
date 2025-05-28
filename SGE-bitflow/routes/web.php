@@ -28,12 +28,10 @@ use App\Http\Controllers\TransferenciaController;
 
 
 Route::middleware('auth')->group(function () {
-    Route::resource('cotizaciones', CotizacionController::class)->except(['edit', 'show']);
-    Route::get('/cotizaciones/{id}/info', [CotizacionController::class, 'getCotizacion'])->name('cotizaciones.info');
-    Route::get('/cotizaciones/{id}/Email', [CotizacionController::class, 'prepararEmail'])->name('cotizaciones.prepararEmail');
-    Route::get('/cotizaciones/create', [CotizacionController::class, 'create'])->name('cotizaciones.create');
-
-    Route::get('/cotizaciones/borrador', [CotizacionController::class, 'showBorrador'])->name('cotizaciones.borrador');
+    Route::resource('cotizaciones', CotizacionController::class)->middleware('can:cotizaciones.index')->except(['edit', 'show']);//middleware puesto
+    Route::get('/cotizaciones/{id}/info', [CotizacionController::class, 'getCotizacion'])->middleware('can:cotizaciones.info')->name('cotizaciones.info');//middleware puesto
+    Route::get('/cotizaciones/create', [CotizacionController::class, 'create'])->middleware('can:cotizaciones.create')->name('cotizaciones.create');//middleware puesto
+    Route::get('/cotizaciones/borrador', [CotizacionController::class, 'showBorrador'])->middleware('can:cotizaciones.borrador')->name('cotizaciones.borrador');//middleware puesto
 });
 //RUTAS DE PARIDAD
 use App\Http\Controllers\ParidadController;
@@ -65,11 +63,13 @@ Route::middleware('auth')->group(function () {
     // Ruta para VER el PDF en el navegador
     Route::post('/cotizaciones/{id}/pdf', [CotizacionController::class, 'generarPDF'])->name('cotizaciones.generarPDFobservaciones');
     Route::get('/cotizaciones/{id}/pdf', [CotizacionController::class, 'generarPDF'])->name('cotizaciones.generarPDF');
-    Route::get('/cotizaciones/{id}/preparar-pdf', [CotizacionController::class, 'prepararPDF'])->name('cotizaciones.prepararPDF')->middleware('auth');
+    Route::get('/cotizaciones/{id}/preparar-pdf', [CotizacionController::class, 'prepararPDF'])->middleware('can:cotizaciones.prepararpdf')->name('cotizaciones.prepararPDF')->middleware('auth');//middleware puesto
     Route::post('cotizaciones/{id}/enviar', [CotizacionController::class, 'enviarCorreo'])->name('cotizaciones.enviar')->middleware('auth');
-    Route::get('/cotizaciones/{id}/Email', [CotizacionController::class, 'prepararEmail'])->name('cotizaciones.prepararEmail');
-    Route::get('/cotizaciones/{id}/edit', [CotizacionController::class, 'edit'])->name('cotizaciones.edit');
+    Route::get('/cotizaciones/{id}/Email', [CotizacionController::class, 'prepararEmail'])->middleware('can:cotizaciones.email')->name('cotizaciones.prepararEmail');//middleware puesto
+    Route::get('/cotizaciones/{id}/edit', [CotizacionController::class, 'edit'])->middleware('can:cotizaciones.edit')->name('cotizaciones.edit');//middleware puesto
     Route::put('/cotizaciones/{id}', [CotizacionController::class, 'update'])->name('cotizaciones.editarestado');
+
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

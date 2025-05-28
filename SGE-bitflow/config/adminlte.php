@@ -333,26 +333,42 @@ return [
             ],
         ],
         [
+            'text' => 'Registro de usuarios',
+            'url' => 'users/create',
+            'icon' => 'fas fa-solid fa-user-plus',
+            'can' => 'user.create',
+        ],
+        [
+            'text' => 'Usuarios',
+            'url' => 'viewusers',
+            'icon' => 'fas fa-users fa-fw',
+            'can' => 'admin.viewusers.index',
+        ],
+        [
             'text' => 'Cotizaciones',
             'icon' => 'fas fa-fw fa-file-invoice-dollar',
+            'can' => 'cotizaciones.menu',
             'submenu' => [
                 [
                     'text' => 'Crear Cotización',
                     'url'  => 'cotizaciones/create',
                     'icon' => 'fas fa-fw fa-plus',
                     'classes' => 'text-green text-bold justify-content-center',
+                    'can' => 'cotizaciones.create',
                 ],
                 [
                     'text' => 'Mis Cotizaciones',
                     'url'  => 'cotizaciones',
                     'icon' => 'fas fa-fw fa-list',
                     'classes' => 'text-yellow text-bold justify-content-center',
+                    'can' => 'cotizaciones.index',
                 ],
                 [
                     'text' => 'Borrador',
                     'url'  => 'cotizaciones/borrador',
                     'icon' => 'fas fa-fw fa-file',
                     'classes' => 'text-red text-bold justify-content-center',
+                    'can' => 'cotizaciones.borrador',
                 ],
             ],
         ],
@@ -367,22 +383,10 @@ return [
             'icon' => 'fas fa-fw fa-chart-bar',            
         ],
         [
-            'text' => 'Registro de usuarios',
-            'url' => 'users/create',
-            'icon' => 'fas fa-solid fa-user-plus',
-            'can' => 'user.create',
-        ],
-        [
-            'text' => 'Usuarios',
-            'url' => 'viewusers',
-            'icon' => 'fas fa-users fa-fw',
-            'can' => 'admin.viewusers.index',
-        ],
-        [
             'text' => 'Clientes',
             'url' => 'clientes',
             'icon' => 'fas fa-solid fa-user-plus',
-            'can' => 'clientes.index',
+           
         ],
         [
             'text' => 'Servicios',
@@ -392,7 +396,7 @@ return [
         [
             'text' => 'Paridades',
             'url' => 'paridades',
-            'icon' => 'fas fa fa-usd',
+            'icon' => 'fas fa-coins ',
         ],
         [
             'text' => 'Cuenta corriente',
