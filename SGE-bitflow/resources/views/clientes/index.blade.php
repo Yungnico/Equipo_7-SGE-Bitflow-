@@ -42,7 +42,7 @@
                 </div>
                 <div class="d-flex gap-2 flex-wrap">
                     <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i></button>
-                    <a href="{{ route('clientes.index') }}" class="btn btn-secondary"><i class="fas fa-broom"></i></a>
+                    <a href="{{ route('clientes.index') }}" class="btn btn-secondary ml-2"><i class="fas fa-broom"></i></a>
                 </div>
             </form>
         </div>
@@ -50,7 +50,9 @@
 
     <div class="row align-items-center mb-3">
         <div class="col-md-6 mb-2 mb-md-0">
-            <a href="{{ route('clientes.create') }}" class="btn btn-primary">Crear Cliente</a>
+            <!--<a href="{{ route('clientes.create') }}" class="btn btn-primary">Crear Cliente</a> -->
+            <button class="btn btn-primary" data-toggle="modal" data-target="#modalCrearCliente">Crear Cliente</button>
+
         </div>
         <div class="col-md-6 text-md-right">
             <a href="{{ route('clientes.exportar', array_merge(request()->all(), ['formato_exportacion' => 'pdf'])) }}" class="btn btn-success">Exportar a PDF</a>
@@ -91,7 +93,7 @@
                                     </td>
                                     <td class="text-nowrap">
                                         <a href="{{ route('clientes.edit', $cliente) }}" class="btn btn-warning btn-sm mb-1">
-                                            <i class="fa fa-edit"></i>
+                                            <i class="fas fa-edit" style="color: white"></i>
                                         </a>
                                         <form action="{{ route('clientes.destroy', $cliente) }}" method="POST" class="form-eliminar d-inline">
                                             @csrf
@@ -119,6 +121,64 @@
 </div>
 @endsection
 
+<!-- Modal para Crear Cliente -->
+<div class="modal fade" id="modalCrearCliente" tabindex="-1" role="dialog" aria-labelledby="modalCrearClienteLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <form action="{{ route('clientes.store') }}" method="POST" enctype="multipart/form-data">
+        @csrf
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalCrearClienteLabel">Crear Cliente</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+               
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="razon_social">Razón Social*</label>
+                        <input type="text" class="form-control" name="razon_social" value="{{ old('razon_social') }}" maxlength="100" required>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label for="rut">RUT*</label>
+                        <input type="text" class="form-control" name="rut" value="{{ old('rut') }}" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="nombre_fantasia">Nombre Fantasía</label>
+                        <input type="text" class="form-control" name="nombre_fantasia" value="{{ old('nombre_fantasia') }}" maxlength="100">
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label for="giro">Giro</label>
+                        <input type="text" class="form-control" name="giro" value="{{ old('giro') }}" maxlength="100">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="direccion">Dirección</label>
+                        <input type="text" class="form-control" name="direccion" value="{{ old('direccion') }}" maxlength="150">
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label for="logo">Logo (JPG o PNG)</label>
+                        <input type="file" class="form-control" name="logo">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-success">Guardar</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+    </form>
+  </div>
+</div>
 
 @section('js')
     <!-- SweetAlert2 -->

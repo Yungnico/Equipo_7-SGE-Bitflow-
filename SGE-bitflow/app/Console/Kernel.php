@@ -12,7 +12,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // $schedule->command('inspire')->hourly();
+        // Programación automática de paridades
+        $schedule->command('paridades:registrar-mensuales')->dailyAt('01:00');
+
+        // Otros comandos programados pueden ir aquí...
     }
 
     /**
@@ -24,4 +27,11 @@ class Kernel extends ConsoleKernel
 
         require base_path('routes/console.php');
     }
+
+    protected $commands = [
+        \App\Console\Commands\ObtenerParidadesMindicador::class,
+        \App\Console\Commands\RegistrarParidadesMensuales::class, // ← Asegúrate de registrar también este
+    ];
 }
+
+

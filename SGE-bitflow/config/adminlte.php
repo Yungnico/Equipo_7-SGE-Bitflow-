@@ -379,7 +379,16 @@ return [
             'url' => 'servicios',
             'icon' => 'fas fa-laptop-medical',
         ],
-
+        [
+            'text' => 'Paridades',
+            'url' => 'paridades',
+            'icon' => 'fas fa fa-usd',
+        ],
+        [
+            'text' => 'Cuenta corriente',
+            'url' => 'transferencias',
+            'icon' => 'fas fa-laptop-medical',
+        ],
     ],
 
     /*
