@@ -6,6 +6,7 @@ use App\Models\Cotizacion;
 use App\Models\ItemLibre;
 use App\Models\Servicio;
 use App\Models\Cliente;
+use App\Models\Paridad;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -78,7 +79,9 @@ class CotizacionController extends Controller
 
     public function getCotizacion($id)
     {
+        
         $cotizacion = Cotizacion::with(['cliente', 'itemsLibres', 'servicios'])->findOrFail($id);
+        
         return response()->json($cotizacion);
     }
     
@@ -118,7 +121,9 @@ class CotizacionController extends Controller
 
     public function index()
     {
+        
         $cotizaciones = Cotizacion::all();
+        
         return view('cotizaciones.index', compact('cotizaciones'));
     }
     public function showBorrador(){
@@ -127,6 +132,7 @@ class CotizacionController extends Controller
     }
     public function create()
     {
+        $monedas = Paridad::all();
         $clientes = Cliente::all();
         $servicios = Servicio::all();
         if (cotizacion::max('id_cotizacion') == null) {
@@ -135,7 +141,7 @@ class CotizacionController extends Controller
             $ultimoId = Cotizacion::max('id_cotizacion') + 1;
         }
 
-        return view('cotizaciones.create', compact('servicios','clientes', 'ultimoId'));
+        return view('cotizaciones.create', compact('servicios','clientes', 'ultimoId', 'monedas'));
     }
     public function store(Request $request)
     {
