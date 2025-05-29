@@ -26,12 +26,14 @@
         </form>
     </div>
 
-    <a href="{{ route('transferencias.conciliar') }}" class="btn btn-success mb-3">
+    <a href="{{ route('transferencias.conciliar') }}" class="btn btn-success px-4 py-2 mb-3">
         Conciliar Transferencias
     </a>
 
+    <button type="button" id="reset-filtros" class="btn btn-secondary px-4 py-2 mb-3">
+        Limpiar Filtros
+    </button>
 
-    <button type="button" id="reset-filtros" class="btn btn-secondary mb-3">Resetear Filtros</button>
 
     <div class="card">
         <div class="card-body">

@@ -4,18 +4,29 @@
     </div>
 
     <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
+        <!-- Izquierda: Agregar y Limpiar -->
         <div class="d-flex gap-2">
             <button type="button" class="btn btn-success px-4 py-2" data-bs-toggle="modal" data-bs-target="#modalCrearServicio">
                 Agregar Servicio
             </button>
+
+            <button id="reset-filtros" class="btn btn-secondary px-4 py-2">
+                Limpiar filtros
+            </button>
+
             <button class="btn btn-warning d-none" data-bs-toggle="modal" data-bs-target="#modalMantenedorMonedas">
                 Monedas
             </button>
-            <button class="btn btn-secondary px-4 py-2" data-bs-toggle="modal" data-bs-target="#modalMantenedorCategorias">
+        </div>
+
+        <!-- Derecha: Categorías -->
+        <div>
+            <button class="btn btn-warning px-4 py-2" data-bs-toggle="modal" data-bs-target="#modalMantenedorCategorias">
                 Categorías
             </button>
         </div>
     </div>
+
 
 
     <div class="card">
