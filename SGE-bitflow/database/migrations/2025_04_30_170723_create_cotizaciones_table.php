@@ -18,10 +18,9 @@ return new class extends Migration
             $table->decimal('total', 10, 2);
             $table->string('moneda', 3);
             $table->enum('estado', ['Borrador', 'Enviada', 'Aceptada', 'Facturada', 'Pagada', 'Anulada', 'Rechazada']);
-
+            $table->decimal('total_iva', 10, 2);
             $table->date('fecha_cotizacion');
             $table->decimal('descuento', 10, 2)->nullable();
-
             $table->unsignedBigInteger('id_transferencia')->nullable();
             $table->foreign('id_transferencia')->references('id')->on('transferencias_bancarias')->onDelete('set null');
 

@@ -41,8 +41,11 @@
                     x-transition
                     x-init="setTimeout(() => show = false, 2000)"
                     class="text-sm text-gray-600"
-                >{{ __('¡Cambio exitoso!') }}</p>
+                >{{ __('¡Cambio exitoso!') }}</p> <!-- Mensaje de éxito {{ __('¡Cambio exitoso!') }}-->
             @endif
         </div>
     </form>
 </section>
+
+
+<!-- aqui ver lo del sweet alert -->

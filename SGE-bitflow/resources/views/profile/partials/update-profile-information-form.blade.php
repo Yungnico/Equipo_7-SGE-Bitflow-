@@ -5,7 +5,7 @@
         </h2>
 
         <p class="mt-1 text-sm text-gray-600 ">
-            <h6>{{ __("Actualiza tu información del perfil y tu dirección de correo electrónico.") }}</h6>
+            <h6>{{ __("Actualiza tu información del perfil o tu dirección de correo electrónico.") }}</h6>
         </p>
     </header>
 
@@ -13,7 +13,7 @@
         @csrf
     </form>
 
-    <form method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-6">
+    <form id="actualizar_perfil" method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-6">
         @csrf
         @method('patch')
 
@@ -45,6 +45,7 @@
             />
             <x-input-error class="mt-2" :messages="$errors->get('email')" />
 
+            <!--
             @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail())
                 <div>
                     <p class="text-sm mt-2 text-gray-800 dark:text-gray-200">
@@ -62,6 +63,7 @@
                     @endif
                 </div>
             @endif
+            -->
         </div>
 
         <div class="flex items-center gap-4">
@@ -74,8 +76,31 @@
                     x-transition
                     x-init="setTimeout(() => show = false, 3000)"
                     class="text-sm text-gray-600"
-                >{{ __('¡Guardado correctamente!') }}</p>
+                >{{ __('') }}</p> <!-- Mensaje de éxito -->
             @endif
         </div>
     </form>
 </section>
+
+@section('js')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+document.getElementById('actualizar_perfil').addEventListener('submit', function(e) {
+    e.preventDefault(); // Evita el envío inmediato
+    
+    Swal.fire({
+        title: '¿Estás seguro?',
+        text: "¡Asegurate bien antes de guardar!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: 'Sí, guardar',
+        cancelButtonText: 'Cancelar'
+    
+    }).then((result) => {
+        e.target.submit();
+    });
+});
+</script>
+@endsection

@@ -73,6 +73,9 @@ class CrudUserController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $user = User::findOrFail($id); // Busca el usuario por ID
+        $user->delete(); // Elimina el usuario
+
+        return redirect()->route('viewusers.index');
     }
 }

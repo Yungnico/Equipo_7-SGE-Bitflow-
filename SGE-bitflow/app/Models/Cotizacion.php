@@ -29,6 +29,7 @@ class Cotizacion extends Model
         'observaciones',
         'id_transferencia',
         'factura_asociada',
+        'total_iva',
     ];
 
 

@@ -53,6 +53,7 @@ class ProfileController extends Controller
 
         // Redirigir al perfil con un mensaje de éxito
         return redirect()->route('profile.edit')->with('status', 'Contraseña actualizada correctamente.');
+        
     }
     /**
      * Delete the user's account.
