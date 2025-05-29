@@ -7,9 +7,14 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
+        if (!Schema::hasColumn('servicios', 'moneda_id')) {
+            Schema::table('servicios', function (Blueprint $table) {
+                $table->unsignedBigInteger('moneda_id')->after('id'); // Ajusta la posición si es necesario
+            });
+        }
+
         Schema::table('servicios', function (Blueprint $table) {
-            $table->dropColumn('moneda'); // elimina el campo enum o string existente
-            $table->foreignId('moneda_id')->constrained()->onDelete('cascade'); // nuevo campo como clave foránea
+            $table->foreign('moneda_id')->references('id')->on('monedas')->onDelete('cascade');
         });
     }
 

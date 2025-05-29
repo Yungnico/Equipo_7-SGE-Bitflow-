@@ -35,7 +35,20 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/cotizaciones/borrador', [CotizacionController::class, 'showBorrador'])->name('cotizaciones.borrador');
 });
+//RUTAS DE PARIDAD
+use App\Http\Controllers\ParidadController;
 
+
+//Route::resource('paridades', ParidadController::class)->except(['create', 'store', 'destroy', 'show']);
+Route::get('/paridades', [ParidadController::class, 'index'])->name('paridades.index');
+Route::get('/paridades/fetch', [ParidadController::class, 'fetchFromAPI'])->name('paridades.fetch');
+Route::get('/paridades/{paridad}/edit', [ParidadController::class, 'edit'])->name('paridades.edit');
+Route::put('/paridades/{paridad}', [ParidadController::class, 'update'])->name('paridades.update');
+Route::get('/paridades/recordatorio', [ParidadController::class, 'checkRecordatorioAnual'])->name('paridades.recordatorio');
+Route::get('/paridades/{paridad}/edit', [ParidadController::class, 'edit'])->name('paridades.edit');
+Route::put('/paridades/{paridad}', [ParidadController::class, 'update'])->name('paridades.update');
+
+//rutas de clientes
 Route::middleware('auth')->group(function () {
 
     Route::get('clientes/exportar', [ClienteController::class, 'exportar'])->name('clientes.exportar');
