@@ -66,6 +66,7 @@
                             <th>Giro</th>
                             <th>Dirección</th>
                             <th>Logo</th>
+                            <th>Días Hábiles</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
@@ -84,6 +85,7 @@
                                 Sin logo
                                 @endif
                             </td>
+                            <td>{{ $cliente->plazo_pago_habil_dias }}</td>
                             <td class="text-nowrap">
                                 <button class="btn btn-sm btn-warning btn-sm mb-1" onclick="abrirModalEditar({{ $cliente }})">
                                     <i class="fas fa-edit" style="color:white"></i>
