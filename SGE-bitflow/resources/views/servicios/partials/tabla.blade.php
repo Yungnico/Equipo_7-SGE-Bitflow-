@@ -50,7 +50,7 @@
                             <select id="filtro-moneda" class="form-select">
                                 <option value="">Moneda</option>
                                 @foreach($monedas as $moneda)
-                                <option value="{{ $moneda->id }}">{{ $moneda->moneda }}</option>
+                                <option value="{{ $moneda->moneda }}">{{ $moneda->moneda }}</option>
                                 @endforeach
                             </select>
                         </th>
