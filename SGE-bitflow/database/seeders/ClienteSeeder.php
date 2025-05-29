@@ -12,7 +12,7 @@ class ClienteSeeder extends Seeder
     public function run(): void
     {
         \App\Models\Cliente::firstOrCreate([
-            'razon_social' => 'Cliente de Prueba',
+            'razon_social' => 'Cliente de Prueba 1',
             'rut' => '12345678-9',
             'direccion' => 'Dirección de prueba',
             'nombre_fantasia' => 'Cliente Fantasía',
