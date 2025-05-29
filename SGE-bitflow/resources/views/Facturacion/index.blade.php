@@ -31,9 +31,9 @@
                     <thead>
                         <th>Folio</th>
                         <th>Tipo DTE </th>
-                        <th>Fecha Emision</th>
+                        <th>Fecha Emisión</th>
                         <th>Cliente</th>
-                        <th>Razon Social</th>
+                        <th>Razón Social</th>
                         <th>Total Neto</th>
                         <th>Iva</th>
                         <th>Total</th>
@@ -247,7 +247,7 @@
                                     <div class="input-group">
                                         <input type="text" class="form-control" id="itemsL" name="itemsL" value="" required>
                                         <div class="input-group-append">
-                                            <button class="btn btn-outline-secondary" type="button" data-toggle="tooltip" data-placement="top"  title="Aqui debes ingresar el nombre del item libre que deseas agregar a la cotización.">
+                                            <button class="btn btn-outline-secondary" type="button" data-toggle="tooltip" data-placement="top"  title="Aquí debes ingresar el nombre del ítem libre que deseas agregar a la cotización.">
                                                 <i class="fas fa-question-circle"></i>
                                             </button>
                                         </div>
@@ -259,7 +259,7 @@
                                     <div class="input-group">
                                         <input type="text" class="form-control" id="descripcion_itemsL" name="descripcion" value="" required>
                                         <div class="input-group-append">
-                                            <button class="btn btn-outline-secondary" type="button" data-toggle="tooltip" data-placement="top"  title="Aquí debes ingresar la descripcion del servicio seleccionado.">
+                                            <button class="btn btn-outline-secondary" type="button" data-toggle="tooltip" data-placement="top"  title="Aquí debes ingresar la descripción del servicio seleccionado.">
                                                 <i class="fas fa-question-circle"></i>
                                             </button>
                                         </div>
