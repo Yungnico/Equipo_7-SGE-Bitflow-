@@ -36,7 +36,7 @@
                 <div class="form-group d-none" id="archivos_adicionales">
                     <label for="archivo_cliente">Archivos del cliente (orden de compra o servicio):</label>
                     <input type="file" class="form-control" name="archivo_cliente[]" multiple>
-                     <a href="{{ route('cotizacion.conciliar') }}" class="btn btn-success px-4 py-2 mb-3">
+                     <a href="{{ route('cotizacion.conciliar',$cotizacion->id_cotizacion) }}" class="btn btn-success px-4 py-2 mb-3">
                         Conciliar Facturas
                     </a>
                     

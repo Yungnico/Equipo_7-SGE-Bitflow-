@@ -46,7 +46,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/cotizaciones/{id}/info', [CotizacionController::class, 'getCotizacion'])->middleware('can:cotizaciones.info')->name('cotizaciones.info');//middleware puesto
     Route::get('/cotizaciones/create', [CotizacionController::class, 'create'])->middleware('can:cotizaciones.create')->name('cotizaciones.create');//middleware puesto
     Route::get('/cotizaciones/borrador', [CotizacionController::class, 'showBorrador'])->middleware('can:cotizaciones.borrador')->name('cotizaciones.borrador');//middleware puesto
-    Route::get('/cotizacion/conciliar', [CotizacionController::class, 'conciliarTransferencias'])->name('cotizaicon.conciliar');
+    Route::get('/cotizacion/conciliar/{id}', [CotizacionController::class, 'conciliar'])->name('cotizacion.conciliar');
 });
 //RUTAS DE PARIDAD
 use App\Http\Controllers\ParidadController;

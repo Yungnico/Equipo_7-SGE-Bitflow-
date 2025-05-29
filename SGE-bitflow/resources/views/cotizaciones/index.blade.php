@@ -11,8 +11,10 @@
                 <th>Cliente </th>
                 <th>Fecha</th>
                 <th>Moneda</th>
+                <th>total</th>
                 <th>Estado</th>
                 <th>Acciones</th>
+                
             </tr>
         </thead>
         <tbody>
@@ -22,6 +24,7 @@
                     <td>{{ $cotizacion->cliente->razon_social }}</td>
                     <td>{{ $cotizacion->fecha_cotizacion }}</td>
                     <td>{{ $cotizacion->moneda }}</td>
+                    <td>{{$cotizacion->total_iva}}</td>
                     <td>
                         <div class="d-flex justify-content-between align-items-center">
                             <span>{{ $cotizacion->estado }}</span>
