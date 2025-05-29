@@ -16,7 +16,7 @@ return new class extends Migration
             $table->integer('folio')->unique();
             $table->enum('tipo_dte', ['33', '52', '56', '61']);
             $table->date('fecha_emision');
-            $table->unsignedBigInteger('rut_receptor')->nullable();
+            $table->string('rut_receptor')->nullable();
             $table->string('razon_social_receptor')->nullable();
             $table->decimal('total_neto', 15, 2);
             $table->decimal('iva', 15, 2);

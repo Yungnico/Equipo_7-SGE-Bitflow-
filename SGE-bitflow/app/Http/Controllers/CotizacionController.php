@@ -186,6 +186,7 @@ class CotizacionController extends Controller
                 'descuento' => $request->descuento ?? 0,
                 'email' => $request->email,
                 'telefono' => $request->telefono,
+                'total_iva' => 0,
             ]);
 
             $total = 0;
@@ -208,13 +209,13 @@ class CotizacionController extends Controller
                     'id_cotizacion' => $cotizacion->id_cotizacion,
                 ]);
                 $total += $item['precio'] * $item['cantidad'];
+                
             }
-
             if ($cotizacion->descuento) {
                 $total = $total - ($total * $cotizacion->descuento/100);
             }
-
-            $cotizacion->update(['total' => $total]);
+            $total_iva = ($total * 0.19) + $total; // Asumiendo un IVA del 19%
+            $cotizacion->update(['total' => $total, 'total_iva' => $total_iva]);
 
             DB::commit();
 
