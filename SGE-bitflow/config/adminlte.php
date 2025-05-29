@@ -390,7 +390,7 @@ return [
             'url' => 'clientes',
             'icon' => 'fas fa-solid fa-user-plus',
             'can' => 'cliente.index',
-           
+
         ],
         [
             'text' => 'Servicios',
@@ -407,7 +407,7 @@ return [
         [
             'text' => 'Cuenta corriente',
             'url' => 'transferencias',
-            'icon' => 'fas fa-file-invoice-dollar',
+            'icon' => 'fas fa-credit-card',
             'can' => 'factura.index',
         ],
     ],
