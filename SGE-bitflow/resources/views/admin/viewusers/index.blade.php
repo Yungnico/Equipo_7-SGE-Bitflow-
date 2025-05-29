@@ -7,9 +7,8 @@
 @stop
 
 @section('css')
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.0/css/dataTables.bootstrap5.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.4/css/responsive.bootstrap5.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap4.min.css">
 @stop
 
 @section('content')
@@ -17,7 +16,7 @@
         <div class="card-body">
 
 
-            <table class="table table-striped table-bordered " id="usuarios" style="width:100%">
+            <table class="table table-striped table-bordered dt-responsive nowrap " id="usuarios" style="width:100%">
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -33,7 +32,16 @@
                             <td>{{ $user->id }}</td>
                             <td>{{ $user->name }}</td>
                             <td>{{ $user->email }}</td>
-                            <td width="10px"><a class="btn btn-primary" href="{{route('viewusers.edit', $user)}}"><i class="fas fa-edit"></i></a></td>
+                            <td width="10px">
+                                @can('admin.viewusers.edit')     
+                                    <a class="btn btn-primary" href="{{route('viewusers.edit', $user)}}"><i class="fas fa-edit"></i></a>
+                                @endcan
+                                <form id="eliminar_usuario_{{ $user->id }}" action="{{ route('viewusers.destroy', $user) }}" method="POST" class="d-inline eliminar-usuario-form">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger btn-eliminar-usuario"><i class="fas fa-trash"></i></button>
+                                </form>
+                            </td>
                         </tr>
                     @endforeach
             </table>
@@ -44,26 +52,43 @@
 
 
 @section('js')
-    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.datatables.net/2.3.0/js/dataTables.js"></script>
-    <script src="https://cdn.datatables.net/2.3.0/js/dataTables.bootstrap5.js"></script>
-    <script src="https://cdn.datatables.net/responsive/3.0.4/js/dataTables.responsive.js"></script>
-    <script src="https://cdn.datatables.net/responsive/3.0.4/js/responsive.bootstrap5.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap4.min.js"></script>
     <script>
         $(document).ready(function() {
-            var table = $('#usuarios').DataTable({
+            $('#usuarios').DataTable({
                 responsive: true,
                 autoWidth: false,
                 language: {
                     url: '{{ asset("datatables/es-CL.json")}}'
-                },
-            });
-
-            // Redibujar la tabla al cambiar el tamaño de la ventana
-            $(window).on('resize', function() {
-                table.columns.adjust().responsive.recalc();
+                }
             });
         });
     </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        $('.eliminar-usuario-form').on('submit', function(e){
+            e.preventDefault();
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: "¡Esta acción eliminará al usuario!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    this.submit();
+                }
+            });
+        });
+    </script>
+
 @stop
+

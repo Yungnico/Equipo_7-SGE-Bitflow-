@@ -316,11 +316,6 @@ return [
             'text' => 'Buscar',
         ],
         [
-            'text' => 'blog',
-            'url' => 'admin/blog',
-            'can' => 'manage-blog',
-        ],
-        [
             'text' => 'Cuenta',
             'icon' => 'fas fa-user-cog ',   //fa-fw fa-user para el icono del usuario fontawesone 5 usa admin lte
             'submenu' =>
@@ -338,26 +333,42 @@ return [
             ],
         ],
         [
+            'text' => 'Registro de usuarios',
+            'url' => 'users/create',
+            'icon' => 'fas fa-solid fa-user-plus',
+            'can' => 'user.create',
+        ],
+        [
+            'text' => 'Usuarios',
+            'url' => 'viewusers',
+            'icon' => 'fas fa-users fa-fw',
+            'can' => 'admin.viewusers.index',
+        ],
+        [
             'text' => 'Cotizaciones',
             'icon' => 'fas fa-fw fa-file-invoice-dollar',
+            'can' => 'cotizaciones.menu',
             'submenu' => [
                 [
                     'text' => 'Crear Cotización',
                     'url'  => 'cotizaciones/create',
                     'icon' => 'fas fa-fw fa-plus',
                     'classes' => 'text-green text-bold justify-content-center',
+                    'can' => 'cotizaciones.create',
                 ],
                 [
                     'text' => 'Mis Cotizaciones',
                     'url'  => 'cotizaciones',
                     'icon' => 'fas fa-fw fa-list',
                     'classes' => 'text-yellow text-bold justify-content-center',
+                    'can' => 'cotizaciones.index',
                 ],
                 [
                     'text' => 'Borrador',
                     'url'  => 'cotizaciones/borrador',
                     'icon' => 'fas fa-fw fa-file',
                     'classes' => 'text-red text-bold justify-content-center',
+                    'can' => 'cotizaciones.borrador',
                 ],
             ],
         ],
@@ -365,59 +376,40 @@ return [
             'text' => 'Facturas',
             'url' => 'facturacion',
             'icon' => 'fas fa-fw fa-file-invoice',
+            'can' => 'factura.index',
         ],
+        /*
         [
             'text' => 'Reportes',
             'url' => 'reportes',
             'icon' => 'fas fa-fw fa-chart-bar',            
         ],
-        [
-            'text' => 'Registro de usuarios',
-            'url' => 'users/create',
-            'icon' => 'fas fa-solid fa-user-plus',
-        ],
+        */
         [
             'text' => 'Clientes',
             'url' => 'clientes',
             'icon' => 'fas fa-solid fa-user-plus',
-        ],
-        [
-            'text' => 'Usuarios',
-            'url' => 'viewusers',
-            'icon' => 'fas fa-users fa-fw',
+            'can' => 'cliente.index',
+           
         ],
         [
             'text' => 'Servicios',
             'url' => 'servicios',
             'icon' => 'fas fa-laptop-medical',
+            'can' => 'servicios.index',
         ],
         [
             'text' => 'Paridades',
             'url' => 'paridades',
-            'icon' => 'fas fa fa-usd',
+            'icon' => 'fas fa-coins ',
+            'can' => 'paridades.index',
         ],
         [
             'text' => 'Cuenta corriente',
             'url' => 'transferencias',
             'icon' => 'fas fa-file-invoice-dollar',
+            'can' => 'factura.index',
         ],
-        /*,
-        ['header' => 'labels'],
-        [
-            'text' => 'important',
-            'icon_color' => 'red',
-            'url' => '#',
-        ],
-        [
-            'text' => 'warning',
-            'icon_color' => 'yellow',
-            'url' => '#',
-        ],
-        [
-            'text' => 'information',
-            'icon_color' => 'cyan',
-            'url' => '#',
-        ], */
     ],
 
     /*

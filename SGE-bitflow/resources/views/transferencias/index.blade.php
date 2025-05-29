@@ -26,12 +26,14 @@
         </form>
     </div>
 
-    <a href="{{ route('transferencias.conciliar') }}" class="btn btn-success mb-3">
+    <a href="{{ route('transferencias.conciliar') }}" class="btn btn-success px-4 py-2 mb-3">
         Conciliar Transferencias
     </a>
 
+    <button type="button" id="reset-filtros" class="btn btn-secondary px-4 py-2 mb-3">
+        Limpiar Filtros
+    </button>
 
-    <button type="button" id="reset-filtros" class="btn btn-secondary mb-3">Resetear Filtros</button>
 
     <div class="card">
         <div class="card-body">
@@ -39,6 +41,7 @@
                 <table id="tabla-transferencias" class="table table-striped table-bordered nowrap w-100">
                     <thead class="table-dark">
                         <tr>
+                            <th>ID</th>
                             <th>Nombre</th>
                             <th>RUT</th>
                             <th>Estado</th>
@@ -58,6 +61,7 @@
                         </tr>
 
                         <tr class="filtros">
+                            <th></th>
                             <th>
                                 <select class="form-select filtro-select" data-columna="0" style="min-width: 150px;">
                                     <option value="">Nombre</option>
@@ -83,6 +87,7 @@
                     <tbody>
                         @forelse($transferencias as $t)
                         <tr>
+                            <td class="text-center fw-bold">{{ $t->id }}</td>
                             <td>{{ $t->nombre }}</td>
                             <td>{{ $t->rut }}</td>
                             <td>
@@ -216,34 +221,38 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body">
-                <div class="table-responsive">
-                    <table id="tabla-cotizaciones" class="table table-striped table-bordered nowrap w-100">
-                        <thead class="table-dark">
-                            <tr>
-                                <th>Nombre</th>
-                                <th>Fecha Cotización</th>
-                                <th>Total</th>
-                                <th>Acción</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($cotizacionesDisponibles as $cotizacion)
-                            <tr>
-                                <td>{{ $cotizacion->cliente->razon_social }}</td>
-                                <td>{{ $cotizacion->fecha_cotizacion }}</td>
-                                <td>${{ number_format($cotizacion->total, 0, ',', '.') }}</td>
-                                <td>
-                                    <form method="POST" action="{{ route('transferencias.conciliar.manual') }}" class="d-inline">
-                                        @csrf
-                                        <input type="hidden" name="transferencias_bancarias_id" class="input-transferencia-id">
-                                        <input type="hidden" name="cotizaciones_id_cotizacion" value="{{ $cotizacion->id_cotizacion }}">
-                                        <button type="submit" class="btn btn-sm btn-primary">Conciliar</button>
-                                    </form>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                <div class="card">
+                    <div class="table-responsive">
+                        <table id="tabla-cotizaciones" class="table table-striped table-bordered nowrap w-100">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Código Cotización</th>
+                                    <th>Nombre</th>
+                                    <th>Fecha Cotización</th>
+                                    <th>Total</th>
+                                    <th>Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($cotizacionesDisponibles as $cotizacion)
+                                <tr>
+                                    <td>{{ $cotizacion->codigo_cotizacion }}</td>
+                                    <td>{{ $cotizacion->cliente->razon_social }}</td>
+                                    <td>{{ $cotizacion->fecha_cotizacion }}</td>
+                                    <td>${{ number_format($cotizacion->total, 0, ',', '.') }}</td>
+                                    <td>
+                                        <form method="POST" action="{{ route('transferencias.conciliar.manual') }}" class="d-inline">
+                                            @csrf
+                                            <input type="hidden" name="transferencias_bancarias_id" class="input-transferencia-id">
+                                            <input type="hidden" name="cotizaciones_id_cotizacion" value="{{ $cotizacion->id_cotizacion }}">
+                                            <button type="submit" class="btn btn-sm btn-primary">Conciliar</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

@@ -36,61 +36,61 @@ Route::put('/facturas/{id}/cambiar-estado', [FacturacionController::class, 'camb
 */
 //rutas de facturacion
 route::middleware('auth')->group(function () {
-    Route::get('/facturacion', [FacturacionController::class, 'index'])->name('facturacion.index');
+    Route::get('/facturacion', [FacturacionController::class, 'index'])->middleware('can:factura.index')->name('facturacion.index');
 });
 
 
 Route::middleware('auth')->group(function () {
-    Route::resource('cotizaciones', CotizacionController::class)->except(['edit', 'show']);
-    Route::get('/cotizaciones/{id}/info', [CotizacionController::class, 'getCotizacion'])->name('cotizaciones.info');
-    Route::get('/cotizaciones/{id}/Email', [CotizacionController::class, 'prepararEmail'])->name('cotizaciones.prepararEmail');
-    Route::get('/cotizaciones/create', [CotizacionController::class, 'create'])->name('cotizaciones.create');
-
-    Route::get('/cotizaciones/borrador', [CotizacionController::class, 'showBorrador'])->name('cotizaciones.borrador');
+    Route::resource('cotizaciones', CotizacionController::class)->middleware('can:cotizaciones.index')->except(['edit', 'show']);//middleware puesto
+    Route::get('/cotizaciones/{id}/info', [CotizacionController::class, 'getCotizacion'])->middleware('can:cotizaciones.info')->name('cotizaciones.info');//middleware puesto
+    Route::get('/cotizaciones/create', [CotizacionController::class, 'create'])->middleware('can:cotizaciones.create')->name('cotizaciones.create');//middleware puesto
+    Route::get('/cotizaciones/borrador', [CotizacionController::class, 'showBorrador'])->middleware('can:cotizaciones.borrador')->name('cotizaciones.borrador');//middleware puesto
 });
 //RUTAS DE PARIDAD
 use App\Http\Controllers\ParidadController;
 
 
 //Route::resource('paridades', ParidadController::class)->except(['create', 'store', 'destroy', 'show']);
-Route::get('/paridades', [ParidadController::class, 'index'])->name('paridades.index');
-Route::get('/paridades/fetch', [ParidadController::class, 'fetchFromAPI'])->name('paridades.fetch');
-Route::get('/paridades/{paridad}/edit', [ParidadController::class, 'edit'])->name('paridades.edit');
-Route::put('/paridades/{paridad}', [ParidadController::class, 'update'])->name('paridades.update');
-Route::get('/paridades/recordatorio', [ParidadController::class, 'checkRecordatorioAnual'])->name('paridades.recordatorio');
-Route::get('/paridades/{paridad}/edit', [ParidadController::class, 'edit'])->name('paridades.edit');
-Route::put('/paridades/{paridad}', [ParidadController::class, 'update'])->name('paridades.update');
+Route::get('/paridades', [ParidadController::class, 'index'])->middleware('can:paridades.index')->name('paridades.index');
+Route::get('/paridades/fetch', [ParidadController::class, 'fetchFromAPI'])->middleware('can:paridades.fetch')->name('paridades.fetch');//middleware puesto
+Route::get('/paridades/{paridad}/edit', [ParidadController::class, 'edit'])->middleware('can:paridades.edit')->name('paridades.edit');//middleware puesto
+Route::put('/paridades/{paridad}', [ParidadController::class, 'update'])->name('paridades.update');//no necesita middleware
+Route::get('/paridades/recordatorio', [ParidadController::class, 'checkRecordatorioAnual'])->name('paridades.recordatorio');//no necesita middleware
+Route::put('/paridades/{paridad}', [ParidadController::class, 'update'])->name('paridades.update');//no necesita middleware
 //rutas de clientes
 Route::middleware('auth')->group(function () {
 
-    Route::get('clientes/exportar', [ClienteController::class, 'exportar'])->name('clientes.exportar');
+    Route::get('clientes/exportar', [ClienteController::class, 'exportar'])->name('clientes.exportar');//no necesita middleware
 
-    Route::get('/contactos/{contacto}/edit', [ContactoClienteController::class, 'edit'])->name('contactos.edit');
-    Route::put('/contactos/{contacto}', [ContactoClienteController::class, 'update'])->name('contactos.update');
+    Route::get('/contactos/{contacto}/edit', [ContactoClienteController::class, 'edit'])->middleware('can:contactoCliente.edit')->name('contactos.edit');//middleware puesto
+    Route::put('/contactos/{contacto}', [ContactoClienteController::class, 'update'])->name('contactos.update');//no necesita middleware
 
     Route::resource('clientes.contactos', ContactoClienteController::class)->except(['show']);
 
 
-    Route::get('/clientes/buscar', [ClienteController::class, 'buscar'])->name('clientes.buscar');
-    Route::get('/clientes/resultados', [ClienteController::class, 'buscar']);
+    Route::get('/clientes/buscar', [ClienteController::class, 'buscar'])->middleware('can:contactoCliente.buscar')->name('clientes.buscar');//middleware puesto
+    Route::get('/clientes/resultados', [ClienteController::class, 'buscar'])->middleware('can:contactoCliente.resultados');//middleware puesto
 
     // Ruta para VER el PDF en el navegador
     Route::post('/cotizaciones/{id}/pdf', [CotizacionController::class, 'generarPDF'])->name('cotizaciones.generarPDFobservaciones');
     Route::get('/cotizaciones/{id}/pdf', [CotizacionController::class, 'generarPDF'])->name('cotizaciones.generarPDF');
-    Route::get('/cotizaciones/{id}/preparar-pdf', [CotizacionController::class, 'prepararPDF'])->name('cotizaciones.prepararPDF')->middleware('auth');
+    Route::get('/cotizaciones/{id}/preparar-pdf', [CotizacionController::class, 'prepararPDF'])->middleware('can:cotizaciones.prepararpdf')->name('cotizaciones.prepararPDF')->middleware('auth');//middleware puesto
     Route::post('cotizaciones/{id}/enviar', [CotizacionController::class, 'enviarCorreo'])->name('cotizaciones.enviar')->middleware('auth');
-    Route::get('/cotizaciones/{id}/Email', [CotizacionController::class, 'prepararEmail'])->name('cotizaciones.prepararEmail');
-    Route::get('/cotizaciones/{id}/edit', [CotizacionController::class, 'edit'])->name('cotizaciones.edit');
+    Route::get('/cotizaciones/{id}/Email', [CotizacionController::class, 'prepararEmail'])->middleware('can:cotizaciones.email')->name('cotizaciones.prepararEmail');//middleware puesto
+    Route::get('/cotizaciones/{id}/edit', [CotizacionController::class, 'edit'])->middleware('can:cotizaciones.edit')->name('cotizaciones.edit');//middleware puesto
     Route::put('/cotizaciones/{id}', [CotizacionController::class, 'update'])->name('cotizaciones.editarestado');
+
+    #perfil
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
     #SERVICIOS
     Route::get('/servicios/crear', [ServicioController::class, 'create'])->name('servicios.create');
     Route::post('/servicios', [ServicioController::class, 'store'])->name('servicios.store');
     Route::get('/servicios/{id}/editar', [ServicioController::class, 'edit'])->name('servicios.edit');
     Route::put('/servicios/{id}', [ServicioController::class, 'update'])->name('servicios.update');
-    Route::get('/servicios', [ServicioController::class, 'index'])->name('servicios.index');
+    Route::get('/servicios', [ServicioController::class, 'index'])->middleware('can:servicios.index')->name('servicios.index');//middleware puesto
     Route::put('/servicios/{id}/toggle', [ServicioController::class, 'toggleEstado'])->name('servicios.toggleEstado');
     Route::delete('/servicios/{id}', [ServicioController::class, 'destroy'])->name('servicios.destroy');
     Route::get('/servicios/{id}/info', [ServicioController::class, 'getServicio'])->name('servicios.info');
@@ -102,11 +102,13 @@ Route::middleware('auth')->group(function () {
     Route::delete('/categorias/{categoria}', [CategoriaController::class, 'destroy'])->name('categorias.destroy');
 
     Route::resource('monedas', MonedaController::class)->only(['index', 'store', 'update', 'destroy']);
-    Route::resource('viewusers', CrudUserController::class)->names('viewusers');
-    Route::get('/viewusers', [CrudUserController::class, 'index'])->name('viewusers.index');
+
+
+    Route::resource('viewusers', CrudUserController::class)->middleware('can:admin.viewusers.index')->names('viewusers');//tiene permisos
+    Route::get('/viewusers', [CrudUserController::class, 'index'])->middleware('can:admin.viewusers.index')->name('viewusers.index');//tiene permisos
 
     #cuenta corrienete
-    Route::get('/transferencias', [TransferenciaController::class, 'index'])->name('transferencias.index');
+    Route::get('/transferencias', [TransferenciaController::class, 'index'])->middleware('can:factura.index')->name('transferencias.index');
     Route::post('/transferencias/importar', [TransferenciaController::class, 'importarExcel'])->name('transferencias.importar');
     Route::post('/transferencias', [TransferenciaController::class, 'store'])->name('transferencias.store');
     Route::get('/transferencias/conciliar', [TransferenciaController::class, 'conciliarTransferencias'])->name('transferencias.conciliar');
@@ -116,17 +118,17 @@ Route::middleware('auth')->group(function () {
     Route::get('/cambiar-password', function () {
         return view('password.change');
     })->name('password.change');
-
     Route::put('/password', [ProfileController::class, 'updatePassword'])->name('password.update');
+    
     // Rutas de Clientes
-    Route::resource('clientes', ClienteController::class);
-    Route::get('/clientes/{id}/info', [ClienteController::class, 'getCliente'])->name('clientes.info');
+    Route::resource('clientes', ClienteController::class)->middleware('can:cliente.index');//middleware puesto
+    Route::get('/clientes/{id}/info', [ClienteController::class, 'getCliente'])->middleware('can:cliente.info')->name('clientes.info');//middleware puesto
 
     // Rutas de contactos anidados bajo clientes
     Route::prefix('clientes/{cliente}')->name('clientes.')->group(function () {
-        Route::get('contactos/create', [ContactoClienteController::class, 'create'])->name('contactos.create');
+        Route::get('contactos/create', [ContactoClienteController::class, 'create'])->middleware('can:contactoCliente.create')->name('contactos.create');//middleware puesto
         Route::post('contactos', [ContactoClienteController::class, 'store'])->name('contactos.store');
-        Route::resource('contactos', ContactoClienteController::class)->except(['create', 'show', 'store']);
+        Route::resource('contactos', ContactoClienteController::class)->middleware('can:cliente.contacto')->except(['create', 'show', 'store']);//middleware puesto
         Route::get('contactos/info', [ContactoClienteController::class, 'getContactos'])->name('contactos.info');
     });
 
@@ -166,7 +168,7 @@ Route::middleware(['auth'])->group(function () {
 
 //Registro de usuarios
 Route::middleware(['auth'])->group(function () {
-    Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
+    Route::get('/users/create', [UserController::class, 'create'])->middleware('can:user.create')->name('users.create');
     Route::post('/users', [UserController::class, 'store'])->name('users.store');
 });
 

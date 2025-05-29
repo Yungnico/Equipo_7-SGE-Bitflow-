@@ -40,6 +40,7 @@
                 @endforeach
 
                 <button type="submit" class="btn btn-primary mt-3">Asignar Rol</button>
+                <button type="button" class="btn btn-secondary mt-3" onclick="window.location='{{ route('viewusers.index') }}'">Regresar</button>
             </form>
         </div>
     </div>  
