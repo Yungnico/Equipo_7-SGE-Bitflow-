@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Paridad extends Model
 {
-    protected $table = 'paridades';
+    
     protected $fillable = ['moneda', 'valor', 'fecha'];
 
     protected $dates = ['fecha'];
@@ -17,4 +17,8 @@ class Paridad extends Model
             ->orderBy('fecha', 'desc')
             ->first();
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> parent of e7e936ae (Merge branch 'Dev' into Vlillo)
