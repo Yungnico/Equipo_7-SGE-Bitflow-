@@ -18,8 +18,13 @@ class FacturacionController extends Controller
      */
     public function index()
     {
+        $clientes = \App\Models\Cliente::all();
+        $servicios = \App\Models\Servicio::all();
+        $paridades = \App\Models\Paridad::all();
         $facturas = Facturacion::with(['detalles'])->get();
-        return view('Facturacion.index', compact('facturas'));
+        $maxFolio = Facturacion::max('folio') ?? 0;
+        $maxFolio = $maxFolio + 1; // Incrementar el máximo folio para la nueva factura
+        return view('Facturacion.index', compact('facturas', 'clientes', 'servicios','paridades', 'maxFolio'));
     }
 
     public function importar(Request $request)
@@ -151,6 +156,7 @@ class FacturacionController extends Controller
                             ]);
                         } catch (\Exception $e) {
                             Log::error("Error insertando detalle en línea $linea: " . $e->getMessage());
+                            return back()->with('error', 'Error al importar archivo.');
                         }
                     }
                 }
@@ -186,7 +192,65 @@ class FacturacionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try{
+            $request->validate([
+                'folio' => 'required|integer',
+                'tipo_dte' => 'required|string|max:10',
+                'fecha_emision' => 'required|date',
+                'rut_receptor' => 'required|string|max:20',
+                'razon_social_receptor' => 'required|string|max:255',
+                'productos' => 'array',
+                'itemsL' => 'array',
+                'total_neto' => 'required|numeric',
+                'iva' => 'required|numeric',
+                'total' => 'required|numeric',
+            ]);
+
+            $factura = Facturacion::create([
+                'folio' => $request->folio,
+                'tipo_dte' => $request->tipo_dte,
+                'fecha_emision' => Carbon::parse($request->fecha_emision)->format('Y-m-d'),
+                'rut_receptor' => $request->rut_receptor,
+                'razon_social_receptor' => $request->razon_social_receptor,
+                'total_neto' => $request->total_neto,
+                'iva' => $request->iva,
+                'total' => $request->total,
+                'estado' => 'emitida',
+            ]);
+            if ($request->has('productos')) {
+                foreach ($request->productos as $producto) {
+                    DetalleFactura::create([
+                        'factura_id' => $factura->id,
+                        'descripcion' => $producto['descripcion'],
+                        'cantidad' => $producto['cantidad'],
+                        'precio_unitario' => $producto['precio'] / $producto['cantidad'],
+                        'subtotal' => $producto['precio']  * $producto['cantidad'],
+                    ]);
+                }
+            }
+            if ($request->has('itemsL')) {
+                foreach ($request->itemsL as $item) {
+                    DetalleFactura::create([
+                        'factura_id' => $factura->id,
+                        'descripcion' => $item['descripcion'],
+                        'cantidad' => $item['cantidad'],
+                        'precio_unitario' => $item['precio_itemsL'],
+                        'subtotal' => $item['precio_itemsL'] * $item['cantidad'],
+                    ]);
+                }
+            }
+            return response()->json([
+                'success' => true,
+                'message' => 'Factura creada exitosamente.',
+                'factura_id' => $factura->id,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al crear la factura.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
@@ -204,7 +268,18 @@ class FacturacionController extends Controller
     {
         //
     }
+    public function cambiarEstado(Request $request, $id)
+    {
+        $request->validate([
+            'estado' => 'required|string'
+        ]);
 
+        $factura = Facturacion::findOrFail($id);
+        $factura->estado = $request->estado;
+        $factura->save();
+
+        return redirect()->back()->with('success', 'Estado actualizado correctamente.');
+    }
     /**
      * Remove the specified resource from storage.
      */

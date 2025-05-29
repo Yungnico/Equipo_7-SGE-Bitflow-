@@ -13,7 +13,6 @@ class StoreClienteRequest extends FormRequest
             'rut' => [
                 'required',
                 'string',
-                'regex:/^\d{1,2}\.\d{3}\.\d{3}-[0-9kK]{1}$/',
                 'unique:clientes,rut',
             ],
             'nombre_fantasia' => 'required|string|max:100',
