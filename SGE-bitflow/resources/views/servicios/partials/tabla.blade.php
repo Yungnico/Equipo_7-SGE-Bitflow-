@@ -5,7 +5,7 @@
             <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#modalMantenedorCategorias">
                 Categorías
             </button>
-            <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modalMantenedorMonedas">
+            <button class="btn btn-warning d-none" data-bs-toggle="modal" data-bs-target="#modalMantenedorMonedas">
                 Monedas
             </button>
         </div>
@@ -36,7 +36,7 @@
                             <select class="form-select filtro-select" data-columna="3">
                                 <option value="">Moneda</option>
                                 @foreach($monedas as $moneda)
-                                <option value="{{ $moneda->nombre }}">{{ $moneda->nombre }}</option>
+                                <option value="{{ $moneda->id }}">{{ $moneda->moneda }}</option>
                                 @endforeach
                             </select>
                         </th>
@@ -68,7 +68,7 @@
                         <td>{{ $servicio->nombre_servicio }}</td>
                         <td>{{ $servicio->descripcion }}</td>
                         <td>${{ number_format($servicio->precio, 2, ',', '.') }}</td>
-                        <td>{{ $servicio->moneda->nombre ?? 'Sin moneda' }}</td>
+                        <td>{{ $servicio->moneda->moneda ?? 'Sin moneda' }}</td>
                         <td>{{ $servicio->categoria->nombre ?? 'Sin categoría' }}</td>
                         <td class="d-flex gap-2 justify-content-center">
                             <button class="btn btn-sm btn-primary"
@@ -78,7 +78,7 @@
                                 data-nombre="{{ $servicio->nombre_servicio }}"
                                 data-descripcion="{{ $servicio->descripcion }}"
                                 data-precio="{{ $servicio->precio }}"
-                                data-moneda="{{ $servicio->moneda }}"
+                                data-moneda="{{ $servicio->moneda->moneda}}"
                                 data-categoria="{{ $servicio->categoria_id }}">
                                 <i class="fas fa-pencil-alt"></i>
                             </button>

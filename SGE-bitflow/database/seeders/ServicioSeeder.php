@@ -12,18 +12,24 @@ class ServicioSeeder extends Seeder
      */
     public function run(): void
     {
-        $clp = \App\Models\Moneda::create([
-            'nombre' => 'CLP',
-            'valor' => 1,
+        //como llamo a la api para obtener las monedas y paridades
+        // Crear algunas monedas de ejemplo
+        \App\Models\Paridad::create([
+            'moneda' => 'USD',
+            'valor' => 800.00,
+            'fecha' => now(),
         ]);
-        $usd = \App\Models\Moneda::create([
-            'nombre' => 'USD',
-            'valor' => 800,
+        \App\Models\Paridad::create([
+            'moneda' => 'UF',
+            'valor' => 3000.00,
+            'fecha' => now(),
         ]);
-        $uf = \App\Models\Moneda::create([
-            'nombre' => 'UF',
-            'valor' => 30000,
+        \App\Models\Paridad::create([
+            'moneda' => 'CLP',
+            'valor' => 1.00,
+            'fecha' => now(),
         ]);
+
         $servicio1 = \App\Models\Servicio::create([
             'nombre_servicio' => 'Servicio de Prueba 1',
             'descripcion' => 'Descripción del servicio de prueba 1',

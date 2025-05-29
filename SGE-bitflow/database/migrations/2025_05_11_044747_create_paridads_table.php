@@ -11,11 +11,11 @@ return new class extends Migration
         
 
         Schema::create('paridades', function (Blueprint $table) {
+            $table->string('moneda');
+            $table->date('fecha');
+            $table->unique(['moneda', 'fecha']);
             $table->id();
-            $table->string('tipo'); // USD o UF
             $table->decimal('valor', 10, 2);
-            $table->unsignedInteger('mes');
-            $table->unsignedInteger('anio');
             $table->timestamps();
         });
     }

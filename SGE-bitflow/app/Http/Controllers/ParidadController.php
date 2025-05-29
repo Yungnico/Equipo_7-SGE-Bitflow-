@@ -9,7 +9,8 @@ use Illuminate\Support\Facades\Session;
 
 class ParidadController extends Controller
 {
-    private const MONEDAS_VALIDAS = ['USD', 'UF'];
+    protected $table = 'paridades';
+    private const MONEDAS_VALIDAS = ['USD', 'UF', 'CLP'];
 
     public function index()
     {
