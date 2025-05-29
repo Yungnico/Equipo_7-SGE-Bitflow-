@@ -150,7 +150,6 @@ class TransferenciaController extends Controller
                     ->where('estado', '!=', 'Pagada')
                     ->first();
 
-
                 if ($cotizacion) {
                     $fechaCot = \Carbon\Carbon::parse($cotizacion->fecha_cotizacion);
                     $plazo = $cotizacion->cliente->plazo_pago_habil_dias;
@@ -161,7 +160,7 @@ class TransferenciaController extends Controller
                         if (
                             $fechaTransferencia->greaterThanOrEqualTo($fechaCot) &&
                             $fechaTransferencia->lessThanOrEqualTo($fechaLimite) &&
-                            floatval($cotizacion->total) === $monto
+                            floatval($cotizacion->total_iva) === $monto
                         ) {
                             $cotizacion->estado = 'Pagada';
                             $cotizacion->id_transferencia = $transferencia->id;
@@ -187,7 +186,6 @@ class TransferenciaController extends Controller
                 $cliente = Cliente::whereRaw('LOWER(razon_social) = ?', [$nombre])->first();
             }
 
-            // Si no se encuentra cliente por rut ni nombre, no conciliar
             if (!$cliente) {
                 continue;
             }
@@ -195,12 +193,10 @@ class TransferenciaController extends Controller
             $rutCoincide = strtolower($cliente->rut) === $rut;
             $nombreCoincide = strtolower($cliente->razon_social) === $nombre;
 
-            // Si no coincide ni el RUT ni el nombre => no conciliar
             if (!$rutCoincide && !$nombreCoincide) {
                 continue;
             }
 
-            // Buscar cotizaciones no pagadas del cliente
             $cotizaciones = Cotizacion::where('id_cliente', $cliente->id)
                 ->where('estado', '!=', 'Pagada')
                 ->get();
@@ -215,11 +211,10 @@ class TransferenciaController extends Controller
 
                 $fechaLimite = $fechaCot->copy()->addWeekdays($plazo);
 
-                // Validar monto y fecha dentro del rango
                 if (
                     $fechaTransferencia->greaterThanOrEqualTo($fechaCot) &&
                     $fechaTransferencia->lessThanOrEqualTo($fechaLimite) &&
-                    floatval($cotizacion->total) === $monto
+                    floatval($cotizacion->total_iva) === $monto
                 ) {
                     $cotizacion->estado = 'Pagada';
                     $cotizacion->id_transferencia = $transferencia->id;
@@ -235,6 +230,7 @@ class TransferenciaController extends Controller
 
         return back()->with('success', 'Transferencias conciliadas correctamente.');
     }
+
 
 
     public function conciliarManual(Request $request)
