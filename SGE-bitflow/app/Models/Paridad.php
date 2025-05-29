@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Paridad extends Model
 {
-
+    protected $table = 'paridades';
     protected $fillable = ['moneda', 'valor', 'fecha'];
 
     protected $dates = ['fecha'];

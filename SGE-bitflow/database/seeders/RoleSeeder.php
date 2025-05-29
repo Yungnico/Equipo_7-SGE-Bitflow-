@@ -36,14 +36,12 @@ class RoleSeeder extends Seeder
         Permission::firstOrCreate(['name' => 'user.create'])->syncRoles([$role1]);//middleware puesto
 
         Permission::firstOrCreate(['name' => 'cliente.index'])->syncRoles([$role1, $role2]);
-        Permission::firstOrCreate(['name' => 'cliente.create'])->syncRoles([$role1, $role2]);
-        Permission::firstOrCreate(['name' => 'cliente.edit'])->syncRoles([$role1, $role2]);
-        Permission::firstOrCreate(['name' => 'cliente.destroy'])->syncRoles([$role1, $role2]);
+        Permission::firstOrCreate(['name' => 'cliente.contacto'])->syncRoles([$role1, $role2]);
 
         Permission::firstOrCreate(['name' => 'contactoCliente.index'])->syncRoles([$role1, $role2]);
-        Permission::firstOrCreate(['name' => 'contactoCliente.create'])->syncRoles([$role1, $role2]);
         Permission::firstOrCreate(['name' => 'contactoCliente.edit'])->syncRoles([$role1, $role2]);
-        Permission::firstOrCreate(['name' => 'contactoCliente.destroy'])->syncRoles([$role1, $role2]);
+        Permission::firstOrCreate(['name' => 'contactoCliente.create'])->syncRoles([$role1, $role2]);
+
 
 
 
