@@ -20,9 +20,10 @@
     @endif
 
     <h2 class="mb-3">Contactos de {{ $cliente->nombre_fantasia }}</h2>
+    
 
     <a href="{{ route('clientes.contactos.create', $cliente->id) }}" class="btn btn-primary mb-3">Agregar contacto</a>
-
+    <a href="{{ route('clientes.index')}}" class="btn btn-secondary mb-3">Volver</a>
     @if ($cliente->contactos->isEmpty())
         <div class="alert alert-info">No hay contactos registrados.</div>
     @else
@@ -48,12 +49,12 @@
                                     <td>{{ $contacto->tipo_contacto }}</td>
                                     <td class="text-nowrap">
                                         <a href="{{ route('contactos.edit', $contacto->id) }}" class="btn btn-warning btn-sm mb-1">
-                                            <i class="fa fa-edit"></i>
+                                            <i class="fa fa-edit" style="color:white"></i>
                                         </a>
                                         <form action="{{ route('clientes.contactos.destroy', [$cliente->id, $contacto->id]) }}" method="POST" class="form-eliminar d-inline">
                                             @csrf
                                             @method('DELETE')
-                                            <button class="btn btn-danger btn-sm">
+                                            <button class="btn btn-danger btn-sm mb-1">
                                                 <i class="fas fa-trash-alt"></i>
                                             </button>
                                         </form>
@@ -66,8 +67,11 @@
             </div>
         </div>
     @endif
+    
 </div>
+
 @endsection
+
 
 @section('js')
     <!-- SweetAlert2 -->

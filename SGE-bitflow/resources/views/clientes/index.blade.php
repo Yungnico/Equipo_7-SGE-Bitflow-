@@ -92,9 +92,10 @@
                                         @endif
                                     </td>
                                     <td class="text-nowrap">
-                                        <a href="{{ route('clientes.edit', $cliente) }}" class="btn btn-warning btn-sm mb-1">
-                                            <i class="fas fa-edit" style="color: white"></i>
-                                        </a>
+                                        <button class="btn btn-sm btn-warning btn-sm mb-1" onclick="abrirModalEditar({{ $cliente }})">
+                                            <i class="fas fa-edit" style="color:white"></i>
+                                        </button>
+
                                         <form action="{{ route('clientes.destroy', $cliente) }}" method="POST" class="form-eliminar d-inline">
                                             @csrf
                                             @method('DELETE')
@@ -180,6 +181,63 @@
   </div>
 </div>
 
+<div class="modal fade" id="modalEditarCliente" tabindex="-1" role="dialog" aria-labelledby="modalEditarClienteLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <form id="formEditarCliente" method="POST" enctype="multipart/form-data">
+      @csrf
+      @method('PUT')
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalEditarClienteLabel">Editar Cliente</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="editar_razon_social">Razón Social*</label>
+              <input type="text" class="form-control" name="razon_social" id="editar_razon_social" required>
+            </div>
+            <div class="form-group col-md-6">
+              <label for="editar_rut">RUT*</label>
+              <input type="text" class="form-control" name="rut" id="editar_rut" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="editar_nombre_fantasia">Nombre Fantasía</label>
+              <input type="text" class="form-control" name="nombre_fantasia" id="editar_nombre_fantasia">
+            </div>
+            <div class="form-group col-md-6">
+              <label for="editar_giro">Giro</label>
+              <input type="text" class="form-control" name="giro" id="editar_giro">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="editar_direccion">Dirección</label>
+              <input type="text" class="form-control" name="direccion" id="editar_direccion">
+            </div>
+            <div class="form-group col-md-6">
+              <label for="editar_logo">Logo (JPG o PNG)</label>
+              <input type="file" class="form-control" name="logo" id="editar_logo">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Actualizar</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+
 @section('js')
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -224,5 +282,24 @@
                 });
             });
         });
-    </script>
+    });
+</script>
+<script>
+  function abrirModalEditar(cliente) {
+    // Rellenar campos
+    document.getElementById('editar_razon_social').value = cliente.razon_social;
+    document.getElementById('editar_rut').value = cliente.rut;
+    document.getElementById('editar_nombre_fantasia').value = cliente.nombre_fantasia ?? '';
+    document.getElementById('editar_giro').value = cliente.giro ?? '';
+    document.getElementById('editar_direccion').value = cliente.direccion ?? '';
+
+    // Actualizar acción del formulario
+    const form = document.getElementById('formEditarCliente');
+    form.action = `/clientes/${cliente.id}`; // Asegúrate de que esta ruta coincida con la definida en tus routes
+
+    // Mostrar modal
+    $('#modalEditarCliente').modal('show');
+  }
+</script>
+
 @endsection
