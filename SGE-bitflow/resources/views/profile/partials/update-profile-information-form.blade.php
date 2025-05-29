@@ -97,17 +97,9 @@ document.getElementById('actualizar_perfil').addEventListener('submit', function
         cancelButtonColor: "#d33",
         confirmButtonText: 'Sí, guardar',
         cancelButtonText: 'Cancelar'
+    
     }).then((result) => {
-        if (result.isConfirmed) {
-            Swal.fire({
-                title: "Guardado!",
-                text: "Se ha actualizado tu perfil correctamente.",
-                icon: "success",
-                confirmButtonColor: "#3085d6"
-            }).then(() => {
-                e.target.submit(); // Envía el formulario después de cerrar el SweetAlert de éxito
-            });
-        }
+        e.target.submit();
     });
 });
 </script>
