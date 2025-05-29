@@ -296,6 +296,9 @@
             placeholder: 'Seleccione una opción',
             allowClear: true,
             width: '100%'
+            noResults: function() {
+                return 'No se encontraron resultados';
+            }
         });
 
         $('.filtro-select').on('change', function() {
