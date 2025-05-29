@@ -18,6 +18,14 @@ class Paridad extends Model
             ->first();
     }
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+    public function servicios()
+    {
+        return $this->hasMany(Servicio::class);
+    }
+>>>>>>> parent of d8c5c8b4 (Merge branch 'Vlillo' of https://github.com/Yungnico/Equipo_7-SGE-Bitflow- into Vlillo)
 }
 =======
 }

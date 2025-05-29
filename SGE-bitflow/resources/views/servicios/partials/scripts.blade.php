@@ -13,7 +13,7 @@
             const categoriaId = button.getAttribute('data-categoria');
 
             const form = document.getElementById('formEditarServicio');
-            form.action = `/servicios/${id}`; // Asegúrate de que coincide con tu ruta
+            form.action = `/servicios/${id}`;
 
             document.getElementById('editar-id').value = id;
             document.getElementById('editar-nombre').value = nombre;
@@ -21,7 +21,7 @@
             document.getElementById('editar-precio').value = precio;
 
             // Seleccionar la moneda correcta
-            const monedaSelect = form.querySelector('select[name="moneda"]'); // <-- Asegúrate que este name exista
+            const monedaSelect = form.querySelector('select[name="moneda"]'); // 
             for (let option of monedaSelect.options) {
                 if (option.value === monedaNombre) {
                     option.selected = true;
@@ -69,7 +69,7 @@
             document.getElementById('editMonedaValor').value = valor;
 
             const form = document.getElementById('formEditarMoneda');
-            form.action = `/monedas/${id}`; // Ajusta si usas una ruta distinta
+            form.action = `/monedas/${id}`;
         });
     });
 </script>
@@ -83,7 +83,6 @@
                 const parentInstance = bootstrap.Modal.getInstance(parentModal);
                 if (parentInstance) parentInstance.hide();
 
-                // Guardamos en dataset para saber qué modal reabrir
                 const targetModalSelector = button.getAttribute('data-bs-target');
                 const targetModal = document.querySelector(targetModalSelector);
                 targetModal.dataset.parent = parentModalSelector;
@@ -91,7 +90,6 @@
         });
     });
 
-    // Cuando se cierra el modal hijo, volvemos a mostrar el padre
     document.querySelectorAll('.modal').forEach(function(modal) {
         modal.addEventListener('hidden.bs.modal', function() {
             const parentSelector = modal.dataset.parent;
@@ -100,7 +98,6 @@
                 const parentInstance = new bootstrap.Modal(parentModal);
                 parentInstance.show();
 
-                // Limpiar para evitar loops
                 delete modal.dataset.parent;
             }
         });
@@ -108,13 +105,18 @@
 </script>
 
 
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+
+<!-- DataTables -->
 <script src="https://cdn.datatables.net/2.3.0/js/dataTables.js"></script>
 <script src="https://cdn.datatables.net/2.3.0/js/dataTables.bootstrap5.js"></script>
 <script src="https://cdn.datatables.net/responsive/3.0.4/js/dataTables.responsive.js"></script>
 <script src="https://cdn.datatables.net/responsive/3.0.4/js/responsive.bootstrap5.js"></script>
+
+<!-- Select2 -->
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
 
 <script>
     let tablaCategoriasInicializada = false;
@@ -171,33 +173,34 @@
             }
         });
 
-        // Evitar que el filtro se active al hacer click sobre inputs/selects
         $('#tabla-servicios thead tr:eq(1) th').each(function(i) {
             $('input, select', this).on('click', function(e) {
                 e.stopPropagation();
             });
         });
-        $('#reset-filtros').on('click', function() {
-            // Limpiar inputs
-            $('#tabla-servicios thead tr:eq(1) input').val('');
 
-            // Resetear selects a su primera opción
+        $('#reset-filtros').on('click', function() {
             $('#tabla-servicios thead tr:eq(1) select').each(function() {
-                $(this).prop('selectedIndex', 0); // <-- vuelve al primer <option>
+                $(this).val('').trigger('change'); // Limpia y dispara evento
             });
 
-            // Limpiar filtros del DataTable
             var table = $('#tabla-servicios').DataTable();
-            table.columns().search('').draw();
+            table.columns().search('').draw(); // Limpia todas las búsquedas y redibuja
         });
-    });
-</script>
 
-<script>
-    $('.filtro-select').select2({
-        theme: 'bootstrap4',
-        placeholder: 'Seleccione una opción',
-        allowClear: true,
-        width: '100%'
+
+        $('#filtro-moneda').select2({
+            theme: 'bootstrap4',
+            placeholder: 'Seleccione una opción',
+            allowClear: true,
+            width: '100%'
+        });
+
+        $('#filtro-categoria').select2({
+            theme: 'bootstrap4',
+            placeholder: 'Seleccione una opción',
+            allowClear: true,
+            width: '100%'
+        });
     });
 </script>

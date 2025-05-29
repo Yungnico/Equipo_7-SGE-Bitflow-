@@ -26,9 +26,10 @@
         </form>
     </div>
 
-    <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#modalAgregarTransferencia">
-        Agregar transferencia
-    </button>
+    <a href="{{ route('transferencias.conciliar') }}" class="btn btn-success mb-3">
+        Conciliar Transferencias
+    </a>
+
 
     <button type="button" id="reset-filtros" class="btn btn-secondary mb-3">Resetear Filtros</button>
 
@@ -40,6 +41,7 @@
                         <tr>
                             <th>Nombre</th>
                             <th>RUT</th>
+                            <th>Estado</th>
                             <th>Fecha Transacción</th>
                             <th>Hora</th>
                             <th>Fecha Contable</th>
@@ -57,7 +59,7 @@
 
                         <tr class="filtros">
                             <th>
-                                <select class="form-select filtro-select" data-columna="0">
+                                <select class="form-select filtro-select" data-columna="0" style="min-width: 150px;">
                                     <option value="">Nombre</option>
                                     @foreach($transferencias->pluck('nombre')->unique() as $nombre)
                                     <option value="{{ $nombre }}">{{ $nombre }}</option>
@@ -72,7 +74,7 @@
                                     @endforeach
                                 </select>
                             </th>
-                            @for($i = 2; $i < 15; $i++)
+                            @for($i = 2; $i < 16; $i++)
                                 <th>
                                 </th>
                                 @endfor
@@ -83,6 +85,21 @@
                         <tr>
                             <td>{{ $t->nombre }}</td>
                             <td>{{ $t->rut }}</td>
+                            <td>
+                                @if($t->estado === 'Pendiente')
+                                <button
+                                    class="btn btn-sm btn-warning btn-conciliar"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#modalConciliar"
+                                    data-id="{{ $t->id }}">
+                                    Pendiente
+                                </button>
+                                @elseif($t->estado === 'Conciliada')
+                                <span class="badge bg-success">Conciliada</span>
+                                @else
+                                {{ $t->estado }}
+                                @endif
+                            </td>
                             <td>{{ $t->fecha_transaccion }}</td>
                             <td>{{ $t->hora_transaccion }}</td>
                             <td>{{ $t->fecha_contable }}</td>
@@ -99,7 +116,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="15" class="text-center text-muted">No hay datos</td>
+                            <td colspan="16" class="text-center text-muted"></td>
                         </tr>
                         @endforelse
                     </tbody>
@@ -190,6 +207,51 @@
     </div>
 </div>
 
+<!-- Modal Conciliar Transferencia -->
+<div class="modal fade" id="modalConciliar" tabindex="-1" aria-labelledby="modalConciliarLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Seleccionar Cotización para Conciliar</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table id="tabla-cotizaciones" class="table table-striped table-bordered nowrap w-100">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Fecha Cotización</th>
+                                <th>Total</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($cotizacionesDisponibles as $cotizacion)
+                            <tr>
+                                <td>{{ $cotizacion->cliente->razon_social }}</td>
+                                <td>{{ $cotizacion->fecha_cotizacion }}</td>
+                                <td>${{ number_format($cotizacion->total, 0, ',', '.') }}</td>
+                                <td>
+                                    <form method="POST" action="{{ route('transferencias.conciliar.manual') }}" class="d-inline">
+                                        @csrf
+                                        <input type="hidden" name="transferencias_bancarias_id" class="input-transferencia-id">
+                                        <input type="hidden" name="cotizaciones_id_cotizacion" value="{{ $cotizacion->id_cotizacion }}">
+                                        <button type="submit" class="btn btn-sm btn-primary">Conciliar</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
 @endsection
 
 @section('js')
@@ -202,17 +264,22 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 <script>
+    $.fn.dataTable.ext.errMode = 'throw';
+
+
+
+    let tabla;
+
     $(document).ready(function() {
-        const tabla = $('#tabla-transferencias').DataTable({
+        tabla = $('#tabla-transferencias').DataTable({
             responsive: false,
             scrollX: true,
             paging: true,
             autoWidth: false,
-            orderCellsTop: true
-        });
-
-        $('.filtro-select').select2({
-            width: '100%'
+            orderCellsTop: true,
+            language: {
+                url: '{{ asset("datatables/es-CL.json")}}'
+            }
         });
 
         $('.filtro-select').select2({
@@ -221,14 +288,40 @@
             allowClear: true,
             width: '100%'
         });
-    });
-</script>
 
-<script>
+        $('.filtro-select').on('change', function() {
+            const columna = $(this).data('columna');
+            const valor = $(this).val();
+            tabla.column(columna).search(valor ? '^' + valor + '$' : '', true, false).draw();
+        });
+    });
+
     $('#reset-filtros').on('click', function() {
         $('.filtro-select').val('').trigger('change');
         tabla.columns().search('').draw();
     });
-</script>
 
+    document.addEventListener('DOMContentLoaded', function() {
+        let modal = document.getElementById('modalConciliar');
+
+        modal.addEventListener('show.bs.modal', function(event) {
+            let button = event.relatedTarget;
+            let transferenciaId = button.getAttribute('data-id');
+
+            // Asignar el id de transferencia a todos los formularios dentro del modal
+            let inputs = modal.querySelectorAll('.input-transferencia-id');
+            inputs.forEach(input => {
+                input.value = transferenciaId;
+            });
+        });
+
+        $('#tabla-cotizaciones').DataTable({
+            responsive: true,
+            language: {
+                url: '{{ asset("datatables/es-CL.json")}}'
+            }
+        });
+
+    });
+</script>
 @endsection

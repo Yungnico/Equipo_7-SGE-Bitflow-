@@ -374,7 +374,7 @@ return [
         ],
         [
             'text' => 'Facturas',
-            'url' => 'Facturacion/index',
+            'url' => 'facturacion',
             'icon' => 'fas fa-fw fa-file-invoice',
         ],
         [
@@ -402,7 +402,7 @@ return [
         [
             'text' => 'Cuenta corriente',
             'url' => 'transferencias',
-            'icon' => 'fas fa-laptop-medical',
+            'icon' => 'fas fa-file-invoice-dollar',
         ],
     ],
 

@@ -50,7 +50,7 @@
 
     <div class="row align-items-center mb-3">
         <div class="col-md-6 mb-2 mb-md-0">
-            <!--<a href="{{ route('clientes.create') }}" class="btn btn-primary">Crear Cliente</a> -->
+            <!--<a href=" route('clientes.create') }}" class="btn btn-primary">Crear Cliente</a> -->
             <button class="btn btn-primary" data-toggle="modal" data-target="#modalCrearCliente">Crear Cliente</button>
 
         </div>

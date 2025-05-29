@@ -13,6 +13,9 @@
         </ul>
     </div>
 @endif
+<input type="hidden" id="valor_usd" value="{{ $monedas[0]->valor }}">
+<input type="hidden" id="valor_uf" value="{{ $monedas[1]->valor }}">
+<input type="hidden" id="valor_clp" value="{{ $monedas[2]->valor }}">
 <div id="accordion" class="pt-3">
     <!-- Aqui deberia ir un form pero no funciona !! <form id='cotizacionform'> -->
         <div class="card">
@@ -114,9 +117,9 @@
                                 <div class="input-group">
                                     <select class="form-control" id="moneda_cotizacion" name="moneda">
                                         <option value="">Seleccione una moneda</option>
-                                        <option value="USD">USD - EEUU (Dolares)</option>
-                                        <option value="CLP">CLP - Chile (Pesos Chilenos)</option>
-                                        <option value="UF">UF - Chile (Unidad de Fomento)</option>
+                                        @foreach ($monedas as $moneda)
+                                            <option value="{{ $moneda->moneda }}">{{ $moneda->moneda }}</option>
+                                        @endforeach
                                     </select>
                                     <div class="input-group-append">
                                         <button class="btn btn-outline-secondary" type="button" data-toggle="tooltip" data-placement="top" title="Aquí debes seleccionar la moneda en la que se va a realizar la cotización.">
@@ -442,15 +445,26 @@
         // ----------------------     PROVICIONAL     ----------------------
         function conversorMoneda(precio, moneda, moneda_cotizacion){
             let precioConvertido = 0;
+            let valor_usd = parseFloat(document.getElementById('valor_usd').value);
+            let valor_uf = parseFloat(document.getElementById('valor_uf').value);
+            let valor_clp = parseFloat(document.getElementById('valor_clp').value);
+
             if(moneda == 'USD' && moneda_cotizacion == 'CLP'){
-                precioConvertido = precio * 800; 
+                precioConvertido = precio * valor_usd; 
             } else if(moneda == 'CLP' && moneda_cotizacion == 'USD'){
-                precioConvertido = precio / 800; 
+                precioConvertido = precio / valor_usd; 
             } else if(moneda == 'UF' && moneda_cotizacion == 'CLP'){
-                precioConvertido = precio * 30000; 
+                precioConvertido = precio * valor_uf; 
             } else if(moneda == 'CLP' && moneda_cotizacion == 'UF'){
-                precioConvertido = precio / 30000; 
+                precioConvertido = precio / valor_uf; 
+            } else if (moneda == 'USD' && moneda_cotizacion == 'UF'){
+                precioConvertido = (precio * valor_usd) / valor_uf; 
+            } else if (moneda == 'UF' && moneda_cotizacion == 'USD'){
+                precioConvertido = (precio / valor_uf) * valor_usd; 
+            } else {
+                precioConvertido = precio; // Si las monedas son iguales, no se realiza conversión
             }
+
             return precioConvertido;
         }
 
@@ -696,6 +710,7 @@
                 url: '/servicios/' + productoId + '/info',
                 type: 'GET',
                 success: function(data) {
+                    console.log(data);
                     $('#descripcion').val(data.descripcion);
                     $('#precio').val(data.precio);
                     $('#moneda').val(data.moneda);
