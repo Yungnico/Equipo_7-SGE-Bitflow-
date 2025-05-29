@@ -18,41 +18,64 @@
     @endif
 
     <a href="{{ route('paridades.fetch') }}" class="btn btn-success mb-3">Actualizar</a>
-    
 
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>Moneda</th>
-                <th>Valor</th>
-                <th>Fecha</th>
-                <th>Acción</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($paridades as $grupo)
-                @php
-                    $p = $grupo->first(); // Tomamos el primer registro de cada grupo
-                @endphp
-                <tr>
-                    <td>{{ $p->moneda }}</td>
-                    <td>${{ number_format($p->valor, 2, ',', '.') }}</td>
-                    <td>{{ \Carbon\Carbon::parse($p->fecha)->format('d/m/Y') }}</td>
-                    <td>
-                        <a href="{{ route('paridades.edit', $p) }}" class="btn btn-warning btn-sm"><i class="fas fa-edit" style="color: white"></i></a>
-                    </td>
-                </tr>
-            @endforeach
-            @if ($paridades->isEmpty())
-                <tr>
-                    <td colspan="4" class="text-center">No hay paridades registradas.</td>
-                </tr>
-            @endif
-
-            
-        </tbody>
-    </table>
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Listado de Paridades</h3>
+        </div>
+        <div class="card-body">
+            <table id="tabla-paridades" class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Moneda</th>
+                        <th>Valor</th>
+                        <th>Fecha</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($paridades as $grupo)
+                        @php
+                            $p = $grupo->first(); // Tomamos el primer registro de cada grupo
+                        @endphp
+                        <tr>
+                            <td>{{ $p->moneda }}</td>
+                            <td>${{ number_format($p->valor, 2, ',', '.') }}</td>
+                            <td>{{ \Carbon\Carbon::parse($p->fecha)->format('d/m/Y') }}</td>
+                            <td>
+                                <a href="{{ route('paridades.edit', $p) }}" class="btn btn-warning btn-sm">
+                                    <i class="fas fa-edit" style="color: white"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    @endforeach
+                    @if ($paridades->isEmpty())
+                        <tr>
+                            <td colspan="4" class="text-center">No hay paridades registradas.</td>
+                        </tr>
+                    @endif
+                </tbody>
+            </table>
+        </div>
+    </div>
 @stop
 
+@section('js')
+    {{-- CDN de DataTables --}}
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap4.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#tabla-paridades').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/es-ES.json'
+                }
+            });
+        });
+    </script>
+@stop
 
-
+@section('css')
+    {{-- CDN de DataTables CSS --}}
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap4.min.css">
+@stop

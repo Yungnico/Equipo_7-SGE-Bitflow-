@@ -58,7 +58,6 @@ Route::put('/paridades/{paridad}', [ParidadController::class, 'update'])->name('
 Route::get('/paridades/recordatorio', [ParidadController::class, 'checkRecordatorioAnual'])->name('paridades.recordatorio');
 Route::get('/paridades/{paridad}/edit', [ParidadController::class, 'edit'])->name('paridades.edit');
 Route::put('/paridades/{paridad}', [ParidadController::class, 'update'])->name('paridades.update');
-
 //rutas de clientes
 Route::middleware('auth')->group(function () {
 

@@ -81,6 +81,8 @@
             </form>
         </div>
     </div>
+
+    
     {{-- SweetAlert si falta seleccionar tipo_contacto --}}
     @if ($errors->has('tipo_contacto'))
         <script>
