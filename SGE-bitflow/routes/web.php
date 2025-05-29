@@ -20,8 +20,10 @@ use App\Http\Controllers\FacturacionController;
 Route::get('/facturacion/upload', function () {
     return view('facturacion.upload');
 })->name('facturacion.upload');
-
+Route::resource('facturacion', FacturacionController::class)->except(['create', 'edit', 'show','store']);
 Route::post('/facturacion/importar', [FacturacionController::class, 'importar'])->name('facturacion.importar');
+route::post('/facturacion/crear', [FacturacionController::class, 'store'])->name('facturacion.store');
+Route::put('/facturas/{id}/cambiar-estado', [FacturacionController::class, 'cambiarEstado'])->name('facturas.cambiarEstado');
 /*
 |--------------------------------------------------------------------------
 | Web Routes

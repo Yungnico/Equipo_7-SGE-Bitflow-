@@ -15,7 +15,7 @@ return new class extends Migration
         Schema::create('clientes', function (Blueprint $table) {
             $table->id();
             $table->string('razon_social', 100)->unique();
-            $table->string('rut', 12)->unique(); // 12 es suficiente para el formato XX.XXX.XXX-X
+            $table->string('rut')->unique(); // 12 es suficiente para el formato XX.XXX.XXX-X
             $table->string('nombre_fantasia', 100)->nullable();
             $table->string('giro', 100)->nullable();
             $table->string('direccion', 150)->nullable();
