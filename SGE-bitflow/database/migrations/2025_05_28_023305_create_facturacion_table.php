@@ -21,7 +21,7 @@ return new class extends Migration
             $table->decimal('total_neto', 15, 2);
             $table->decimal('iva', 15, 2);
             $table->decimal('total', 15, 2);
-            $table->enum('estado', ['emitida', 'anulada', 'reemplazada'])->default('emitida');
+            $table->enum('estado', ['emitida', 'anulada', 'pagada'])->default('emitida');
             $table->timestamps();
 
         });

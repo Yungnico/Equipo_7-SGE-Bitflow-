@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\CotizacionMailable;
 use App\Models\CotizacionDetalle;
+use App\Models\Facturacion;
+
 class CotizacionController extends Controller
 {
     public function prepararPDF($id){
@@ -254,6 +256,7 @@ class CotizacionController extends Controller
         $cotizacion = Cotizacion::with(['cliente', 'servicios', 'itemsLibres'])->findOrFail($id);
         $clientes = Cliente::all();
         $servicios = Servicio::all();
-        return view('cotizaciones.edit', compact('cotizacion', 'clientes', 'servicios'));
+        $facturas = Facturacion::all();
+        return view('cotizaciones.edit', compact('cotizacion', 'clientes', 'servicios','facturas'));
     }
 }
