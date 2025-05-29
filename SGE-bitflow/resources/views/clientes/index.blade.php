@@ -230,7 +230,7 @@
                     <div class="form-row">
                         <div class="form-group col-md-6">
                             <label for="plazo_pago_habil_dias">Plazo de Pago (días hábiles)</label>
-                            <input type="number" class="form-control" name="plazo_pago_habil_dias" value="{{ old('plazo_pago_habil_dias', $cliente->plazo_pago_habil_dias ?? '') }}" min="0">
+                            <input type="number" class="form-control" name="plazo_pago_habil_dias" id="editar_dias">
                         </div>
                     </div>
 
@@ -295,7 +295,7 @@
         document.getElementById('editar_nombre_fantasia').value = cliente.nombre_fantasia ?? '';
         document.getElementById('editar_giro').value = cliente.giro ?? '';
         document.getElementById('editar_direccion').value = cliente.direccion ?? '';
-
+        document.getElementById('editar_dias').value = cliente.plazo_pago_habil_dias ?? '';
         // Actualizar acción del formulario
         const form = document.getElementById('formEditarCliente');
         form.action = `/clientes/${cliente.id}`; // Asegúrate de que esta ruta coincida con la definida en tus routes
