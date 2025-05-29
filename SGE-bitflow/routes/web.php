@@ -24,6 +24,7 @@ Route::resource('facturacion', FacturacionController::class)->except(['create', 
 Route::post('/facturacion/importar', [FacturacionController::class, 'importar'])->name('facturacion.importar');
 route::post('/facturacion/crear', [FacturacionController::class, 'store'])->name('facturacion.store');
 Route::put('/facturas/{id}/cambiar-estado', [FacturacionController::class, 'cambiarEstado'])->name('facturas.cambiarEstado');
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -45,6 +46,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/cotizaciones/{id}/info', [CotizacionController::class, 'getCotizacion'])->middleware('can:cotizaciones.info')->name('cotizaciones.info');//middleware puesto
     Route::get('/cotizaciones/create', [CotizacionController::class, 'create'])->middleware('can:cotizaciones.create')->name('cotizaciones.create');//middleware puesto
     Route::get('/cotizaciones/borrador', [CotizacionController::class, 'showBorrador'])->middleware('can:cotizaciones.borrador')->name('cotizaciones.borrador');//middleware puesto
+    Route::get('/cotizacion/conciliar', [CotizacionController::class, 'conciliarTransferencias'])->name('cotizaicon.conciliar');
 });
 //RUTAS DE PARIDAD
 use App\Http\Controllers\ParidadController;

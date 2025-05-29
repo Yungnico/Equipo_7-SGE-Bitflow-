@@ -180,7 +180,7 @@
                             <select type="text" class="form-control" id="rut_receptor" name="rut_receptor" value="" required>
                                 <option value="">Seleccione un Cliente</option>
                                 @foreach ($clientes as $cliente)
-                                    <option value="{{ $cliente->id }}">{{ $cliente->rut }}</option>
+                                    <option value="{{ $cliente->rut }}">{{ $cliente->rut }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -328,8 +328,6 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 @stop
 @section('js')
-    <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <!-- Popper.js -->
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
     <!-- Bootstrap JS -->
