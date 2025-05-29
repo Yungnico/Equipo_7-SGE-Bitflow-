@@ -16,12 +16,12 @@ class Cliente extends Model
         'nombre_fantasia',
         'giro',
         'direccion',
-        'logo'
+        'logo',
+        'plazo_pago_habil_dias',
     ];
-    
+
     public function contactos()
     {
         return $this->hasMany(Contacto::class);
     }
-
 }
