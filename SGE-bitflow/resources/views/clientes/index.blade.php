@@ -253,9 +253,9 @@
         document.addEventListener('DOMContentLoaded', function () {
             // Inicializar DataTable
             $('#clientes-table').DataTable({
+                responsive: true,
+                autoWidth: false,
                 language: {
-                    responsive: true,
-                    autoWidth: false,
                     url: '{{ asset("datatables/es-CL.json")}}'
                 }
             });
@@ -282,10 +282,9 @@
                 });
             });
         });
-    });
-</script>
+    </script>
 <script>
-  function abrirModalEditar(cliente) {
+    function abrirModalEditar(cliente) {
     // Rellenar campos
     document.getElementById('editar_razon_social').value = cliente.razon_social;
     document.getElementById('editar_rut').value = cliente.rut;

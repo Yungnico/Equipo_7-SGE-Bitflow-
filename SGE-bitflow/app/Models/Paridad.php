@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Paridad extends Model
 {
+    
     protected $fillable = ['moneda', 'valor', 'fecha'];
 
     protected $dates = ['fecha'];
