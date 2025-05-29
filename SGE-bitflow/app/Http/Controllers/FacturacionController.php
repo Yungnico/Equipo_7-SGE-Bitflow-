@@ -19,7 +19,7 @@ class FacturacionController extends Controller
     public function index()
     {
         $facturas = Facturacion::with(['detalles'])->get();
-        return view('facturacion.index', compact('facturas'));
+        return view('Facturacion.index', compact('facturas'));
     }
 
     public function importar(Request $request)
