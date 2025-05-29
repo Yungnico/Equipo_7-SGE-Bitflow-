@@ -27,10 +27,8 @@ class Cotizacion extends Model
         'telefono',
         'moneda_cotizacion',
         'observaciones',
-        'id_transferencia',
-        'factura_asociada',
     ];
-
+    
 
     // Definición de las relaciones ( cambiar cuando la javi actualice su parte )
 
@@ -47,8 +45,8 @@ class Cotizacion extends Model
     public function servicios()
     {
         return $this->belongsToMany(Servicio::class, 'cotizacion_servicio', 'cotizacion_id', 'servicio_id')
-            ->withPivot('cantidad', 'precio_unitario')
-            ->withTimestamps();
+                    ->withPivot('cantidad', 'precio_unitario')
+                    ->withTimestamps();
     }
 
     public function detalles()
@@ -56,8 +54,4 @@ class Cotizacion extends Model
         return $this->hasMany(CotizacionDetalle::class, 'id_cotizacion', 'id_cotizacion');
     }
 
-    public function transferencia()
-    {
-        return $this->belongsTo(TransferenciaBancaria::class, 'id_transferencia');
-    }
 }

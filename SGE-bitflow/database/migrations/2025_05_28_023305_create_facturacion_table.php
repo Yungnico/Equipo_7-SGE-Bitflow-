@@ -13,17 +13,7 @@ return new class extends Migration
     {
         Schema::create('facturacion', function (Blueprint $table) {
             $table->id();
-            $table->integer('folio')->unique();
-            $table->enum('tipo_dte', ['33', '52', '56', '61']);
-            $table->date('fecha_emision');
-            $table->unsignedBigInteger('rut_receptor')->nullable();
-            $table->string('razon_social_receptor')->nullable();
-            $table->decimal('total_neto', 15, 2);
-            $table->decimal('iva', 15, 2);
-            $table->decimal('total', 15, 2);
-            $table->enum('estado', ['emitida', 'anulada', 'reemplazada'])->default('emitida');
             $table->timestamps();
-
         });
     }
 
@@ -32,7 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('detalle_factura'); 
         Schema::dropIfExists('facturacion');
     }
 };

@@ -10,18 +10,20 @@ return new class extends Migration {
         if (!Schema::hasColumn('servicios', 'moneda_id')) {
             Schema::table('servicios', function (Blueprint $table) {
                 $table->unsignedBigInteger('moneda_id')->after('id'); // Ajusta la posición si es necesario
-                $table->foreign('moneda_id')->references('id')->on('paridades')->onDelete('cascade');
             });
         }
+
+        Schema::table('servicios', function (Blueprint $table) {
+            $table->foreign('moneda_id')->references('id')->on('monedas')->onDelete('cascade');
+        });
     }
 
     public function down(): void
     {
         Schema::table('servicios', function (Blueprint $table) {
-            if (Schema::hasColumn('servicios', 'moneda_id')) {
-                $table->dropForeign(['moneda_id']);
-                $table->dropColumn('moneda_id');
-            } 
+            $table->dropForeign(['moneda_id']);
+            $table->dropColumn('moneda_id');
+            $table->enum('moneda', ['USD', 'PEN', 'EUR']); // ajusta los valores según lo que usabas antes
         });
     }
 };

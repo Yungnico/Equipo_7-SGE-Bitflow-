@@ -13,6 +13,7 @@ class CotizacionDetalle extends Model
         'estado',
         'motivo',
         'archivo',
+        'factura_asociada',
     ];
 
     public function cotizacion()

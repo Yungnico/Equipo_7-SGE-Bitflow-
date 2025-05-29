@@ -7,7 +7,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Categoria;
 use App\Models\Moneda;
-use App\Models\Paridad;
+
+
 
 class ServicioController extends Controller
 {
@@ -24,7 +25,7 @@ class ServicioController extends Controller
             'nombre_servicio' => 'required|string',
             'descripcion' => 'required|string',
             'precio' => 'required|numeric',
-            'moneda_id' => 'required|exists:paridades,id',
+            'moneda_id' => 'required|exists:monedas,id',
             'categoria_id' => 'nullable|exists:categorias,id',
         ]);
 
@@ -52,7 +53,7 @@ class ServicioController extends Controller
             'nombre_servicio' => 'required|string|max:150|unique:servicios,nombre_servicio,' . $servicio->id,
             'descripcion' => 'required|string|max:300',
             'precio' => 'required|numeric',
-            'moneda_id' => 'required|exists:paridades,id',
+            'moneda_id' => 'required|exists:monedas,id',
             'categoria_id' => 'nullable|exists:categorias,id',
         ]);
 
@@ -67,7 +68,7 @@ class ServicioController extends Controller
     public function index(Request $request)
     {
         $categorias = Categoria::all();
-        $monedas = Paridad::all();
+        $monedas = Moneda::all();
 
         $query = Servicio::with('categoria');
 
@@ -76,7 +77,7 @@ class ServicioController extends Controller
         }
 
         if ($request->filled('moneda')) {
-            $query->where('moneda_id', $request->moneda_id);
+            $query->where('moneda', $request->moneda);
         }
 
         if ($request->filled('categoria_id')) {
@@ -97,12 +98,12 @@ class ServicioController extends Controller
         return redirect()->route('servicios.index')->with('success', 'Servicio eliminado correctamente');
     }
     public function getServicio($id)
-    {
+{
     $servicio = Servicio::with('moneda')->findOrFail($id);
-        return response()->json([
-            'descripcion' => $servicio->descripcion,
-            'precio' => $servicio->precio,
-            'moneda' => $servicio->moneda->moneda,
-        ]);
-    }
+    return response()->json([
+        'descripcion' => $servicio->descripcion,
+        'precio' => $servicio->precio,
+        'moneda' => $servicio->moneda->nombre,
+    ]);
+}
 }

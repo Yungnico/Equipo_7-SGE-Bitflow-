@@ -23,6 +23,6 @@ class Servicio extends Model
     }
     public function moneda()
     {
-        return $this->belongsTo(Paridad::class);
+        return $this->belongsTo(Moneda::class);
     }
 }

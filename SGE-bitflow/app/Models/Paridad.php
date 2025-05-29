@@ -17,9 +17,4 @@ class Paridad extends Model
             ->orderBy('fecha', 'desc')
             ->first();
     }
-
-    public function servicios()
-    {
-        return $this->hasMany(Servicio::class);
-    }
 }

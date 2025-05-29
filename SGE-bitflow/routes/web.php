@@ -15,13 +15,6 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ClienteExportController;
 use App\Http\Controllers\TransferenciaController;
-use App\Http\Controllers\FacturacionController;
-
-Route::get('/facturacion/upload', function () {
-    return view('facturacion.upload');
-})->name('facturacion.upload');
-
-Route::post('/facturacion/importar', [FacturacionController::class, 'importar'])->name('facturacion.importar');
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -32,10 +25,6 @@ Route::post('/facturacion/importar', [FacturacionController::class, 'importar'])
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-//rutas de facturacion
-route::middleware('auth')->group(function () {
-    Route::get('/facturacion', [FacturacionController::class, 'index'])->name('facturacion.index');
-});
 
 
 Route::middleware('auth')->group(function () {
@@ -109,8 +98,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/transferencias', [TransferenciaController::class, 'index'])->name('transferencias.index');
     Route::post('/transferencias/importar', [TransferenciaController::class, 'importarExcel'])->name('transferencias.importar');
     Route::post('/transferencias', [TransferenciaController::class, 'store'])->name('transferencias.store');
-    Route::get('/transferencias/conciliar', [TransferenciaController::class, 'conciliarTransferencias'])->name('transferencias.conciliar');
-    Route::post('/transferencias/conciliar-manual', [TransferenciaController::class, 'conciliarManual'])->name('transferencias.conciliar.manual');
+
+
 
     //Cambio de contraseñas
     Route::get('/cambiar-password', function () {

@@ -24,11 +24,5 @@ class TransferenciaBancaria extends Model
         'tipo_cuenta',
         'banco',
         'comentario_transferencia',
-        'estado',
     ];
-
-    public function cotizacion()
-    {
-        return $this->hasOne(Cotizacion::class, 'factura_asociada');
-    }
 }
