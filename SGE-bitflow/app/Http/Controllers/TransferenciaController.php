@@ -141,11 +141,15 @@ class TransferenciaController extends Controller
             $fechaTransferencia = \Carbon\Carbon::parse($transferencia->fecha_transaccion);
 
             // 1. Buscar por ID en comentario
-            if (preg_match('/\d+/', $comentario, $matches)) {
-                $idCotizacion = $matches[0];
+            if (preg_match('/(\d+)-CDP(\d+)/i', $comentario, $matches)) {
+                $idCotizacion = $matches[1]; // 1007
+                $idCliente = $matches[2];    // 2
+
                 $cotizacion = Cotizacion::where('id_cotizacion', $idCotizacion)
+                    ->where('id_cliente', $idCliente)
                     ->where('estado', '!=', 'Pagada')
                     ->first();
+
 
                 if ($cotizacion) {
                     $fechaCot = \Carbon\Carbon::parse($cotizacion->fecha_cotizacion);
@@ -231,7 +235,6 @@ class TransferenciaController extends Controller
 
         return back()->with('success', 'Transferencias conciliadas correctamente.');
     }
-
 
 
     public function conciliarManual(Request $request)
