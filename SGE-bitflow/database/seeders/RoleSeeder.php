@@ -21,9 +21,9 @@ class RoleSeeder extends Seeder
         Permission::firstOrCreate(['name' => 'dashboard'])->syncRoles([$role1, $role2]);
 
         Permission::firstOrCreate(['name' => 'cotizaciones.menu'])->syncRoles([$role1, $role2]);//middleware puesto
-        Permission::firstOrCreate(['name' => 'cotizaciones.create'])->syncRoles([$role1, $role2]);//middleware puesto
+        Permission::firstOrCreate(['name' => 'cotizaciones.create'])->syncRoles([$role1]);//middleware puesto
         Permission::firstOrCreate(['name' => 'cotizaciones.index'])->syncRoles([$role1, $role2]);//middleware puesto
-        Permission::firstOrCreate(['name' => 'cotizaciones.borrador'])->syncRoles([$role1, $role2]);//middleware puesto
+        Permission::firstOrCreate(['name' => 'cotizaciones.borrador'])->syncRoles([$role1]);//middleware puesto
         Permission::firstOrCreate(['name' => 'cotizaciones.edit'])->syncRoles([$role1, $role2]);//middleware puesto
         Permission::firstOrCreate(['name' => 'cotizaciones.prepararpdf'])->syncRoles([$role1, $role2]);//middleware puesto
         Permission::firstOrCreate(['name' => 'cotizaciones.email'])->syncRoles([$role1, $role2]);//middleware puesto
@@ -35,17 +35,23 @@ class RoleSeeder extends Seeder
 
         Permission::firstOrCreate(['name' => 'user.create'])->syncRoles([$role1]);//middleware puesto
 
-        Permission::firstOrCreate(['name' => 'cliente.index'])->syncRoles([$role1, $role2]);
-        Permission::firstOrCreate(['name' => 'cliente.contacto'])->syncRoles([$role1, $role2]);
+        Permission::firstOrCreate(['name' => 'cliente.index'])->syncRoles([$role1]);//middleware puesto
+        Permission::firstOrCreate(['name' => 'cliente.contacto'])->syncRoles([$role1]);//middleware puesto
+        Permission::firstOrCreate(['name' => 'cliente.info'])->syncRoles([$role1]);//middleware puesto
 
-        Permission::firstOrCreate(['name' => 'contactoCliente.index'])->syncRoles([$role1, $role2]);
-        Permission::firstOrCreate(['name' => 'contactoCliente.edit'])->syncRoles([$role1, $role2]);
-        Permission::firstOrCreate(['name' => 'contactoCliente.create'])->syncRoles([$role1, $role2]);
+        Permission::firstOrCreate(['name' => 'contactoCliente.index'])->syncRoles([$role1]);
+        Permission::firstOrCreate(['name' => 'contactoCliente.buscar'])->syncRoles([$role1]);//middleware puesto
+        Permission::firstOrCreate(['name' => 'contactoCliente.resultados'])->syncRoles([$role1]);//middleware puesto
+        Permission::firstOrCreate(['name' => 'contactoCliente.edit'])->syncRoles([$role1]);//middleware puesto
+        Permission::firstOrCreate(['name' => 'contactoCliente.create'])->syncRoles([$role1]);//middleware puesto
 
+        Permission::firstOrCreate(['name' => 'paridades.index'])->syncRoles([$role1]);//middleware puesto
+        Permission::firstOrCreate(['name' => 'paridades.fetch'])->syncRoles([$role1]);//middleware puesto
+        Permission::firstOrCreate(['name' => 'paridades.edit'])->syncRoles([$role1]);//middleware puesto
 
+        Permission::firstOrCreate(['name' => 'factura.index'])->syncRoles([$role1, $role2]);
 
-
-        Permission::firstOrCreate(['name' => 'servicios.index'])->syncRoles([$role1, $role2]);
+        Permission::firstOrCreate(['name' => 'servicios.index'])->syncRoles([$role1]);
 
 
         $adminUser = User::where('email', 'admin@admin.com')->first();

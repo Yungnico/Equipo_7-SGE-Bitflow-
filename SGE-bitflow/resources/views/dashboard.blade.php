@@ -3,7 +3,9 @@
 @section('title', 'Dashboard')
 
 @section('content_header')
-    <h1>Futuras Métricas</h1>
+    @can('dashboard')
+        <h1>Futuras Métricas</h1>
+    @endcan
 @stop
 
 @section('content')

@@ -376,16 +376,20 @@ return [
             'text' => 'Facturas',
             'url' => 'facturacion',
             'icon' => 'fas fa-fw fa-file-invoice',
+            'can' => 'factura.index',
         ],
+        /*
         [
             'text' => 'Reportes',
             'url' => 'reportes',
             'icon' => 'fas fa-fw fa-chart-bar',            
         ],
+        */
         [
             'text' => 'Clientes',
             'url' => 'clientes',
             'icon' => 'fas fa-solid fa-user-plus',
+            'can' => 'cliente.index',
            
         ],
         [
@@ -398,11 +402,13 @@ return [
             'text' => 'Paridades',
             'url' => 'paridades',
             'icon' => 'fas fa-coins ',
+            'can' => 'paridades.index',
         ],
         [
             'text' => 'Cuenta corriente',
             'url' => 'transferencias',
             'icon' => 'fas fa-file-invoice-dollar',
+            'can' => 'factura.index',
         ],
     ],
 
