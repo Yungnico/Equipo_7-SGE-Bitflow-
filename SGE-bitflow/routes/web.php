@@ -49,10 +49,10 @@ Route::put('/paridades/{paridad}', [ParidadController::class, 'update'])->name('
 //rutas de clientes
 Route::middleware('auth')->group(function () {
 
-    Route::get('clientes/exportar', [ClienteController::class, 'exportar'])->name('clientes.exportar');
+    Route::get('clientes/exportar', [ClienteController::class, 'exportar'])->name('clientes.exportar');//no necesita middleware
 
     Route::get('/contactos/{contacto}/edit', [ContactoClienteController::class, 'edit'])->name('contactos.edit');
-    Route::put('/contactos/{contacto}', [ContactoClienteController::class, 'update'])->name('contactos.update');
+    Route::put('/contactos/{contacto}', [ContactoClienteController::class, 'update'])->name('contactos.update');//no necesita middleware
 
     Route::resource('clientes.contactos', ContactoClienteController::class)->except(['show']);
 
@@ -78,7 +78,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/servicios', [ServicioController::class, 'store'])->name('servicios.store');
     Route::get('/servicios/{id}/editar', [ServicioController::class, 'edit'])->name('servicios.edit');
     Route::put('/servicios/{id}', [ServicioController::class, 'update'])->name('servicios.update');
-    Route::get('/servicios', [ServicioController::class, 'index'])->name('servicios.index');
+    Route::get('/servicios', [ServicioController::class, 'index'])->middleware('can:servicios.index')->name('servicios.index');//middleware puesto
     Route::put('/servicios/{id}/toggle', [ServicioController::class, 'toggleEstado'])->name('servicios.toggleEstado');
     Route::delete('/servicios/{id}', [ServicioController::class, 'destroy'])->name('servicios.destroy');
     Route::get('/servicios/{id}/info', [ServicioController::class, 'getServicio'])->name('servicios.info');

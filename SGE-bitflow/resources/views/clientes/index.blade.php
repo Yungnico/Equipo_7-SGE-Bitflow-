@@ -122,7 +122,7 @@
 @endsection
 
 <!-- Modal para Crear Cliente -->
-<div class="modal fade" id="modalCrearCliente" tabindex="-1" role="dialog" aria-labelledby="modalCrearClienteLabel" aria-hidden="true">
+<div class="modal fade " id="modalCrearCliente" tabindex="-1" role="dialog" aria-labelledby="modalCrearClienteLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <form action="{{ route('clientes.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
@@ -195,9 +195,9 @@
         document.addEventListener('DOMContentLoaded', function () {
             // Inicializar DataTable
             $('#clientes-table').DataTable({
+                responsive: true,
+                autoWidth: false,
                 language: {
-                    responsive: true,
-                    autoWidth: false,
                     url: '{{ asset("datatables/es-CL.json")}}'
                 }
             });
@@ -225,4 +225,4 @@
             });
         });
     </script>
-@endsection
+@stop

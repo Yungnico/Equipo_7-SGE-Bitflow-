@@ -392,6 +392,7 @@ return [
             'text' => 'Servicios',
             'url' => 'servicios',
             'icon' => 'fas fa-laptop-medical',
+            'can' => 'servicios.index',
         ],
         [
             'text' => 'Paridades',
