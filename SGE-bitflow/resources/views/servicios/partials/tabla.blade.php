@@ -8,13 +8,7 @@
             <button type="button" class="btn btn-success px-4 py-2" data-bs-toggle="modal" data-bs-target="#modalCrearServicio">
                 Agregar Servicio
             </button>
-            <button id="reset-filtros" class="btn btn-secondary px-4 py-2">
-                Resetear Filtros
-            </button>
-        </div>
-
-        <div class="d-flex gap-2">
-            <button class="btn btn-warning px-4 py-2" data-bs-toggle="modal" data-bs-target="#modalMantenedorMonedas">
+            <button class="btn btn-warning d-none" data-bs-toggle="modal" data-bs-target="#modalMantenedorMonedas">
                 Monedas
             </button>
             <button class="btn btn-secondary px-4 py-2" data-bs-toggle="modal" data-bs-target="#modalMantenedorCategorias">
@@ -45,7 +39,7 @@
                             <select id="filtro-moneda" class="form-select">
                                 <option value="">Moneda</option>
                                 @foreach($monedas as $moneda)
-                                <option value="{{ $moneda->nombre }}">{{ $moneda->nombre }}</option>
+                                <option value="{{ $moneda->id }}">{{ $moneda->moneda }}</option>
                                 @endforeach
                             </select>
                         </th>
@@ -66,7 +60,7 @@
                         <td>{{ $servicio->nombre_servicio }}</td>
                         <td>{{ $servicio->descripcion }}</td>
                         <td>${{ number_format($servicio->precio, 2, ',', '.') }}</td>
-                        <td>{{ $servicio->moneda->nombre ?? 'Sin moneda' }}</td>
+                        <td>{{ $servicio->moneda->moneda ?? 'Sin moneda' }}</td>
                         <td>{{ $servicio->categoria->nombre ?? 'Sin categoría' }}</td>
                         <td class="d-flex gap-2 justify-content-center">
                             <button class="btn btn-sm btn-primary"
@@ -76,7 +70,7 @@
                                 data-nombre="{{ $servicio->nombre_servicio }}"
                                 data-descripcion="{{ $servicio->descripcion }}"
                                 data-precio="{{ $servicio->precio }}"
-                                data-moneda="{{ $servicio->moneda }}"
+                                data-moneda="{{ $servicio->moneda->moneda}}"
                                 data-categoria="{{ $servicio->categoria_id }}">
                                 <i class="fas fa-pencil-alt"></i>
                             </button>

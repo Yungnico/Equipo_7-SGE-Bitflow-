@@ -15,6 +15,13 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ClienteExportController;
 use App\Http\Controllers\TransferenciaController;
+use App\Http\Controllers\FacturacionController;
+
+Route::get('/facturacion/upload', function () {
+    return view('facturacion.upload');
+})->name('facturacion.upload');
+
+Route::post('/facturacion/importar', [FacturacionController::class, 'importar'])->name('facturacion.importar');
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -25,6 +32,10 @@ use App\Http\Controllers\TransferenciaController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+//rutas de facturacion
+route::middleware('auth')->group(function () {
+    Route::get('/facturacion', [FacturacionController::class, 'index'])->name('facturacion.index');
+});
 
 
 Route::middleware('auth')->group(function () {

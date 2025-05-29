@@ -13,7 +13,7 @@
             const categoriaId = button.getAttribute('data-categoria');
 
             const form = document.getElementById('formEditarServicio');
-            form.action = `/servicios/${id}`; // Asegúrate de que coincide con tu ruta
+            form.action = `/servicios/${id}`;
 
             document.getElementById('editar-id').value = id;
             document.getElementById('editar-nombre').value = nombre;
@@ -21,7 +21,7 @@
             document.getElementById('editar-precio').value = precio;
 
             // Seleccionar la moneda correcta
-            const monedaSelect = form.querySelector('select[name="moneda"]'); // <-- Asegúrate que este name exista
+            const monedaSelect = form.querySelector('select[name="moneda"]'); // 
             for (let option of monedaSelect.options) {
                 if (option.value === monedaNombre) {
                     option.selected = true;

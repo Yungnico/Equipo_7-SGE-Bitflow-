@@ -363,7 +363,7 @@ return [
         ],
         [
             'text' => 'Facturas',
-            'url' => 'Facturacion/index',
+            'url' => 'facturacion',
             'icon' => 'fas fa-fw fa-file-invoice',
         ],
         [
