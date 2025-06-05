@@ -193,10 +193,11 @@ class CotizacionController extends Controller
             ]);
 
             $total = 0;
+            $total_iva = 0;
 
             foreach ($request->input('servicios', []) as $servicio) {
                 $servicioModel = Servicio::findOrFail($servicio['servicio']);
-                $subtotal = $servicioModel->precio * $servicio['cantidad'];
+                $subtotal = $servicioModel->$servicio['precio'] * $servicio['cantidad'];
                 $cotizacion->servicios()->attach($servicioModel->id, [
                     'cantidad' => $servicio['cantidad'],
                     'precio_unitario' => $servicio['precio'],
