@@ -43,8 +43,8 @@
                             <td>${{ number_format($p->valor, 2, ',', '.') }}</td>
                             <td>{{ \Carbon\Carbon::parse($p->fecha)->format('d/m/Y') }}</td>
                             <td>
-                                <a href="{{ route('paridades.edit', $p) }}" class="btn btn-warning btn-sm">
-                                    <i class="fas fa-edit" style="color: white"></i>
+                                <a href="{{ route('paridades.edit', $p) }}" class="btn btn-outline-warning btn-sm">
+                                    <i class="fas fa-edit"></i>
                                 </a>
                             </td>
                         </tr>

@@ -24,7 +24,7 @@
                     <td>{{ $cotizacion->moneda }}</td>
                     <td>{{ $cotizacion->estado }}</td>
                     <td>
-                        <a href="#" class="btn btn-sm btn-danger" onclick="event.preventDefault(); document.getElementById('delete-form-{{ $cotizacion->id_cotizacion }}').submit();">
+                        <a href="#" class="btn btn-sm btn-outline-danger" onclick="event.preventDefault(); document.getElementById('delete-form-{{ $cotizacion->id_cotizacion }}').submit();">
                             <i class="fas fa-trash"></i>
                         </a>
                         <form id="delete-form-{{ $cotizacion->id_cotizacion }}" action="{{ route('cotizaciones.destroy', $cotizacion->id_cotizacion) }}" method="POST" style="display: none;">

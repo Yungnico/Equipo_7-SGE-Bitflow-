@@ -2,13 +2,10 @@
 
 @section('content')
 <div class="container-fluid">
-    <h1 class="mb-4">Clientes</h1>
 
     @if(session('success'))
     <div class="alert alert-success">{{ session('success') }}</div>
     @endif
-
-
 
     @if(session('warning'))
     <div class="alert alert-warning">{{ session('warning') }}</div>
@@ -19,35 +16,43 @@
     @endif
 
     {{-- Formulario de búsqueda --}}
-    <div class="card mb-3">
+    
+    <div class="card mb-3 mt-4">
         <div class="card-body">
             <form action="{{ route('clientes.index') }}" method="GET">
-                <div class="form-row row">
-                    <div class="form-group col-12 col-md-4">
-                        <input type="text" name="razon_social" class="form-control" placeholder="Razón social" value="{{ request('razon_social') }}">
+                <div class="form-row row align-items-center g-2">
+                    <div class="col-md-4">
+                        <input type="text" name="razon_social" class="form-control text-center" placeholder="Razón social" value="{{ request('razon_social') }}">
                     </div>
-                    <div class="form-group col-12 col-md-4">
-                        <input type="text" name="rut" class="form-control" placeholder="RUT" value="{{ request('rut') }}">
+                    <div class="col-md-3">
+                        <input type="text" name="rut" class="form-control text-center" placeholder="RUT" value="{{ request('rut') }}">
                     </div>
-                    <div class="form-group col-12 col-md-4">
-                        <input type="text" name="nombre_fantasia" class="form-control" placeholder="Nombre fantasía" value="{{ request('nombre_fantasia') }}">
+                    <div class="col-md-5 d-flex">
+                        <input type="text" name="nombre_fantasia" class="form-control text-center me-2" placeholder="Nombre fantasía" value="{{ request('nombre_fantasia') }}">
+                        <div class="d-flex gap-2 mx-2">
+                            <button type="submit" class="btn btn-primary mx-2">
+                                <i class="fa fa-search"></i>
+                            </button>
+                            <a href="{{ route('clientes.index') }}" class="btn btn-secondary mx-1">
+                                <i class="fas fa-broom"></i>
+                            </a>
+                        </div>
                     </div>
-                </div>
-                <div class="d-flex gap-2 flex-wrap">
-                    <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i></button>
-                    <a href="{{ route('clientes.index') }}" class="btn btn-secondary ml-2"><i class="fas fa-broom"></i></a>
                 </div>
             </form>
         </div>
     </div>
 
-    <div class="row align-items-center mb-3">
-        <div class="col-md-6 mb-2 mb-md-0">
-            <!--<a href=" route('clientes.create') }}" class="btn btn-primary">Crear Cliente</a> -->
-            <button class="btn btn-primary" data-toggle="modal" data-target="#modalCrearCliente">Crear Cliente</button>
+    
 
+
+
+    <div class="row align-items-center mb-3">
+        <div class="col-md-6 mb-2 mb-md-0 ">
+            
         </div>
         <div class="col-md-6 text-md-right">
+            <button class="btn btn-primary" data-toggle="modal" data-target="#modalCrearCliente">Crear Cliente</button>
             <a href="{{ route('clientes.exportar', array_merge(request()->all(), ['formato_exportacion' => 'pdf'])) }}" class="btn btn-success">Exportar a PDF</a>
         </div>
     </div>
@@ -87,18 +92,18 @@
                             </td>
                             <td>{{ $cliente->plazo_pago_habil_dias }}</td>
                             <td class="text-nowrap">
-                                <button class="btn btn-sm btn-warning btn-sm mb-1" onclick="abrirModalEditar({{ $cliente }})">
-                                    <i class="fas fa-edit" style="color:white"></i>
+                                <button class="btn btn-sm btn-outline-warning btn-sm mb-1" onclick='abrirModalEditar({!! json_encode($cliente) !!})'>
+                                    <i class="fas fa-edit"></i>
                                 </button>
 
                                 <form action="{{ route('clientes.destroy', $cliente) }}" method="POST" class="form-eliminar d-inline">
                                     @csrf
                                     @method('DELETE')
-                                    <button class="btn btn-danger btn-sm mb-1">
+                                    <button class="btn btn-outline-danger btn-sm mb-1">
                                         <i class="fas fa-trash-alt"></i>
                                     </button>
                                 </form>
-                                <a href="{{ route('clientes.contactos.index', [$cliente->id, $cliente->nombre_fantasia]) }}" class="btn btn-primary btn-sm mb-1">
+                                <a href="{{ route('clientes.contactos.index', [$cliente->id, $cliente->nombre_fantasia]) }}" class="btn btn-outline-primary btn-sm mb-1">
                                     <i class="fas fa-id-badge"></i>
                                 </a>
                             </td>
@@ -139,7 +144,7 @@
 
                         <div class="form-group col-md-6">
                             <label for="rut">RUT*</label>
-                            <input type="text" class="form-control" name="rut" value="{{ old('rut') }}" required>
+                            <input type="text" class="form-control" placeholder="11111111-1" name="rut" value="{{ old('rut') }}" required>
                         </div>
                     </div>
 
@@ -168,7 +173,7 @@
                     </div>
                     <div class="form-row">
                         <div class="form-group col-md-6">
-                            <label for="plazo_pago_habil_dias">Plazo de Pago (días hábiles)</label>
+                            <label for="plazo_pago_habil_dias">Plazo de pago (días hábiles)</label>
                             <input type="number" class="form-control" name="plazo_pago_habil_dias" value="{{ old('plazo_pago_habil_dias', $cliente->plazo_pago_habil_dias ?? '') }}" min="0">
                         </div>
                     </div>

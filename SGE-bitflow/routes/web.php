@@ -125,6 +125,7 @@ Route::middleware('auth')->group(function () {
     // Rutas de Clientes
     Route::resource('clientes', ClienteController::class)->middleware('can:cliente.index');//middleware puesto
     Route::get('/clientes/{id}/info', [ClienteController::class, 'getCliente'])->middleware('can:cliente.info')->name('clientes.info');//middleware puesto
+    Route::put('/clientes/{cliente}', [ClienteController::class, 'update'])->name('clientes.update');
 
     // Rutas de contactos anidados bajo clientes
     Route::prefix('clientes/{cliente}')->name('clientes.')->group(function () {

@@ -31,7 +31,7 @@
                 {{-- Email --}}
                 <div class="form-group">
                     <label for="email_contacto">Email</label>
-                    <input type="email" name="email_contacto" id="email_contacto"
+                    <input type="email" name="email_contacto" placeholder="ejemplo@ejemplo.com" id="email_contacto"
                         class="form-control @error('email_contacto') is-invalid @enderror"
                         value="{{ old('email_contacto') }}">
                     @error('email_contacto')
@@ -46,7 +46,7 @@
                 {{-- Teléfono --}}
                 <div class="form-group">
                     <label for="telefono_contacto">Teléfono</label>
-                    <input type="text" name="telefono_contacto" id="telefono_contacto"
+                    <input type="text" name="telefono_contacto" placeholder="911111111" id="telefono_contacto"
                         class="form-control @error('telefono_contacto') is-invalid @enderror"
                         maxlength="15" value="{{ old('telefono_contacto') }}">
                     @error('telefono_contacto')
