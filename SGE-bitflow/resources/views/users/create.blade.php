@@ -41,11 +41,27 @@
                             <input type="email" name="email_confirmation" class="form-control" required value="{{ old('email_confirmation') }}">
                             @error('email_confirmation')<small class="text-danger">{{ $message }}</small>@enderror
                         </div>
-
-
-
                     </div>
     
+                    <div class="row mb-3">
+    <div class="col-md-12">
+        <label>Asignar Roles</label>
+        <div class="d-flex flex-wrap gap-3">
+            @foreach($roles as $role)
+                <div class="form-check">
+                    <input type="checkbox" name="roles[]" value="{{ $role->name }}"
+                        class="form-check-input" id="role_{{ $role->id }}"
+                        {{ in_array($role->name, old('roles', [])) ? 'checked' : '' }}>
+                    <label for="role_{{ $role->id }}" class="form-check-label">
+                        {{ ucfirst($role->name) }}
+                    </label>
+                </div>
+            @endforeach
+        </div>
+        @error('roles')<small class="text-danger">{{ $message }}</small>@enderror
+    </div>
+</div>
+
                     <div class="row">
                         <div class="col-md-12 text-end">
                             <button type="submit" class="btn btn-primary">Guardar</button>
