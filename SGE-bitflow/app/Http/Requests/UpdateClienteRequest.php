@@ -24,11 +24,14 @@ class UpdateClienteRequest extends FormRequest
     {
         return [
             'razon_social' => [
-                'required', 'string', 'max:100',
+                'required',
+                'string',
+                'max:100',
                 Rule::unique('clientes')->ignore($this->cliente),
             ],
             'rut' => [
-                'required', 'string',
+                'required',
+                'string',
                 'regex:/^\d{1,2}\.\d{3}\.\d{3}-[0-9kK]{1}$/',
                 Rule::unique('clientes')->ignore($this->cliente),
             ],
@@ -36,7 +39,7 @@ class UpdateClienteRequest extends FormRequest
             'giro' => 'required|string|max:100',
             'direccion' => 'nullable|string|max:150',
             'logo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'plazo_pago_habil_dias' => ['nullable', 'integer', 'min:0'],
         ];
     }
-
 }

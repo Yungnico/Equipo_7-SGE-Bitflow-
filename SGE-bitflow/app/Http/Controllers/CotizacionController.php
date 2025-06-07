@@ -15,6 +15,9 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\CotizacionMailable;
 use App\Models\CotizacionDetalle;
+use App\Models\DetalleFactura;
+use App\Models\Facturacion;
+
 class CotizacionController extends Controller
 {
     public function prepararPDF($id){
@@ -254,6 +257,32 @@ class CotizacionController extends Controller
         $cotizacion = Cotizacion::with(['cliente', 'servicios', 'itemsLibres'])->findOrFail($id);
         $clientes = Cliente::all();
         $servicios = Servicio::all();
-        return view('cotizaciones.edit', compact('cotizacion', 'clientes', 'servicios'));
+        $facturas = Facturacion::all();
+        return view('cotizaciones.edit', compact('cotizacion', 'clientes', 'servicios','facturas'));
+    }
+
+    public function conciliar($id){
+        $cotizacion = Cotizacion::with(['cliente'])->findOrFail($id);
+        $facturas = Facturacion::all();
+        foreach ($facturas as $factura) {
+            if ($factura->rut_receptor == $cotizacion->cliente->rut){
+                if($detalle = CotizacionDetalle::where('id_cotizacion', $cotizacion->id_cotizacion)->first()){
+                    $detalle->factura_asociada = $factura->id;
+                    $detalle->save();
+                    break;
+                } else {
+                    $detalle = new CotizacionDetalle();
+                    $detalle->id_cotizacion = $cotizacion->id_cotizacion;
+                    $detalle->estado = $cotizacion->estado;
+                    $detalle->factura_asociada = $factura->id;
+                    $detalle->save();
+                    break;
+                }
+            }
+        }
+        return redirect()->route('cotizaciones.index')->with('success', 'Cotización conciliada con la factura correctamente.');
+        
+        
+
     }
 }

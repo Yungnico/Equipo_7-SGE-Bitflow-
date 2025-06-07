@@ -98,7 +98,7 @@ class ClienteController extends Controller
     {
         $request->validate([
             'razon_social' => 'nullable|string|max:100',
-            'rut' => ['nullable', 'regex:/^\d{1,2}\.\d{3}\.\d{3}-[\dkK]$/'],
+            'rut' => ['nullable', ],
             'nombre_fantasia' => 'nullable|string|max:100',
         ]);
 
@@ -138,11 +138,25 @@ class ClienteController extends Controller
         if ($request->hasFile('logo')) {
             $data['logo'] = $request->file('logo')->store('logos', 'public');
         }
+        // Normalizar el RUT
+        $data['rut'] = $this->normalizarRut($data['rut']);
+
         #echo "<script>console.log('Debug Objects: " . $data . "' );</script>";
         $cliente = Cliente::create($data);
         return redirect()->route('clientes.index')->with('success', 'Cliente registrado correctamente: ' . $cliente->razon_social . ' (' . $cliente->rut . ')');
     }
+    private function normalizarRut($rut)
+    {
+        // 1. Eliminar todo excepto números y la letra K o k
+        $rut = strtoupper(preg_replace('/[^0-9Kk]/', '', $rut));
 
+        // 2. Separar cuerpo y dígito verificador
+        $dv = substr($rut, -1);
+        $cuerpo = substr($rut, 0, -1);
+
+        // 3. Formatear como 12345678-5
+        return $cuerpo . '-' . $dv;
+    }
     public function edit(Cliente $cliente)
     {
         return view('clientes.edit', compact('cliente'));

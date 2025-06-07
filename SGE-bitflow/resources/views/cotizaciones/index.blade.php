@@ -11,8 +11,10 @@
                 <th>Cliente </th>
                 <th>Fecha</th>
                 <th>Moneda</th>
+                <th>total</th>
                 <th>Estado</th>
                 <th>Acciones</th>
+                
             </tr>
         </thead>
         <tbody>
@@ -22,6 +24,7 @@
                     <td>{{ $cotizacion->cliente->razon_social }}</td>
                     <td>{{ $cotizacion->fecha_cotizacion }}</td>
                     <td>{{ $cotizacion->moneda }}</td>
+                    <td>{{$cotizacion->total_iva}}</td>
                     <td>
                         <div class="d-flex justify-content-between align-items-center">
                             <span>{{ $cotizacion->estado }}</span>
@@ -37,9 +40,9 @@
                         <a href="{{ route('cotizaciones.prepararEmail', ['id' => $cotizacion->id_cotizacion]) }}" class="btn btn-sm btn-primary">
                             <i class="fas fa-envelope"></i>
                         </a>
-                        <a href="#" class="btn btn-sm btn-danger" onclick="event.preventDefault(); document.getElementById('delete-form-{{ $cotizacion->id_cotizacion }}').submit();">
+                        {{-- <a href="#" class="btn btn-sm btn-danger" onclick="event.preventDefault(); document.getElementById('delete-form-{{ $cotizacion->id_cotizacion }}').submit();">
                             <i class="fas fa-trash"></i>
-                        </a>
+                        </a> --}}
                         
                         <form id="delete-form-{{ $cotizacion->id_cotizacion }}" action="{{ route('cotizaciones.destroy', $cotizacion->id_cotizacion) }}" method="POST" style="display: none;">
                             @csrf
