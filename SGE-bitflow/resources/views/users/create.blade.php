@@ -33,20 +33,18 @@
                             <input type="email" name="email" class="form-control" required value="{{ old('email') }}">
                             @error('email')<small class="text-danger">{{ $message }}</small>@enderror
                         </div>
-                    </div>
-    
+                    </div>    
+                
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label for="password">Contraseña</label>
-                            <input type="password" name="password" class="form-control" required>
-                            @error('password')<small class="text-danger">{{ $message }}</small>@enderror
+                            <label for="email_confirmation">Confirmar Correo</label>
+                            <input type="email" name="email_confirmation" class="form-control" required value="{{ old('email_confirmation') }}">
+                            @error('email_confirmation')<small class="text-danger">{{ $message }}</small>@enderror
                         </div>
-                        <div class="col-md-6">
-                            <label for="password_confirmation">Confirmar Contraseña</label>
-                            <input type="password" name="password_confirmation" class="form-control" required>
-                        </div>
+
+
+
                     </div>
-    
     
                     <div class="row">
                         <div class="col-md-12 text-end">
@@ -66,7 +64,7 @@
 @if(session('success'))
 <script>
 Swal.fire({
-    title: "Guardado!",
+    title: "Creado exitosamente!",
     text: "{{ session('success') }}",
     icon: "success",
     confirmButtonColor: "#3085d6"

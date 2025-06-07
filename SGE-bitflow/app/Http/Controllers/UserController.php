@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Password;
+use App\Notifications\ResetPasswordNotification;
 
 class UserController extends Controller
 {
@@ -17,15 +20,19 @@ class UserController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:6|confirmed',
+            'email' => 'required|email|unique:users,email|confirmed',
         ]);
 
-        User::create([
+        $randomPassword = Str::random(10);
+
+        $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make($request->password),
+            'password' => Hash::make($randomPassword),
         ]);
+
+        $token = Password::broker()->createToken($user);
+        $user->notify(new ResetPasswordNotification($token));
 
         return redirect()->route('users.create')->with('success', 'Usuario creado correctamente');
         
