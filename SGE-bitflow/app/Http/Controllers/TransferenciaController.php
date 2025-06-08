@@ -216,9 +216,6 @@ class TransferenciaController extends Controller
         return back()->with('success', 'Transferencias conciliadas correctamente.');
     }
 
-
-
-
     public function conciliarManual(Request $request)
     {
         // Validación de los campos del formulario
@@ -227,20 +224,25 @@ class TransferenciaController extends Controller
             'cotizaciones_id_cotizacion' => 'required|exists:cotizaciones,id_cotizacion',
         ]);
 
-        // Buscar cotización por su clave primaria personalizada
-        $cotizacion = Cotizacion::where('id_cotizacion', $request->cotizaciones_id_cotizacion)->firstOrFail();
+        try {
+            // Buscar cotización por ID personalizado (id_cotizacion es la clave primaria)
+            $cotizacion = Cotizacion::where('id_cotizacion', $request->cotizaciones_id_cotizacion)->firstOrFail();
 
-        // Asignar la transferencia a la cotización
-        $cotizacion->id_transferencia = $request->transferencias_bancarias_id;
-        $cotizacion->estado = 'Pagada';
-        $cotizacion->save();
+            // Buscar la transferencia por ID
+            $transferencia = TransferenciaBancaria::findOrFail($request->transferencias_bancarias_id);
 
-        // Buscar la transferencia y marcarla como conciliada
-        $transferencia = TransferenciaBancaria::findOrFail($request->transferencias_bancarias_id);
-        $transferencia->estado = 'Conciliada';
-        $transferencia->save();
+            // Asignar la transferencia a la cotización
+            $cotizacion->id_transferencia = $transferencia->id; // <- este es el campo correcto
+            $cotizacion->estado = 'Pagada';
+            $cotizacion->save();
 
-        // Redireccionar con mensaje
-        return redirect()->back()->with('success', 'Cotización conciliada exitosamente.');
+            // Marcar la transferencia como conciliada
+            $transferencia->estado = 'Conciliada';
+            $transferencia->save();
+
+            return redirect()->back()->with('success', 'Cotización conciliada exitosamente.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Error al conciliar: ' . $e->getMessage());
+        }
     }
 }
