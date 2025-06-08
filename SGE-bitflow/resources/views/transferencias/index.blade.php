@@ -295,7 +295,7 @@
             theme: 'bootstrap4',
             placeholder: 'Seleccione una opción',
             allowClear: true,
-            width: '100%'
+            width: '100%',
             noResults: function() {
                 return 'No se encontraron resultados';
             }

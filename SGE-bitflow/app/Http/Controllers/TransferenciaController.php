@@ -135,87 +135,36 @@ class TransferenciaController extends Controller
 
         foreach ($transferencias as $transferencia) {
             $comentario = trim($transferencia->comentario_transferencia);
-            $rut = trim(strtolower($transferencia->rut));
+            $rut = trim(strtolower($transferencia->rut)); // Formato: 12345678-9
             $nombre = trim(strtolower($transferencia->nombre));
             $monto = floatval($transferencia->ingreso);
             $fechaTransferencia = \Carbon\Carbon::parse($transferencia->fecha_transaccion);
 
-            // 1. Buscar por ID en comentario
-            if (preg_match('/(\d+)-CDP(\d+)/i', $comentario, $matches)) {
-                $idCotizacion = $matches[1]; // 1007
-                $idCliente = $matches[2];    // 2
+            // 1. FILTRO POR FECHAS: Buscar todas las cotizaciones con fechas válidas para esta transferencia
+            $cotizacionesVigentes = Cotizacion::where('estado', '!=', 'Pagada')->get()->filter(function ($cot) use ($fechaTransferencia) {
+                $fechaCot = \Carbon\Carbon::parse($cot->fecha_cotizacion);
+                $plazo = $cot->cliente->plazo_pago_habil_dias;
 
-                $cotizacion = Cotizacion::where('id_cotizacion', $idCotizacion)
-                    ->where('id_cliente', $idCliente)
-                    ->where('estado', '!=', 'Pagada')
-                    ->first();
-
-                if ($cotizacion) {
-                    $fechaCot = \Carbon\Carbon::parse($cotizacion->fecha_cotizacion);
-                    $plazo = $cotizacion->cliente->plazo_pago_habil_dias;
-
-                    if (is_numeric($plazo)) {
-                        $fechaLimite = $fechaCot->copy()->addWeekdays($plazo);
-
-                        if (
-                            $fechaTransferencia->greaterThanOrEqualTo($fechaCot) &&
-                            $fechaTransferencia->lessThanOrEqualTo($fechaLimite) &&
-                            floatval($cotizacion->total_iva) === $monto
-                        ) {
-                            $cotizacion->estado = 'Pagada';
-                            $cotizacion->id_transferencia = $transferencia->id;
-                            $cotizacion->save();
-
-                            $transferencia->estado = 'Conciliada';
-                            $transferencia->save();
-
-                            continue; // Conciliada por ID y fecha
-                        }
-                    }
-                }
-            }
-
-            // 2. Buscar cliente por RUT o nombre
-            $cliente = null;
-
-            if (!empty($rut)) {
-                $cliente = Cliente::whereRaw('LOWER(rut) = ?', [$rut])->first();
-            }
-
-            if (!$cliente && !empty($nombre)) {
-                $cliente = Cliente::whereRaw('LOWER(razon_social) = ?', [$nombre])->first();
-            }
-
-            if (!$cliente) {
-                continue;
-            }
-
-            $rutCoincide = strtolower($cliente->rut) === $rut;
-            $nombreCoincide = strtolower($cliente->razon_social) === $nombre;
-
-            if (!$rutCoincide && !$nombreCoincide) {
-                continue;
-            }
-
-            $cotizaciones = Cotizacion::where('id_cliente', $cliente->id)
-                ->where('estado', '!=', 'Pagada')
-                ->get();
-
-            foreach ($cotizaciones as $cotizacion) {
-                $fechaCot = \Carbon\Carbon::parse($cotizacion->fecha_cotizacion);
-                $plazo = $cotizacion->cliente->plazo_pago_habil_dias;
-
-                if (!is_numeric($plazo)) {
-                    continue;
-                }
+                if (!is_numeric($plazo)) return false;
 
                 $fechaLimite = $fechaCot->copy()->addWeekdays($plazo);
 
-                if (
-                    $fechaTransferencia->greaterThanOrEqualTo($fechaCot) &&
-                    $fechaTransferencia->lessThanOrEqualTo($fechaLimite) &&
-                    floatval($cotizacion->total_iva) === $monto
-                ) {
+                return $fechaTransferencia->greaterThanOrEqualTo($fechaCot) &&
+                    $fechaTransferencia->lessThanOrEqualTo($fechaLimite);
+            });
+
+            // 2A. INTENTAR CONCILIAR POR COMENTARIO (si hay comentario válido)
+            if (preg_match('/(\d+)-CDP(\d+)/i', $comentario, $matches)) {
+                $idCotizacion = $matches[1]; // Ej: 1007
+                $idCliente = $matches[2];    // Ej: 2
+
+                $cotizacion = $cotizacionesVigentes->first(function ($cot) use ($idCotizacion, $idCliente, $monto) {
+                    return $cot->id_cotizacion == $idCotizacion &&
+                        $cot->id_cliente == $idCliente &&
+                        floatval($cot->total_iva) === $monto;
+                });
+
+                if ($cotizacion) {
                     $cotizacion->estado = 'Pagada';
                     $cotizacion->id_transferencia = $transferencia->id;
                     $cotizacion->save();
@@ -223,13 +172,50 @@ class TransferenciaController extends Controller
                     $transferencia->estado = 'Conciliada';
                     $transferencia->save();
 
-                    break; // Conciliada por RUT o nombre + monto + fecha
+                    continue; // Conciliada exitosamente por comentario
+                } else {
+                    // Comentario apunta a una cotización inexistente o pagada → no continuar con RUT/nombre
+                    continue;
+                }
+            }
+
+            // 2B. SI NO HAY COMENTARIO VÁLIDO, BUSCAR POR RUT O NOMBRE
+            $cliente = null;
+
+            if (!empty($rut)) {
+                $cliente = Cliente::whereRaw('REPLACE(LOWER(rut),".","") = ?', [$rut])->first();
+            }
+
+            if (!$cliente && !empty($nombre)) {
+                $cliente = Cliente::whereRaw('LOWER(razon_social) = ?', [$nombre])->first();
+            }
+
+            if (!$cliente) {
+                continue; // No se puede conciliar
+            }
+
+            // Buscar cotizaciones vigentes del cliente
+            $cotizacionesCliente = $cotizacionesVigentes->filter(function ($cot) use ($cliente) {
+                return $cot->id_cliente === $cliente->id;
+            });
+
+            foreach ($cotizacionesCliente as $cotizacion) {
+                if (floatval($cotizacion->total_iva) === $monto) {
+                    $cotizacion->estado = 'Pagada';
+                    $cotizacion->id_transferencia = $transferencia->id;
+                    $cotizacion->save();
+
+                    $transferencia->estado = 'Conciliada';
+                    $transferencia->save();
+
+                    break; // Conciliada por RUT o nombre + monto
                 }
             }
         }
 
         return back()->with('success', 'Transferencias conciliadas correctamente.');
     }
+
 
 
 
