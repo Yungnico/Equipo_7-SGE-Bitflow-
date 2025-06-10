@@ -324,12 +324,7 @@ return [
                     'text' => 'Perfil',
                     'url' => 'perfil',
                     'icon' => 'fas fa-fw fa-user',
-                ],
-                [
-                    'text' => 'Cambiar contraseña',
-                    'url' => 'cambiar-password',
-                    'icon' => 'fas fa-fw fa-lock',
-                ],
+                ],//contraseña fas fa-fw fa-lock
             ],
         ],
         [

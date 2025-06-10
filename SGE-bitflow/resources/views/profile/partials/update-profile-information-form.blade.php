@@ -1,14 +1,4 @@
 <section>
-    <header>
-        <h2 class="text-lg font-medium text-gray-900 ">
-            <h3>{{ __('Información del perfil') }}</h3>
-        </h2>
-
-        <p class="mt-1 text-sm text-gray-600 ">
-            <h6>{{ __("Actualiza tu información del perfil o tu dirección de correo electrónico.") }}</h6>
-        </p>
-        <hr>
-    </header>
 
     <form id="send-verification" method="post" action="{{ route('verification.send') }}">
         @csrf

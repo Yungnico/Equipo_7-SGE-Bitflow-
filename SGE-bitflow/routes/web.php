@@ -117,10 +117,10 @@ Route::middleware('auth')->group(function () {
     Route::post('/transferencias/conciliar-manual', [TransferenciaController::class, 'conciliarManual'])->name('transferencias.conciliar.manual');
 
     //Cambio de contraseñas
-    Route::get('/cambiar-password', function () {
-        return view('password.change');
-    })->name('password.change');
-    Route::put('/password', [ProfileController::class, 'updatePassword'])->name('password.update');
+    #Route::get('/cambiar-password', function () {
+    #    return view('password.change');
+    #})->name('password.change');
+    #Route::put('/password', [ProfileController::class, 'updatePassword'])->name('password.update');
     
     // Rutas de Clientes
     Route::resource('clientes', ClienteController::class)->middleware('can:cliente.index');//middleware puesto
