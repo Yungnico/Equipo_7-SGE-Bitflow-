@@ -20,7 +20,7 @@
     <div class="row justify-content-center">
         <div class="col-lg-11 ">
 
-            <div class="card mb-4">
+            <div class="card mb-4 ">
                 <div class="card-body">
                     <!-- Sección Perfil -->
                     <div class="row justify-content-center">
@@ -37,7 +37,7 @@
             </div>
 
             <!-- Sección Cambio de Contraseña -->
-            <div class="card border-danger shadow">
+            <div class="card mb-4">
                 <div class="card-body">
                     <div class="row justify-content-center">
                         <div class="col-11 col-md-11 col-lg-11 col-xl-11">
@@ -53,7 +53,7 @@
             </div>
 
             <!-- Zona de peligro -->
-            <div class="card border-danger shadow">
+            <div class="card ">
                 <div class="card-body">
                     <div class="row justify-content-center">
                         <div class="col-11 col-md-11 col-lg-11 col-xl-11">
