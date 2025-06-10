@@ -63,7 +63,7 @@
                         <tr class="filtros">
                             <th></th>
                             <th>
-                                <select class="form-select filtro-select" data-columna="0" style="min-width: 150px;">
+                                <select class="form-select filtro-select" data-columna="1" style="min-width: 150px;">
                                     <option value="">Nombre</option>
                                     @foreach($transferencias->pluck('nombre')->unique() as $nombre)
                                     <option value="{{ $nombre }}">{{ $nombre }}</option>
@@ -71,7 +71,7 @@
                                 </select>
                             </th>
                             <th>
-                                <select class="form-select filtro-select" data-columna="1" style="min-width: 150px;">
+                                <select class="form-select filtro-select" data-columna="2" style="min-width: 150px;">
                                     <option value="">RUT</option>
                                     @foreach($transferencias->pluck('rut')->unique() as $rut)
                                     <option value="{{ $rut }}">{{ $rut }}</option>
@@ -304,7 +304,8 @@
         $('.filtro-select').on('change', function() {
             const columna = $(this).data('columna');
             const valor = $(this).val();
-            tabla.column(columna).search(valor ? '^' + valor + '$' : '', true, false).draw();
+            tabla.column(columna).search(valor || '', false, true).draw();
+
         });
     });
 
