@@ -316,16 +316,10 @@ return [
             'text' => 'Buscar',
         ],
         [
-            'text' => 'Cuenta',
+            'text' => 'Perfil',
+            'url' => 'perfil',
             'icon' => 'fas fa-user-cog ',   //fa-fw fa-user para el icono del usuario fontawesone 5 usa admin lte
-            'submenu' =>
-            [
-                [
-                    'text' => 'Perfil',
-                    'url' => 'perfil',
-                    'icon' => 'fas fa-fw fa-user',
-                ],//contraseña fas fa-fw fa-lock
-            ],
+            
         ],
         [
             'text' => 'Registro de usuarios',

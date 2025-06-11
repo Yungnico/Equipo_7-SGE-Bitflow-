@@ -58,7 +58,7 @@
         </div>
 
         <div class="flex items-center gap-4">
-            <x-custom-button>{{ __('Guardar') }}</x-primary-button>
+            <x-custom-button>{{ __('Guardar') }}</x-custom-button>
 
             @if (session('status') === 'profile-updated')
                 <p
@@ -90,7 +90,9 @@ document.getElementById('actualizar_perfil').addEventListener('submit', function
         cancelButtonText: 'Cancelar'
     
     }).then((result) => {
-        e.target.submit();
+        if (result.isConfirmed) {
+            e.target.submit();
+        }
     });
 });
 </script>

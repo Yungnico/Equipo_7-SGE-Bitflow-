@@ -1,6 +1,6 @@
 <section>
 
-    <form method="post" action="{{ route('password.update') }}" class="mt-6 space-y-6">
+    <form id="actualizar_contraseña" method="post" action="{{ route('password.update') }}" class="mt-6 space-y-6">
         @csrf
         @method('put')
 
@@ -23,7 +23,7 @@
         </div>
 
         <div class="flex items-center gap-4">
-            <x-custom-button >{{ __('Guardar') }}</x-primary-button>
+            <x-custom-button >{{ __('Guardar') }}</x-custom-button>
 
             @if (session('status') === 'password-updated')
                 <p
@@ -37,6 +37,3 @@
         </div>
     </form>
 </section>
-
-
-<!-- aqui ver lo del sweet alert -->
