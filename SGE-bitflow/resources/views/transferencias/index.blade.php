@@ -7,37 +7,39 @@
 @stop
 
 @section('css')
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap4.min.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap4.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/2.3.0/css/dataTables.bootstrap5.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.4/css/responsive.bootstrap5.css">
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <link href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@1.5.2/dist/select2-bootstrap4.min.css" rel="stylesheet" />
+
 @endsection
 
 @section('content')
-<div class="container-fluid">
+<div class="container mt-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="h3">Transferencias Bancarias</h1>
-        <form action="{{ route('transferencias.importar') }}" method="POST" enctype="multipart/form-data" class="form-inline">
+        <form action="{{ route('transferencias.importar') }}" method="POST" enctype="multipart/form-data" class="d-flex gap-2">
             @csrf
-            <input type="file" name="archivo" class="form-control mr-2" required>
+            <input type="file" name="archivo" class="form-control" required>
             <button type="submit" class="btn btn-primary">Importar</button>
         </form>
     </div>
 
-    <a href="{{ route('transferencias.conciliar') }}" class="btn btn-success mb-3">
+    <a href="{{ route('transferencias.conciliar') }}" class="btn btn-success px-4 py-2 mb-3">
         Conciliar Transferencias
     </a>
 
-    <button type="button" id="reset-filtros" class="btn btn-secondary mb-3">
+    <button type="button" id="reset-filtros" class="btn btn-secondary px-4 py-2 mb-3">
         Limpiar Filtros
     </button>
+
 
     <div class="card">
         <div class="card-body">
             <div class="table-responsive">
-                <table id="tabla-transferencias" class="table table-bordered table-hover w-100">
-                    <thead class="thead-light">
+                <table id="tabla-transferencias" class="table table-striped table-bordered nowrap w-100">
+                    <thead class="table-dark">
                         <tr>
                             <th>ID</th>
                             <th>Nombre</th>
@@ -57,10 +59,11 @@
                             <th>Saldo</th>
                             <th>Comentario</th>
                         </tr>
-                        <tr class="filtros bg-light">
+
+                        <tr class="filtros">
                             <th></th>
                             <th>
-                                <select class="form-control filtro-select" data-columna="1">
+                                <select class="form-select filtro-select" data-columna="1" style="min-width: 150px;">
                                     <option value="">Nombre</option>
                                     @foreach($transferencias->pluck('nombre')->unique() as $nombre)
                                     <option value="{{ $nombre }}">{{ $nombre }}</option>
@@ -68,34 +71,36 @@
                                 </select>
                             </th>
                             <th>
-                                <select class="form-control filtro-select" data-columna="2">
+                                <select class="form-select filtro-select" data-columna="2" style="min-width: 150px;">
                                     <option value="">RUT</option>
                                     @foreach($transferencias->pluck('rut')->unique() as $rut)
                                     <option value="{{ $rut }}">{{ $rut }}</option>
                                     @endforeach
                                 </select>
                             </th>
-                            @for($i = 2; $i < 16; $i++)<th>
-                                </th>@endfor
+                            @for($i = 2; $i < 16; $i++)
+                                <th>
+                                </th>
+                                @endfor
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($transferencias as $t)
                         <tr>
-                            <td class="text-center font-weight-bold">{{ $t->id }}</td>
+                            <td class="text-center fw-bold">{{ $t->id }}</td>
                             <td>{{ $t->nombre }}</td>
                             <td>{{ $t->rut }}</td>
                             <td>
                                 @if($t->estado === 'Pendiente')
                                 <button
                                     class="btn btn-sm btn-warning btn-conciliar"
-                                    data-toggle="modal"
-                                    data-target="#modalConciliar"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#modalConciliar"
                                     data-id="{{ $t->id }}">
                                     Pendiente
                                 </button>
                                 @elseif($t->estado === 'Conciliada')
-                                <span class="badge badge-success">Conciliada</span>
+                                <span class="badge bg-success">Conciliada</span>
                                 @else
                                 {{ $t->estado }}
                                 @endif
@@ -116,7 +121,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="17" class="text-center text-muted">No hay transferencias</td>
+                            <td colspan="16" class="text-center text-muted"></td>
                         </tr>
                         @endforelse
                     </tbody>
@@ -259,21 +264,30 @@
 @endsection
 
 @section('js')
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.6.2/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap4.min.js"></script>
-<script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
-<script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap4.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.datatables.net/2.3.0/js/dataTables.js"></script>
+<script src="https://cdn.datatables.net/2.3.0/js/dataTables.bootstrap5.js"></script>
+<script src="https://cdn.datatables.net/responsive/3.0.4/js/dataTables.responsive.js"></script>
+<script src="https://cdn.datatables.net/responsive/3.0.4/js/responsive.bootstrap5.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 <script>
+    $.fn.dataTable.ext.errMode = 'throw';
+
+
+
     let tabla;
+
     $(document).ready(function() {
         tabla = $('#tabla-transferencias').DataTable({
-            responsive: true,
+            responsive: false,
+            scrollX: true,
+            paging: true,
+            autoWidth: false,
+            orderCellsTop: true,
             language: {
-                url: '{{ asset("datatables/es-CL.json") }}'
+                url: '{{ asset("datatables/es-CL.json")}}'
             }
         });
 
@@ -281,36 +295,46 @@
             theme: 'bootstrap4',
             placeholder: 'Seleccione una opción',
             allowClear: true,
-            width: '100%'
-        }).on('change', function() {
-            const colIndex = $(this).data('columna');
-            const valor = $(this).val();
-
-            if (valor) {
-                tabla.column(colIndex).search('^' + $.fn.dataTable.util.escapeRegex(valor) + '$', true, false).draw();
-            } else {
-                tabla.column(colIndex).search('', true, false).draw();
+            width: '100%',
+            noResults: function() {
+                return 'No se encontraron resultados';
             }
         });
 
+        $('.filtro-select').on('change', function() {
+            const columna = $(this).data('columna');
+            const valor = $(this).val();
+            tabla.column(columna).search(valor || '', false, true).draw();
 
-        $('#reset-filtros').on('click', function() {
-            $('.filtro-select').val('').trigger('change');
-            tabla.columns().search('').draw();
         });
+    });
 
-        $('#modalConciliar').on('show.bs.modal', function(event) {
-            let button = $(event.relatedTarget);
-            let transferenciaId = button.data('id');
-            $(this).find('.input-transferencia-id').val(transferenciaId);
+    $('#reset-filtros').on('click', function() {
+        $('.filtro-select').val('').trigger('change');
+        tabla.columns().search('').draw();
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        let modal = document.getElementById('modalConciliar');
+
+        modal.addEventListener('show.bs.modal', function(event) {
+            let button = event.relatedTarget;
+            let transferenciaId = button.getAttribute('data-id');
+
+            // Asignar el id de transferencia a todos los formularios dentro del modal
+            let inputs = modal.querySelectorAll('.input-transferencia-id');
+            inputs.forEach(input => {
+                input.value = transferenciaId;
+            });
         });
 
         $('#tabla-cotizaciones').DataTable({
             responsive: true,
             language: {
-                url: '{{ asset("datatables/es-CL.json") }}'
+                url: '{{ asset("datatables/es-CL.json")}}'
             }
         });
+
     });
 </script>
 @endsection
