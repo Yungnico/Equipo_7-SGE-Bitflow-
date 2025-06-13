@@ -126,7 +126,9 @@ Route::middleware('auth')->group(function () {
     Route::put('/costos/{costo}', [CostoController::class, 'update'])->name('costos.update');
     Route::delete('/costos/{costo}', [CostoController::class, 'destroy'])->name('costos.destroy');
     Route::get('/subcategorias/{categoriaId}', [SubcategoriaController::class, 'getPorCategoria']);
-    Route::get('/transferencias/{id}/costos', [TransferenciaController::class, 'verCostos']);
+    Route::post('/transferencias/conciliar-egreso', [TransferenciaController::class, 'conciliarEgreso'])->name('transferencias.conciliar.egreso');
+
+
 
 
     //Cambio de contraseñas

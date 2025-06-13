@@ -12,7 +12,7 @@ return new class extends Migration {
             $table->foreignId('costo_id')->constrained('costos')->onDelete('cascade');
             $table->year('año');
             $table->foreignId('moneda_id')->constrained('paridades')->onDelete('cascade');
-            $table->unsignedTinyInteger('mes')->nullable();
+            $table->unsignedTinyInteger('periodos')->nullable();
             $table->decimal('monto', 12, 2);
             $table->timestamps();
         });

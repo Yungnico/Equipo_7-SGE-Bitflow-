@@ -12,7 +12,7 @@ class CostosDetalle extends Model
         'costo_id',
         'año',
         'moneda_id',
-        'mes',
+        'periodos',
         'monto'
     ];
 

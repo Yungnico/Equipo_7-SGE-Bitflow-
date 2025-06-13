@@ -25,33 +25,30 @@ class CostoController extends Controller
 
         $costo = Costos::create($request->only(['concepto', 'categoria_id', 'subcategoria_id', 'frecuencia_pago']));
 
-        $frecuencia = $request->frecuencia_pago;
-        $meses = match ($frecuencia) {
-            'anual' => [1],
-            'semestral' => [1, 7],
-            'trimestral' => [1, 4, 7, 10],
-            'mensual' => range(1, 12),
-            'único' => [null],
+        $periodos = match ($request->frecuencia_pago) {
+            'anual', 'único' => 1,
+            'semestral' => 2,
+            'trimestral' => 4,
+            'mensual' => 12,
         };
 
-        foreach ($meses as $mes) {
-            CostosDetalle::create([
-                'costo_id' => $costo->id,
-                'año' => $request->año,
-                'moneda_id' => $request->moneda_id,
-                'mes' => $mes,
-                'monto' => $request->monto,
-            ]);
-        }
+        CostosDetalle::create([
+            'costo_id' => $costo->id,
+            'año' => $request->año,
+            'moneda_id' => $request->moneda_id,
+            'periodos' => $periodos,
+            'monto' => $request->monto,
+        ]);
 
         return redirect()->back()->with('success', 'Costo creado correctamente.');
     }
+
     public function edit(Costos $costo)
     {
         $categorias = CategoriaCostos::all();
         $subcategorias = SubCategoriaCostos::all();
         $monedas = Paridad::all();
-        $detalle = $costo->detalles()->get();
+        $detalle = $costo->detalles;
 
         return view('costos.edit', compact('costo', 'categorias', 'subcategorias', 'monedas', 'detalle'));
     }
@@ -87,26 +84,22 @@ class CostoController extends Controller
 
         $costo->update($request->only(['concepto', 'categoria_id', 'subcategoria_id', 'frecuencia_pago']));
 
-        $costo->detalles()->delete();
+        $costo->detalles()->delete(); // Borramos el anterior detalle
 
-        $frecuencia = $request->frecuencia_pago;
-        $meses = match ($frecuencia) {
-            'anual' => [1],
-            'semestral' => [1, 7],
-            'trimestral' => [1, 4, 7, 10],
-            'mensual' => range(1, 12),
-            'único' => [null],
+        $periodos = match ($request->frecuencia_pago) {
+            'anual', 'único' => 1,
+            'semestral' => 2,
+            'trimestral' => 4,
+            'mensual' => 12,
         };
 
-        foreach ($meses as $mes) {
-            CostosDetalle::create([
-                'costo_id' => $costo->id,
-                'año' => $request->año,
-                'moneda_id' => $request->moneda_id,
-                'mes' => $mes,
-                'monto' => $request->monto,
-            ]);
-        }
+        CostosDetalle::create([
+            'costo_id' => $costo->id,
+            'año' => $request->año,
+            'moneda_id' => $request->moneda_id,
+            'periodos' => $periodos, // O renómbralo a 'periodos'
+            'monto' => $request->monto,
+        ]);
 
         return redirect()->back()->with('success', 'Costo actualizado correctamente.');
     }

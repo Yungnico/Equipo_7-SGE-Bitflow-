@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Costos;
 
 class TransferenciaBancaria extends Model
 {
@@ -31,5 +32,9 @@ class TransferenciaBancaria extends Model
     public function cotizacion()
     {
         return $this->hasOne(Cotizacion::class, 'factura_asociada');
+    }
+    public function costo()
+    {
+        return $this->hasOne(Costos::class, 'transferencias_bancarias_id');
     }
 }

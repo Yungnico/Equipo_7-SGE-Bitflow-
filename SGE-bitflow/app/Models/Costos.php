@@ -20,6 +20,11 @@ class Costos extends Model
 
     public function detalles()
     {
-        return $this->hasMany(CostosDetalle::class, 'costo_id');
+        return $this->hasOne(CostosDetalle::class, 'costo_id');
+    }
+
+    public function transferencia()
+    {
+        return $this->belongsTo(TransferenciaBancaria::class, 'transferencias_bancarias_id');
     }
 }

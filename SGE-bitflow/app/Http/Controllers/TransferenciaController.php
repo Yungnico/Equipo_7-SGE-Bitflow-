@@ -15,12 +15,13 @@ class TransferenciaController extends Controller
     public function index()
     {
         $transferencias = TransferenciaBancaria::all();
+        $costosDisponibles = Costos::whereNull('transferencias_bancarias_id')->get();
 
         $cotizacionesDisponibles = Cotizacion::whereNull('id_transferencia')
             ->whereIn('estado', ['Borrador', 'Aceptada'])
             ->get();
 
-        return view('transferencias.index', compact('transferencias', 'cotizacionesDisponibles'));
+        return view('transferencias.index', compact('transferencias', 'cotizacionesDisponibles', 'costosDisponibles'));
     }
 
     public function store(Request $request)
@@ -266,13 +267,17 @@ class TransferenciaController extends Controller
         }
     }
 
-    public function verCostos($id)
+    public function conciliarEgreso(Request $request)
     {
-        $costos = Costos::with(['categoria', 'subcategoria', 'detalles'])
-            ->orderBy('created_at', 'desc')
-            ->take(10)
-            ->get();
+        $request->validate([
+            'transferencias_bancarias_id' => 'required|exists:transferencias_bancarias,id',
+            'costo_id' => 'required|exists:costos,id',
+        ]);
 
-        return view('modales.costos', compact('costos'));
+        $costo = Costos::findOrFail($request->costo_id);
+        $costo->transferencias_bancarias_id = $request->transferencias_bancarias_id;
+        $costo->save();
+
+        return redirect()->back()->with('success', 'Egreso conciliado con costo exitosamente.');
     }
 }

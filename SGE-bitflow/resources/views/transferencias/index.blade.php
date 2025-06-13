@@ -110,13 +110,17 @@
                             <td>
                                 @if($t->tipo_movimiento === 'ingreso')
                                 <button class="btn btn-sm btn-primary">Ingreso</button>
-                                @else
-                                <button class="btn btn-sm btn-danger btn-ver-costos"
+                                @elseif($t->tipo_movimiento === 'egreso' && !$t->costo)
+                                <button type="button"
+                                    class="btn btn-sm btn-danger btn-ver-egresos"
                                     data-bs-toggle="modal"
-                                    data-bs-target="#modalCostos"
+                                    data-bs-target="#modalEgresos"
                                     data-transferencia-id="{{ $t->id }}">
                                     Egreso
                                 </button>
+
+                                @else
+                                <span class="badge bg-success">Conciliado</span>
                                 @endif
                             </td>
 
@@ -274,22 +278,53 @@
     </div>
 </div>
 
-<!-- Modal para mostrar costos asociados -->
-<div class="modal fade" id="modalCostos" tabindex="-1" aria-labelledby="modalCostosLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+<!-- Modal Conciliar Egreso -->
+<div class="modal fade" id="modalEgresos" tabindex="-1" aria-labelledby="modalEgresosLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header bg-danger text-white">
-                <h5 class="modal-title" id="modalCostosLabel">Costos Asociados</h5>
+                <h5 class="modal-title" id="modalEgresosLabel">Seleccionar Costo para Conciliar</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <div id="contenido-costos">
-                    <p class="text-center">Cargando...</p>
+                <div class="card">
+                    <div class="table-responsive">
+                        <table id="tabla-costos" class="table table-striped table-bordered nowrap w-100">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Monto</th>
+                                    <th>Fecha</th>
+                                    <th>Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($costosDisponibles as $costo)
+                                <tr>
+                                    <td>{{ $costo->id }}</td>
+                                    <td>{{ $costo->concepto }}</td>
+                                    <td>${{ number_format(optional($costo->detalles->first())->monto, 2, ',', '.') }}</td>
+                                    <td>{{ $costo->frecuencia_pago }}</td>
+                                    <td>
+                                        <form method="POST" action="{{ route('transferencias.conciliar.egreso') }}" class="d-inline">
+                                            @csrf
+                                            <input type="hidden" name="transferencias_bancarias_id" class="input-transferencia-id">
+                                            <input type="hidden" name="costo_id" value="{{ $costo->id }}">
+                                            <button type="submit" class="btn btn-sm btn-success">Conciliar</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
 
 
 
@@ -371,19 +406,14 @@
     });
 
     document.addEventListener('DOMContentLoaded', function() {
-        document.querySelectorAll('.btn-ver-costos').forEach(btn => {
+        document.querySelectorAll('.btn-ver-egresos').forEach(btn => {
             btn.addEventListener('click', function() {
                 const transferenciaId = this.getAttribute('data-transferencia-id');
 
-                fetch(`/transferencias/${transferenciaId}/costos`)
-                    .then(res => res.text())
-                    .then(html => {
-                        document.getElementById('contenido-costos').innerHTML = html;
-                    })
-                    .catch(err => {
-                        console.error(err);
-                        document.getElementById('contenido-costos').innerHTML = '<p class="text-danger">Error al cargar los costos.</p>';
-                    });
+                // Rellenar todos los inputs ocultos dentro del modal
+                document.querySelectorAll('#modalEgresos .input-transferencia-id').forEach(input => {
+                    input.value = transferenciaId;
+                });
             });
         });
     });
