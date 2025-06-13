@@ -8,6 +8,7 @@ use App\Models\Cotizacion;
 use Illuminate\Http\Request;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
+use App\Models\Costos;
 
 class TransferenciaController extends Controller
 {
@@ -36,13 +37,24 @@ class TransferenciaController extends Controller
             'codigo_transferencia' => 'nullable|string|max:100',
             'tipo_transaccion' => 'nullable|string|max:100',
             'glosa_detalle' => 'nullable|string',
-            'ingreso' => 'nullable|numeric',
-            'egreso' => 'nullable|numeric',
+            'ingreso' => 'nullable|string',
+            'egreso' => 'nullable|string',
             'saldo_contable' => 'nullable|numeric',
             'comentario_transferencia' => 'nullable|string',
         ]);
 
-        TransferenciaBancaria::create($request->all());
+        $datos = $request->all();
+
+        $ingreso = !empty($datos['ingreso']) ? floatval(str_replace(['$', '.', ' '], '', $datos['ingreso'])) : 0;
+        $egreso = !empty($datos['egreso']) ? floatval(str_replace(['$', '.', ' '], '', $datos['egreso'])) : 0;
+
+        if ($ingreso > 0) {
+            $datos['tipo_movimiento'] = 'ingreso';
+        } elseif ($egreso > 0) {
+            $datos['tipo_movimiento'] = 'egreso';
+        }
+
+        TransferenciaBancaria::create($datos);
 
         return redirect()->back()->with('success', 'Transferencia agregada correctamente.');
     }
@@ -87,12 +99,10 @@ class TransferenciaController extends Controller
             // Clave única para evitar duplicados dentro del mismo archivo
             $clave = md5($fechaTransaccion . '|' . $ingreso . '|' . $nombre . '|' . $rut . '|' . $comentario);
 
-            // Evitar duplicados dentro del mismo archivo
             if (in_array($clave, $duplicadosEnArchivo)) {
                 continue;
             }
 
-            // Evitar duplicados en la base de datos
             $existe = TransferenciaBancaria::where('fecha_transaccion', $fechaTransaccion)
                 ->where('ingreso', $ingreso)
                 ->where('nombre', $nombre)
@@ -104,7 +114,15 @@ class TransferenciaController extends Controller
                 continue;
             }
 
-            // Si pasó ambos chequeos, guardamos y agregamos a la lista en memoria
+            $egreso = isset($data[9]) ? floatval($data[9]) : 0;
+            $tipoMovimiento = null;
+
+            if ($ingreso > 0) {
+                $tipoMovimiento = 'ingreso';
+            } elseif ($egreso > 0) {
+                $tipoMovimiento = 'egreso';
+            }
+
             TransferenciaBancaria::create([
                 'fecha_transaccion'        => $fechaTransaccion,
                 'hora_transaccion'         => $data[1] ?? null,
@@ -121,6 +139,7 @@ class TransferenciaController extends Controller
                 'tipo_cuenta'              => $data[14] ?? null,
                 'banco'                    => $data[15] ?? null,
                 'comentario_transferencia' => $comentario,
+                'tipo_movimiento'          => $tipoMovimiento,
             ]);
 
             $duplicadosEnArchivo[] = $clave;
@@ -128,6 +147,7 @@ class TransferenciaController extends Controller
 
         return back()->with('success', 'Archivo importado correctamente.');
     }
+
 
     public function conciliarTransferencias()
     {
@@ -244,5 +264,15 @@ class TransferenciaController extends Controller
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Error al conciliar: ' . $e->getMessage());
         }
+    }
+
+    public function verCostos($id)
+    {
+        $costos = Costos::with(['categoria', 'subcategoria', 'detalles'])
+            ->orderBy('created_at', 'desc')
+            ->take(10)
+            ->get();
+
+        return view('modales.costos', compact('costos'));
     }
 }

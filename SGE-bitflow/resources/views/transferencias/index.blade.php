@@ -45,6 +45,7 @@
                             <th>Nombre</th>
                             <th>RUT</th>
                             <th>Estado</th>
+                            <th>Tipo Movimiento</th>
                             <th>Fecha Transacción</th>
                             <th>Hora</th>
                             <th>Fecha Contable</th>
@@ -78,6 +79,7 @@
                                     @endforeach
                                 </select>
                             </th>
+                            <th></th>
                             @for($i = 2; $i < 16; $i++)
                                 <th>
                                 </th>
@@ -105,6 +107,19 @@
                                 {{ $t->estado }}
                                 @endif
                             </td>
+                            <td>
+                                @if($t->tipo_movimiento === 'ingreso')
+                                <button class="btn btn-sm btn-primary">Ingreso</button>
+                                @else
+                                <button class="btn btn-sm btn-danger btn-ver-costos"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#modalCostos"
+                                    data-transferencia-id="{{ $t->id }}">
+                                    Egreso
+                                </button>
+                                @endif
+                            </td>
+
                             <td>{{ $t->fecha_transaccion }}</td>
                             <td>{{ $t->hora_transaccion }}</td>
                             <td>{{ $t->fecha_contable }}</td>
@@ -259,6 +274,24 @@
     </div>
 </div>
 
+<!-- Modal para mostrar costos asociados -->
+<div class="modal fade" id="modalCostos" tabindex="-1" aria-labelledby="modalCostosLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="modalCostosLabel">Costos Asociados</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="contenido-costos">
+                    <p class="text-center">Cargando...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 
 
 @endsection
@@ -335,6 +368,24 @@
             }
         });
 
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.btn-ver-costos').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const transferenciaId = this.getAttribute('data-transferencia-id');
+
+                fetch(`/transferencias/${transferenciaId}/costos`)
+                    .then(res => res.text())
+                    .then(html => {
+                        document.getElementById('contenido-costos').innerHTML = html;
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        document.getElementById('contenido-costos').innerHTML = '<p class="text-danger">Error al cargar los costos.</p>';
+                    });
+            });
+        });
     });
 </script>
 @endsection

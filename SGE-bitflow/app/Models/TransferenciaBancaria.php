@@ -25,6 +25,7 @@ class TransferenciaBancaria extends Model
         'banco',
         'comentario_transferencia',
         'estado',
+        'tipo_movimiento',
     ];
 
     public function cotizacion()
