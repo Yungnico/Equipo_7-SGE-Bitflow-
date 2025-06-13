@@ -78,9 +78,21 @@
                         <td>{{ $costo->subcategoria->nombre ?? 'Sin subcategoría' }}</td>
                         <td>{{ ucfirst($costo->frecuencia_pago) }}</td>
                         <td class="d-flex gap-2 justify-content-center">
-                            <a href="{{ route('costos.edit', $costo->id) }}" class="btn btn-sm btn-primary">
+                            <button
+                                class="btn btn-sm btn-primary btn-editar"
+                                data-id="{{ $costo->id }}"
+                                data-concepto="{{ $costo->concepto }}"
+                                data-frecuencia="{{ $costo->frecuencia_pago }}"
+                                data-categoria="{{ $costo->categoria_id }}"
+                                data-subcategoria="{{ $costo->subcategoria_id }}"
+                                data-año="{{ optional($costo->detalles->first())->año }}"
+                                data-moneda="{{ optional($costo->detalles->first())->moneda_id }}"
+                                data-monto="{{ optional($costo->detalles->first())->monto }}"
+                                data-bs-toggle="modal"
+                                data-bs-target="#modalEditarCosto">
                                 <i class="fas fa-pencil-alt"></i>
-                            </a>
+                            </button>
+
                             <form action="{{ route('costos.destroy', $costo->id) }}" method="POST" style="display:inline-block;">
                                 @csrf
                                 @method('DELETE')
@@ -173,6 +185,79 @@
         </div>
     </div>
 
+    <!-- Modal Editar Costo -->
+    <div class="modal fade" id="modalEditarCosto" tabindex="-1" aria-labelledby="modalEditarCostoLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <form id="formEditarCosto" method="POST">
+                @csrf
+                @method('PUT')
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title" id="modalEditarCostoLabel">Editar Costo</h5>
+                        <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+
+                    <div class="modal-body row g-3">
+                        <input type="hidden" name="id" id="editar_id">
+                        <div class="col-md-6">
+                            <label for="editar_concepto" class="form-label">Concepto</label>
+                            <input type="text" class="form-control" name="concepto" id="editar_concepto" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="editar_frecuencia_pago" class="form-label">Frecuencia de Pago</label>
+                            <select name="frecuencia_pago" id="editar_frecuencia_pago" class="form-select" required>
+                                <option value="">Seleccione</option>
+                                <option value="único">Único</option>
+                                <option value="mensual">Mensual</option>
+                                <option value="trimestral">Trimestral</option>
+                                <option value="semestral">Semestral</option>
+                                <option value="anual">Anual</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="editar_categoria_id" class="form-label">Categoría</label>
+                            <select name="categoria_id" id="editar_categoria_id" class="form-select" required>
+                                <option value="">Seleccione</option>
+                                @foreach($categorias as $categoria)
+                                <option value="{{ $categoria->id }}">{{ $categoria->nombre }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="editar_subcategoria_id" class="form-label">Subcategoría</label>
+                            <select name="subcategoria_id" id="editar_subcategoria_id" class="form-select" required>
+                                <option value="">Seleccione</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="editar_año" class="form-label">Año</label>
+                            <input type="number" class="form-control" name="año" id="editar_año" min="2000" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="editar_moneda_id" class="form-label">Moneda</label>
+                            <select name="moneda_id" id="editar_moneda_id" class="form-select" required>
+                                <option value="">Seleccione</option>
+                                @foreach($monedas as $moneda)
+                                <option value="{{ $moneda->id }}">{{ $moneda->moneda }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="editar_monto" class="form-label">Monto</label>
+                            <input type="number" class="form-control" name="monto" id="editar_monto" min="0" step="0.01" required>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Actualizar</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
 </div>
 @stop
 
@@ -238,6 +323,35 @@
         } else {
             subcategoriaSelect.innerHTML = '<option value="">Seleccione</option>';
         }
+    });
+
+    // Evento para abrir modal de edición
+    $(document).on('click', '.btn-editar', function() {
+        const btn = $(this);
+        const id = btn.data('id');
+
+        $('#editar_id').val(id);
+        $('#editar_concepto').val(btn.data('concepto'));
+        $('#editar_frecuencia_pago').val(btn.data('frecuencia'));
+        $('#editar_categoria_id').val(btn.data('categoria')).trigger('change');
+
+        // Esperar que cargue subcategorías antes de seleccionarla
+        fetch(`/subcategorias/${btn.data('categoria')}`)
+            .then(response => response.json())
+            .then(data => {
+                let options = '<option value="">Seleccione</option>';
+                data.forEach(sub => {
+                    options += `<option value="${sub.id}" ${sub.id == btn.data('subcategoria') ? 'selected' : ''}>${sub.nombre}</option>`;
+                });
+                $('#editar_subcategoria_id').html(options);
+            });
+
+        $('#editar_año').val(btn.data('año'));
+        $('#editar_moneda_id').val(btn.data('moneda'));
+        $('#editar_monto').val(btn.data('monto'));
+
+        // Set form action
+        $('#formEditarCosto').attr('action', `/costos/${id}`);
     });
 </script>
 @stop

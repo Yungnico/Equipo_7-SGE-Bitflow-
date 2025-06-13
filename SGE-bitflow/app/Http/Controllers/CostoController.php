@@ -72,4 +72,42 @@ class CostoController extends Controller
 
         return redirect()->back()->with('success', 'Costo eliminado correctamente.');
     }
+
+    public function update(Request $request, Costos $costo)
+    {
+        $request->validate([
+            'concepto' => 'required|string',
+            'categoria_id' => 'required|exists:categorias_costos,id',
+            'subcategoria_id' => 'required|exists:subcategorias_costos,id',
+            'frecuencia_pago' => 'required|in:único,mensual,trimestral,semestral,anual',
+            'año' => 'required|integer',
+            'moneda_id' => 'required|integer',
+            'monto' => 'required|numeric'
+        ]);
+
+        $costo->update($request->only(['concepto', 'categoria_id', 'subcategoria_id', 'frecuencia_pago']));
+
+        $costo->detalles()->delete();
+
+        $frecuencia = $request->frecuencia_pago;
+        $meses = match ($frecuencia) {
+            'anual' => [1],
+            'semestral' => [1, 7],
+            'trimestral' => [1, 4, 7, 10],
+            'mensual' => range(1, 12),
+            'único' => [null],
+        };
+
+        foreach ($meses as $mes) {
+            CostosDetalle::create([
+                'costo_id' => $costo->id,
+                'año' => $request->año,
+                'moneda_id' => $request->moneda_id,
+                'mes' => $mes,
+                'monto' => $request->monto,
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'Costo actualizado correctamente.');
+    }
 }
