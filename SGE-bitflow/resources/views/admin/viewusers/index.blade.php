@@ -16,7 +16,7 @@
         <div class="card-body">
 
 
-            <table class="table table-striped table-bordered dt-responsive nowrap " id="usuarios" style="width:100%">
+            <table class="table table-striped table-bordered table-hover dt-responsive nowrap " id="usuarios" style="width:100%">
                 <thead>
                     <tr>
                         <th>ID</th>
