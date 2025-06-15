@@ -48,10 +48,17 @@ Route::middleware('auth')->group(function () {
     Route::get('/cotizaciones/borrador', [CotizacionController::class, 'showBorrador'])->middleware('can:cotizaciones.borrador')->name('cotizaciones.borrador');//middleware puesto
     Route::get('/cotizacion/conciliar/{id}', [CotizacionController::class, 'conciliar'])->name('cotizacion.conciliar');
 });
-//RUTAS DE PARIDAD
+
+
+//PARIDADES OFICIAL 
 use App\Http\Controllers\ParidadController;
 
+Route::get('/paridades', [ParidadController::class, 'index'])->name('paridades.index');
+Route::post('/paridades', [ParidadController::class, 'store'])->name('paridades.store');
+Route::get('/paridades/actualizar', [ParidadController::class, 'actualizarValores'])->name('paridades.actualizar');
+Route::post('/paridades/{id}/update', [ParidadController::class, 'update'])->name('paridades.update');
 
+//PARIDADES
 //Route::resource('paridades', ParidadController::class)->except(['create', 'store', 'destroy', 'show']);
 Route::get('/paridades', [ParidadController::class, 'index'])->middleware('can:paridades.index')->name('paridades.index');
 Route::get('/paridades/fetch', [ParidadController::class, 'fetchFromAPI'])->middleware('can:paridades.fetch')->name('paridades.fetch');//middleware puesto

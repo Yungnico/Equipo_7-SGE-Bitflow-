@@ -6,23 +6,19 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    public function up()
+    public function up(): void
     {
-        
-
         Schema::create('paridades', function (Blueprint $table) {
-            $table->string('moneda');
-            $table->date('fecha');
-            $table->unique(['moneda', 'fecha']);
             $table->id();
-            $table->decimal('valor', 10, 2);
+            $table->string('moneda'); 
+            $table->decimal('valor', 15, 4);
+            $table->date('fecha');
             $table->timestamps();
         });
     }
 
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('paridades');
     }
-    
 };
