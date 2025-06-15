@@ -19,15 +19,6 @@ class ParidadController extends Controller
         $monedas = $request->input('monedas');
         $hoy = date('Y-m-d');
 
-        foreach ($monedas as $moneda) {
-            $valor = $this->obtenerValorMoneda($moneda);
-
-            Paridad::updateOrCreate(
-                ['moneda' => $moneda],
-                ['valor' => $valor, 'fecha' => $hoy]
-            );
-        }
-
         return redirect()->route('paridades.index')->with('success', 'Paridades actualizadas correctamente.');
     }
 
@@ -37,6 +28,9 @@ class ParidadController extends Controller
         $hoy = date('Y-m-d');
 
         foreach ($paridades as $paridad) {
+            if ($paridad->moneda == 'CLP') {
+                continue;
+            }
             $valor = $this->obtenerValorMoneda($paridad->moneda);
             $paridad->update([
                 'valor' => $valor,

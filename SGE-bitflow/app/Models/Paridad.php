@@ -8,7 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class Paridad extends Model
 {
     use HasFactory;
-
+    protected $table = 'paridades';
     protected $fillable = ['moneda', 'valor', 'fecha'];
+
+
+    public function servicios()
+    {
+        return $this->hasMany(Servicio::class);
+    }
 }
 
