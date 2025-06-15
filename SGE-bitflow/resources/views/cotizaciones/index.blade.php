@@ -1,7 +1,11 @@
 @extends('adminlte::page')
 @section('title', 'Cotizaciones')
-@section('plugins.Datatables', true)
-@section('plugins.DatatablesPlugin', true)
+@section('css')
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<!-- DataTables CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap4.min.css">
+@stop
 @section('content')
 <div class="content py-5">
     <div class="card">
@@ -64,6 +68,14 @@
 @stop
 @section('js')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<!-- Bootstrap 4 JS -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+<!-- DataTables JS -->
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap4.min.js"></script>
 @if(session('success'))
     <script>
         $(document).ready(function () {
@@ -76,20 +88,32 @@
             });
         });
     </script>
-@endif
-    <script>
-        $(document).ready(function () {
-            $('#myTable').DataTable({
-                "language": {
-                    responsive: true,
-                    autoWidth: true,
-                    url: '{{ asset("datatables/es-CL.json")}}'
-                }
-            });
+    @endif
+        <script>
+            $(document).ready(function () {
+        const table = $('#myTable').DataTable({
+            responsive: true,
+            autoWidth: false,
+            language: {
+                url: '{{ asset("datatables/es-CL.json")}}'
+            }
         });
-        
+    
+        // Ajuste inmediato si cambia el tamaño de la ventana
         $(window).on('resize', function() {
-                table.columns.adjust().responsive.recalc();
-            });
+            table.columns.adjust().responsive.recalc();
+        });
+    
+        // Ajuste al cambiar de pestaña en AdminLTE (si estás usando tabs)
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function () {
+            table.columns.adjust().responsive.recalc();
+        });
+    
+        // Ajuste al mostrar el contenido (por si está oculto inicialmente)
+        setTimeout(() => {
+            table.columns.adjust().responsive.recalc();
+        }, 500);
+    });
+
     </script>
 @stop
