@@ -45,6 +45,7 @@
                             <th>Nombre</th>
                             <th>RUT</th>
                             <th>Estado</th>
+                            <th>Tipo Movimiento</th>
                             <th>Fecha Transacción</th>
                             <th>Hora</th>
                             <th>Fecha Contable</th>
@@ -63,7 +64,7 @@
                         <tr class="filtros">
                             <th></th>
                             <th>
-                                <select class="form-select filtro-select" data-columna="0" style="min-width: 150px;">
+                                <select class="form-select filtro-select" data-columna="1" style="min-width: 150px;">
                                     <option value="">Nombre</option>
                                     @foreach($transferencias->pluck('nombre')->unique() as $nombre)
                                     <option value="{{ $nombre }}">{{ $nombre }}</option>
@@ -71,13 +72,14 @@
                                 </select>
                             </th>
                             <th>
-                                <select class="form-select filtro-select" data-columna="1" style="min-width: 150px;">
+                                <select class="form-select filtro-select" data-columna="2" style="min-width: 150px;">
                                     <option value="">RUT</option>
                                     @foreach($transferencias->pluck('rut')->unique() as $rut)
                                     <option value="{{ $rut }}">{{ $rut }}</option>
                                     @endforeach
                                 </select>
                             </th>
+                            <th></th>
                             @for($i = 2; $i < 16; $i++)
                                 <th>
                                 </th>
@@ -105,6 +107,23 @@
                                 {{ $t->estado }}
                                 @endif
                             </td>
+                            <td>
+                                @if($t->tipo_movimiento === 'ingreso')
+                                <button class="btn btn-sm btn-primary">Ingreso</button>
+                                @elseif($t->tipo_movimiento === 'egreso' && !$t->costo)
+                                <button type="button"
+                                    class="btn btn-sm btn-danger btn-ver-egresos"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#modalEgresos"
+                                    data-transferencia-id="{{ $t->id }}">
+                                    Egreso
+                                </button>
+
+                                @else
+                                <span class="badge bg-success">Conciliado</span>
+                                @endif
+                            </td>
+
                             <td>{{ $t->fecha_transaccion }}</td>
                             <td>{{ $t->hora_transaccion }}</td>
                             <td>{{ $t->fecha_contable }}</td>
@@ -259,6 +278,55 @@
     </div>
 </div>
 
+<!-- Modal Conciliar Egreso -->
+<div class="modal fade" id="modalEgresos" tabindex="-1" aria-labelledby="modalEgresosLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="modalEgresosLabel">Seleccionar Costo para Conciliar</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="card">
+                    <div class="table-responsive">
+                        <table id="tabla-costos" class="table table-striped table-bordered nowrap w-100">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Monto</th>
+                                    <th>Fecha</th>
+                                    <th>Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($costosDisponibles as $costo)
+                                <tr>
+                                    <td>{{ $costo->id }}</td>
+                                    <td>{{ $costo->concepto }}</td>
+                                    <td>${{ number_format(optional($costo->detalles->first())->monto, 2, ',', '.') }}</td>
+                                    <td>{{ $costo->frecuencia_pago }}</td>
+                                    <td>
+                                        <form method="POST" action="{{ route('transferencias.conciliar.egreso') }}" class="d-inline">
+                                            @csrf
+                                            <input type="hidden" name="transferencias_bancarias_id" class="input-transferencia-id">
+                                            <input type="hidden" name="costo_id" value="{{ $costo->id }}">
+                                            <button type="submit" class="btn btn-sm btn-success">Conciliar</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
 
 
 @endsection
@@ -295,7 +363,7 @@
             theme: 'bootstrap4',
             placeholder: 'Seleccione una opción',
             allowClear: true,
-            width: '100%'
+            width: '100%',
             noResults: function() {
                 return 'No se encontraron resultados';
             }
@@ -304,7 +372,8 @@
         $('.filtro-select').on('change', function() {
             const columna = $(this).data('columna');
             const valor = $(this).val();
-            tabla.column(columna).search(valor ? '^' + valor + '$' : '', true, false).draw();
+            tabla.column(columna).search(valor || '', false, true).draw();
+
         });
     });
 
@@ -334,6 +403,19 @@
             }
         });
 
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.btn-ver-egresos').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const transferenciaId = this.getAttribute('data-transferencia-id');
+
+                // Rellenar todos los inputs ocultos dentro del modal
+                document.querySelectorAll('#modalEgresos .input-transferencia-id').forEach(input => {
+                    input.value = transferenciaId;
+                });
+            });
+        });
     });
 </script>
 @endsection

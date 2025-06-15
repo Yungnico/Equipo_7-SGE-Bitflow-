@@ -399,6 +399,12 @@ return [
             'icon' => 'fas fa-credit-card',
             'can' => 'factura.index',
         ],
+        [
+            'text' => 'Costos',
+            'url' => 'costos',
+            'icon' => 'fas fa-dollar-sign',
+            'can' => 'factura.index',
+        ],
     ],
 
     /*
