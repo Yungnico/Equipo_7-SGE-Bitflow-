@@ -375,9 +375,9 @@
                 });
             }
             $('#myTable').DataTable({
+                responsive: true,
+                autoWidth: false,
                 "language": {
-                    responsive: true,
-                    autoWidth: true,
                     url: '{{ asset("datatables/es-CL.json")}}'
                 }
             });
