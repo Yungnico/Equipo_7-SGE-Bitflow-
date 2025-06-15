@@ -4,55 +4,61 @@
 @section('plugins.DatatablesPlugin', true)
 @section('content')
 <div class="content py-5">
-    <table id="myTable" class="table table-bordered table-striped">
-        <thead>
-            <tr>
-                <th>Código Cotización</th>
-                <th>Cliente </th>
-                <th>Fecha</th>
-                <th>Moneda</th>
-                <th>total</th>
-                <th>Estado</th>
-                <th>Acciones</th>
-                
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($cotizaciones as $cotizacion)
-                <tr>
-                    <td>{{ $cotizacion->codigo_cotizacion }}</td>
-                    <td>{{ $cotizacion->cliente->razon_social }}</td>
-                    <td>{{ $cotizacion->fecha_cotizacion }}</td>
-                    <td>{{ $cotizacion->moneda }}</td>
-                    <td>{{$cotizacion->total_iva}}</td>
-                    <td>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span>{{ $cotizacion->estado }}</span>
-                            <a href="{{ route('cotizaciones.edit', $cotizacion->id_cotizacion) }}" class="btn btn-sm btn-warning">
-                                <i class="fas fa-edit"></i>
-                            </a>
-                        </div>
-                    </td>
-                    <td>
-                        <a href="{{ route('cotizaciones.prepararPDF', ['id' => $cotizacion->id_cotizacion]) }}" class="btn btn-sm btn-secondary">
-                            <i class="fas fa-file-pdf"></i>
-                        </a>
-                        <a href="{{ route('cotizaciones.prepararEmail', ['id' => $cotizacion->id_cotizacion]) }}" class="btn btn-sm btn-primary">
-                            <i class="fas fa-envelope"></i>
-                        </a>
-                        {{-- <a href="#" class="btn btn-sm btn-danger" onclick="event.preventDefault(); document.getElementById('delete-form-{{ $cotizacion->id_cotizacion }}').submit();">
-                            <i class="fas fa-trash"></i>
-                        </a> --}}
-                        
-                        <form id="delete-form-{{ $cotizacion->id_cotizacion }}" action="{{ route('cotizaciones.destroy', $cotizacion->id_cotizacion) }}" method="POST" style="display: none;">
-                            @csrf
-                            @method('DELETE')
-                        </form>
-                    </td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
+    <div class="card">
+        <div class="card-body">
+            <table id="myTable" class="table table-bordered table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Código Cotización</th>
+                        <th>Cliente </th>
+                        <th>Fecha</th>
+                        <th>Moneda</th>
+                        <th>total</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($cotizaciones as $cotizacion)
+                        <tr>
+                            <td>{{ $cotizacion->codigo_cotizacion }}</td>
+                            <td>{{ $cotizacion->cliente->razon_social }}</td>
+                            <td>{{ $cotizacion->fecha_cotizacion }}</td>
+                            <td>{{ $cotizacion->moneda }}</td>
+                            <td>{{$cotizacion->total_iva}}</td>
+                            <td>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span>{{ $cotizacion->estado }}</span>
+                                    <a href="{{ route('cotizaciones.edit', $cotizacion->id_cotizacion) }}" class="btn btn-sm btn-warning">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="text-center">
+                                    <a href="{{ route('cotizaciones.prepararPDF', ['id' => $cotizacion->id_cotizacion]) }}" class="btn btn-sm btn-secondary">
+                                        <i class="fas fa-file-pdf"></i>
+                                    </a>
+                                    <a href="{{ route('cotizaciones.prepararEmail', ['id' => $cotizacion->id_cotizacion]) }}" class="btn btn-sm btn-primary">
+                                        <i class="fas fa-envelope"></i>
+                                    </a>
+                                    {{-- <a href="#" class="btn btn-sm btn-danger" onclick="event.preventDefault(); document.getElementById('delete-form-{{ $cotizacion->id_cotizacion }}').submit();">
+                                        <i class="fas fa-trash"></i>
+                                    </a> --}}
+                                </div>
+
+                                <form id="delete-form-{{ $cotizacion->id_cotizacion }}" action="{{ route('cotizaciones.destroy', $cotizacion->id_cotizacion) }}" method="POST" style="display: none;">
+                                    @csrf
+                                    @method('DELETE')
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
     
 @stop
