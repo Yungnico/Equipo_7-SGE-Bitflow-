@@ -1,13 +1,4 @@
 <section>
-    <header>
-        <h2 class="text-lg font-medium text-gray-900 ">
-            <h2>{{ __('Información del perfil') }}</h2>
-        </h2>
-
-        <p class="mt-1 text-sm text-gray-600 ">
-            <h6>{{ __("Actualiza tu información del perfil o tu dirección de correo electrónico.") }}</h6>
-        </p>
-    </header>
 
     <form id="send-verification" method="post" action="{{ route('verification.send') }}">
         @csrf
@@ -67,7 +58,7 @@
         </div>
 
         <div class="flex items-center gap-4">
-            <x-custom-button>{{ __('Guardar') }}</x-primary-button>
+            <x-custom-button>{{ __('Guardar') }}</x-custom-button>
 
             @if (session('status') === 'profile-updated')
                 <p
@@ -99,7 +90,9 @@ document.getElementById('actualizar_perfil').addEventListener('submit', function
         cancelButtonText: 'Cancelar'
     
     }).then((result) => {
-        e.target.submit();
+        if (result.isConfirmed) {
+            e.target.submit();
+        }
     });
 });
 </script>

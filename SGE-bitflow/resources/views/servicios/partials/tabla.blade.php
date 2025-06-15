@@ -1,4 +1,4 @@
-<div class="container mt-5">
+<div class="py-3">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="h3">Servicios Registrados</h1>
     </div>
@@ -32,7 +32,7 @@
     <div class="card">
         <div class="card-body">
             <table id="tabla-servicios" class="table table-striped table-bordered align-middle">
-                <thead class="table-dark">
+                <thead>
                     <tr>
                         <th>Nombre</th>
                         <th>Descripción</th>

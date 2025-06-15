@@ -3,7 +3,7 @@
 @section('title', 'Servicios')
 
 @section('content_header')
-<h1></h1>
+
 @stop
 
 @section('css')
@@ -20,7 +20,7 @@
 @stop
 
 @section('content')
-<div class="container mt-4">
+<div>
 
     @include('servicios.partials.alertas')
     @include('servicios.partials.tabla')

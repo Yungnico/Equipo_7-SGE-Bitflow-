@@ -154,8 +154,8 @@ return [
 
     'layout_topnav' => null,
     'layout_boxed' => null,
-    'layout_fixed_sidebar' => null,
-    'layout_fixed_navbar' => null,
+    'layout_fixed_sidebar' => true,
+    'layout_fixed_navbar' => true,
     'layout_fixed_footer' => null,
     'layout_dark_mode' => null,
 
@@ -193,7 +193,7 @@ return [
     'classes_body' => '',
     'classes_brand' => '',
     'classes_brand_text' => '',
-    'classes_content_wrapper' => '',
+    'classes_content_wrapper' => 'bg-white',//importante
     'classes_content_header' => '',
     'classes_content' => '',
     'classes_sidebar' => 'sidebar-dark-primary elevation-4',
@@ -316,21 +316,10 @@ return [
             'text' => 'Buscar',
         ],
         [
-            'text' => 'Cuenta',
+            'text' => 'Perfil',
+            'url' => 'perfil',
             'icon' => 'fas fa-user-cog ',   //fa-fw fa-user para el icono del usuario fontawesone 5 usa admin lte
-            'submenu' =>
-            [
-                [
-                    'text' => 'Perfil',
-                    'url' => 'perfil',
-                    'icon' => 'fas fa-fw fa-user',
-                ],
-                [
-                    'text' => 'Cambiar contraseña',
-                    'url' => 'cambiar-password',
-                    'icon' => 'fas fa-fw fa-lock',
-                ],
-            ],
+            
         ],
         [
             'text' => 'Registro de usuarios',
@@ -408,6 +397,12 @@ return [
             'text' => 'Cuenta corriente',
             'url' => 'transferencias',
             'icon' => 'fas fa-credit-card',
+            'can' => 'factura.index',
+        ],
+        [
+            'text' => 'Costos',
+            'url' => 'costos',
+            'icon' => 'fas fa-dollar-sign',
             'can' => 'factura.index',
         ],
     ],
