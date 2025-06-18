@@ -16,7 +16,7 @@
 @stop
 
 @section('content')
-<div class="container mt-4">
+<div class="container-fluid mt-5 px-0">
 
     {{-- Botones de acciones --}}
     <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
@@ -38,7 +38,7 @@
     <div class="card">
         <div class="card-body">
             <table id="tabla-costos" class="table table-striped table-bordered align-middle">
-                <thead class="table-dark">
+                <thead>
                     <tr>
                         <th>Concepto</th>
                         <th>Monto</th>

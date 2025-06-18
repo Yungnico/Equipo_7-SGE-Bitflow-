@@ -16,7 +16,7 @@
 @endsection
 
 @section('content')
-<div class="container mt-5">
+<div class="container-fluid mt-5 px-0">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="h3">Transferencias Bancarias</h1>
         <form action="{{ route('transferencias.importar') }}" method="POST" enctype="multipart/form-data" class="d-flex gap-2">
@@ -38,8 +38,8 @@
     <div class="card">
         <div class="card-body">
             <div class="table-responsive">
-                <table id="tabla-transferencias" class="table table-striped table-bordered nowrap w-100">
-                    <thead class="table-dark">
+                <table id="tabla-transferencias" class="table table-striped table-bordered align-middle">
+                    <thead>
                         <tr>
                             <th>ID</th>
                             <th>Nombre</th>
