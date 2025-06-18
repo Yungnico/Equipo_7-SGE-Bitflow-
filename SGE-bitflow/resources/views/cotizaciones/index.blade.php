@@ -101,10 +101,15 @@
             <input type="email" class="form-control form-control-sm" placeholder="Para" name="correo_destino" value="${correoDestino}" required>
           </div>
           <div class="form-group mb-1">
+            <input type="text" class="form-control form-control-sm" placeholder="CC" name="copia" required>
+          </div>
+          <div class="form-group mb-1">
+            <input type="text" class="form-control form-control-sm" placeholder="CCO" name="copia_oculta" required>
+          </div>
+          <div class="form-group mb-1">
             <input type="text" class="form-control form-control-sm" placeholder="Asunto" name="asunto" required>
           </div>
           <div class="form-group mb-1">
-            <label for="mensaje" class="form-label">Mensaje</label>
             <textarea class="form-control form-control-sm" name="mensaje" rows="6" placeholder="Escribe tu mensaje..." required></textarea>
           </div>
           <div class="form-check mb-2">

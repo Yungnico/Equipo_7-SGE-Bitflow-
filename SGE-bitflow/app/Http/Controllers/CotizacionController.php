@@ -72,7 +72,7 @@ class CotizacionController extends Controller
             }
 
             $correoMailable = new CotizacionMailable($asunto, $mensaje, $cotizacion->codigo_cotizacion, $adjuntarPdf);
-            Mail::to($correo)->send($correoMailable);
+            Mail::to('nvasquezsu@ing.ucsc.cl')->send($correoMailable);
 
             // Limpiar archivo PDF temporal
             if ($adjuntarPdf == 1) {

@@ -183,7 +183,7 @@
                             <div class="form-group col-md-6">
                                 <label for="servicio">Servicios:</label>
                                 <div class="input-group">
-                                    <select class="form-control" id="servicio" name="servicio" required>
+                                    <select class="form-control servicios_select2" id="servicio" name="servicio" style="width:87%" required>
                                         <option value="" >Seleccione un Servicio</option>
                                         @foreach ($servicios as $servicio)
                                             <option value="{{ $servicio->id }}">{{$servicio->id}} - {{$servicio->nombre_servicio }}</option>
@@ -333,6 +333,15 @@
 </div>
 @stop
 @section('css')
+    <style>
+        .select2-container--default .select2-selection--single {
+    height: 38px !important; /* igual que input */
+    padding: 6px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 0.375rem;
+}
+    </style>
+    {{-- select2 --}}
     {{-- flatpickr --}}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 @stop
@@ -344,6 +353,11 @@
         dateFormat: "Y-m-d"
     });
     $(document).ready(function() {
+        $('.servicios_select2').select2({
+            placeholder: 'Seleccione un Servicio',
+            allowClear: true,
+            
+        });
         const serviciosGuardados = [];
         const productosGuardados = [];
         const itemslibresGuardados = [];
