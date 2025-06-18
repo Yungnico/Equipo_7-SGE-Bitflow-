@@ -178,7 +178,6 @@
 
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-success">Guardar</button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                     </div>
                 </div>
             </form>
@@ -250,7 +249,6 @@
 
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-primary">Actualizar</button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                     </div>
                 </div>
             </form>
