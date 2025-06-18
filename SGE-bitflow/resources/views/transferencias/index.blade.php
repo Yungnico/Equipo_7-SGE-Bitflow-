@@ -13,6 +13,17 @@
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <link href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@1.5.2/dist/select2-bootstrap4.min.css" rel="stylesheet" />
 
+<style>
+    td.details-control {
+        background: url('https://www.datatables.net/examples/resources/details_open.png') no-repeat center center;
+        cursor: pointer;
+    }
+
+    tr.shown td.details-control {
+        background: url('https://www.datatables.net/examples/resources/details_close.png') no-repeat center center;
+    }
+</style>
+
 @endsection
 
 @section('content')
@@ -41,6 +52,7 @@
                 <table id="tabla-transferencias" class="table table-striped table-bordered align-middle">
                     <thead>
                         <tr>
+                            <th></th>
                             <th>ID</th>
                             <th>Nombre</th>
                             <th>RUT</th>
@@ -62,6 +74,7 @@
                         </tr>
 
                         <tr class="filtros">
+                            <th></th>
                             <th></th>
                             <th>
                                 <select class="form-select filtro-select" data-columna="1" style="min-width: 150px;">
@@ -89,6 +102,7 @@
                     <tbody>
                         @forelse($transferencias as $t)
                         <tr>
+                            <td class="details-control"></td>
                             <td class="text-center fw-bold">{{ $t->id }}</td>
                             <td>{{ $t->nombre }}</td>
                             <td>{{ $t->rut }}</td>
@@ -343,8 +357,6 @@
 <script>
     $.fn.dataTable.ext.errMode = 'throw';
 
-
-
     let tabla;
 
     $(document).ready(function() {
@@ -356,7 +368,19 @@
             orderCellsTop: true,
             language: {
                 url: '{{ asset("datatables/es-CL.json")}}'
-            }
+            },
+            columnDefs: [{
+                    targets: 0,
+                    orderable: false,
+                    className: 'details-control',
+                    data: null,
+                    defaultContent: ''
+                },
+                {
+                    targets: [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
+                    visible: false
+                }
+            ]
         });
 
         $('.filtro-select').select2({
@@ -364,8 +388,10 @@
             placeholder: 'Seleccione una opción',
             allowClear: true,
             width: '100%',
-            noResults: function() {
-                return 'No se encontraron resultados';
+            language: {
+                noResults: function() {
+                    return 'No se encontraron resultados';
+                }
             }
         });
 
@@ -373,27 +399,46 @@
             const columna = $(this).data('columna');
             const valor = $(this).val();
             tabla.column(columna).search(valor || '', false, true).draw();
-
         });
-    });
 
-    $('#reset-filtros').on('click', function() {
-        $('.filtro-select').val('').trigger('change');
-        tabla.columns().search('').draw();
-    });
+        function format(rowData) {
+            return `
+                <table class="table table-bordered mb-0">
+                    <tr><th>Estado</th><td>${rowData[4]}</td></tr>
+                    <tr><th>Tipo Movimiento</th><td>${rowData[5]}</td></tr>
+                    <tr><th>Fecha Transacción</th><td>${rowData[6]}</td></tr>
+                    <tr><th>Hora</th><td>${rowData[7]}</td></tr>
+                    <tr><th>Fecha Contable</th><td>${rowData[8]}</td></tr>
+                    <tr><th>Cuenta</th><td>${rowData[9]}</td></tr>
+                    <tr><th>Tipo Cuenta</th><td>${rowData[10]}</td></tr>
+                    <tr><th>Banco</th><td>${rowData[11]}</td></tr>
+                    <tr><th>Código</th><td>${rowData[12]}</td></tr>
+                    <tr><th>Tipo</th><td>${rowData[13]}</td></tr>
+                    <tr><th>Glosa</th><td>${rowData[14]}</td></tr>
+                    <tr><th>Ingreso</th><td>${rowData[15]}</td></tr>
+                    <tr><th>Egreso</th><td>${rowData[16]}</td></tr>
+                    <tr><th>Saldo</th><td>${rowData[17]}</td></tr>
+                    <tr><th>Comentario</th><td>${rowData[18]}</td></tr>
+                </table>
+            `;
+        }
 
-    document.addEventListener('DOMContentLoaded', function() {
-        let modal = document.getElementById('modalConciliar');
+        $('#tabla-transferencias tbody').on('click', 'td.details-control', function() {
+            let tr = $(this).closest('tr');
+            let row = tabla.row(tr);
 
-        modal.addEventListener('show.bs.modal', function(event) {
-            let button = event.relatedTarget;
-            let transferenciaId = button.getAttribute('data-id');
+            if (row.child.isShown()) {
+                row.child.hide();
+                tr.removeClass('shown');
+            } else {
+                row.child(format(row.data())).show();
+                tr.addClass('shown');
+            }
+        });
 
-            // Asignar el id de transferencia a todos los formularios dentro del modal
-            let inputs = modal.querySelectorAll('.input-transferencia-id');
-            inputs.forEach(input => {
-                input.value = transferenciaId;
-            });
+        $('#reset-filtros').on('click', function() {
+            $('.filtro-select').val('').trigger('change');
+            tabla.columns().search('').draw();
         });
 
         $('#tabla-cotizaciones').DataTable({
@@ -403,17 +448,21 @@
             }
         });
 
-    });
-
-    document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('.btn-ver-egresos').forEach(btn => {
             btn.addEventListener('click', function() {
                 const transferenciaId = this.getAttribute('data-transferencia-id');
-
-                // Rellenar todos los inputs ocultos dentro del modal
                 document.querySelectorAll('#modalEgresos .input-transferencia-id').forEach(input => {
                     input.value = transferenciaId;
                 });
+            });
+        });
+
+        const modal = document.getElementById('modalConciliar');
+        modal.addEventListener('show.bs.modal', function(event) {
+            const button = event.relatedTarget;
+            const transferenciaId = button.getAttribute('data-id');
+            modal.querySelectorAll('.input-transferencia-id').forEach(input => {
+                input.value = transferenciaId;
             });
         });
     });
