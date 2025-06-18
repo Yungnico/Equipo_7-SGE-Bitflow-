@@ -17,6 +17,7 @@ use App\Mail\CotizacionMailable;
 use App\Models\CotizacionDetalle;
 use App\Models\DetalleFactura;
 use App\Models\Facturacion;
+use Illuminate\Support\Facades\Log;
 
 class CotizacionController extends Controller
 {
@@ -55,27 +56,70 @@ class CotizacionController extends Controller
             'mensaje' => 'required|string',
         ]);
 
-        $correo = $request->correo_destino;
-        $asunto = $request->asunto;
-        $mensaje = $request->mensaje;
-        $adjuntarPdf = $request->adjuntarPdf;
+        try {
+            $correo = $request->correo_destino;
+            $asunto = $request->asunto;
+            $mensaje = $request->mensaje;
+            $adjuntarPdf = $request->adjuntarPdf;
 
-        $cotizacion = Cotizacion::with(['cliente', 'servicios', 'itemsLibres'])->findOrFail($id);
-        $cotizacion->update(['estado' => 'Enviada']);
-        $cotizacion->save();
-        if ($adjuntarPdf == 1) {
-            $pdf = Pdf::loadView('cotizaciones.pdf', compact('cotizacion'));
-            Storage::disk('public')->put($cotizacion->codigo_cotizacion . '.pdf', $pdf->output());
+            $cotizacion = Cotizacion::with(['cliente', 'servicios', 'itemsLibres'])->findOrFail($id);
+            $cotizacion->estado = 'Enviada';
+            $cotizacion->save();
+
+            if ($adjuntarPdf == 1) {
+                $pdf = pdf::loadView('cotizaciones.pdf', compact('cotizacion'));
+                Storage::disk('public')->put($cotizacion->codigo_cotizacion . '.pdf', $pdf->output());
+            }
+
+            $correoMailable = new CotizacionMailable($asunto, $mensaje, $cotizacion->codigo_cotizacion, $adjuntarPdf);
+            Mail::to($correo)->send($correoMailable);
+
+            // Limpiar archivo PDF temporal
+            if ($adjuntarPdf == 1) {
+                Storage::disk('public')->delete($cotizacion->codigo_cotizacion . '.pdf');
+            }
+
+            return response()->json([
+                'message' => 'Correo enviado correctamente.',
+                'estado' => 'Enviada',
+                'id' => $cotizacion->id_cotizacion
+            ], 200);
+
+        } catch (\Exception $e) {
+            Log::error('Error al enviar correo: ' . $e->getMessage());
+            return response()->json([
+                'message' => 'Error al enviar el correo.',
+                'error' => $e->getMessage()
+            ], 500);
         }
 
-        $correoMailable = new CotizacionMailable($asunto, $mensaje, $cotizacion->codigo_cotizacion, $adjuntarPdf);
+        // $request->validate([
+        //     'correo_destino' => 'required|email',
+        //     'asunto' => 'required|string|max:255',
+        //     'mensaje' => 'required|string',
+        // ]);
+
+        // $correo = $request->correo_destino;
+        // $asunto = $request->asunto;
+        // $mensaje = $request->mensaje;
+        // $adjuntarPdf = $request->adjuntarPdf;
+
+        // $cotizacion = Cotizacion::with(['cliente', 'servicios', 'itemsLibres'])->findOrFail($id);
+        // $cotizacion->update(['estado' => 'Enviada']);
+        // $cotizacion->save();
+        // if ($adjuntarPdf == 1) {
+        //     $pdf = Pdf::loadView('cotizaciones.pdf', compact('cotizacion'));
+        //     Storage::disk('public')->put($cotizacion->codigo_cotizacion . '.pdf', $pdf->output());
+        // }
+
+        // $correoMailable = new CotizacionMailable($asunto, $mensaje, $cotizacion->codigo_cotizacion, $adjuntarPdf);
         
 
 
-        Mail::to($correo)->send($correoMailable);
-        Storage::disk('public')->delete($cotizacion->codigo_cotizacion . '.pdf'); // Eliminar el PDF después de enviarlo
-        $cotizaciones = Cotizacion::with(['cliente', 'servicios', 'itemsLibres'])->get();
-        return view('cotizaciones.index',compact('cotizaciones'))->with('success', 'Correo enviado correctamente.');
+        // Mail::to($correo)->send($correoMailable);
+        // Storage::disk('public')->delete($cotizacion->codigo_cotizacion . '.pdf'); // Eliminar el PDF después de enviarlo
+        // $cotizaciones = Cotizacion::with(['cliente', 'servicios', 'itemsLibres'])->get();
+        // return view('cotizaciones.index',compact('cotizaciones'))->with('success', 'Correo enviado correctamente.');
     }
 
 
@@ -197,7 +241,7 @@ class CotizacionController extends Controller
 
             foreach ($request->input('servicios', []) as $servicio) {
                 $servicioModel = Servicio::findOrFail($servicio['servicio']);
-                $subtotal = $servicioModel->$servicio['precio'] * $servicio['cantidad'];
+                $subtotal = $servicio['precio'] * $servicio['cantidad'];
                 $cotizacion->servicios()->attach($servicioModel->id, [
                     'cantidad' => $servicio['cantidad'],
                     'precio_unitario' => $servicio['precio'],

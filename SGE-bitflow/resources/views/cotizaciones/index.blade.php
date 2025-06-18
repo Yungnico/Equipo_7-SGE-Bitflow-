@@ -38,9 +38,9 @@
                         <a href="{{ route('cotizaciones.prepararPDF', ['id' => $cotizacion->id_cotizacion]) }}" class="btn btn-sm btn-secondary">
                             <i class="fas fa-file-pdf"></i>
                         </a>
-                        <button class="btn btn-sm btn-primary" onclick="crearVentanaCorreo('{{ $cotizacion->codigo_cotizacion }}')">
-                            <i class="fas fa-envelope"></i>
-                        </button>
+                        <a class="btn btn-sm btn-primary"  onclick="crearVentanaCorreo(  '{{ $cotizacion->codigo_cotizacion }}',  '{{ $cotizacion->id_cotizacion }}',  '{{ $cotizacion->email }}',  '{{ csrf_token() }}',  '{{ route('cotizaciones.enviar', $cotizacion->id_cotizacion) }}')">
+                                <i class="fas fa-envelope"></i>
+                        </a>
                         {{-- <a href="{{ route('cotizaciones.prepararEmail', ['id' => $cotizacion->id_cotizacion]) }}" class="btn btn-sm btn-primary">
                             <i class="fas fa-envelope"></i>
                         </a> --}}
@@ -58,7 +58,17 @@
         </tbody>
     </table>
 </div>
-    
+@if(session('success'))
+<script>
+    Swal.fire({
+        icon: 'success',
+        title: '¡Correo enviado!',
+        text: '{{ session("success") }}',
+        timer: 3000,
+        showConfirmButton: false
+    });
+</script>
+@endif
 @stop
 @section('js')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -66,7 +76,7 @@
 <script>
   let cantidadVentanasCorreo = 0;
 
-  function crearVentanaCorreo(codigoCotizacion) {
+  function crearVentanaCorreo(codigoCotizacion, idCotizacion, correoDestino, csrfToken, actionUrl) {
     const contenedor = document.getElementById('composerContainer');
 
     const ventana = document.createElement('div');
@@ -78,73 +88,131 @@
     ventana.setAttribute('data-indice', cantidadVentanasCorreo);
 
     ventana.innerHTML = `
-      <div class="d-flex justify-content-between align-items-center bg-light border-bottom px-3 py-2">
+      <div class="contenedor-enviar border-top d-flex justify-content-between align-items-center px-3 py-2 cursor-pointer" onclick="alternarVentanaCorreo(this)">
         <span class="font-weight-bold">Cotización ${codigoCotizacion}</span>
-        <div>
-          <button class="btn btn-sm btn-light" onclick="minimizarVentanaCorreo(this)">
-            <i class="fas fa-window-minimize"></i>
-          </button>
-          <button class="btn btn-sm btn-light" onclick="maximizarVentanaCorreo(this)">
-            <i class="far fa-window-maximize"></i>
-          </button>
-          <button class="btn btn-sm btn-light" onclick="cerrarVentanaCorreo(this)">
-            <i class="fas fa-times"></i>
-          </button>
-        </div>
+        <button class="btn btn-sm btn-light" onclick="cerrarVentanaCorreo(event, this)">
+          <i class="fas fa-times"></i>
+        </button>
       </div>
-      <div class="p-2 flex-fill overflow-auto">
-        <div class="form-group mb-1">
-          <input type="email" class="form-control form-control-sm" placeholder="Para">
+      <form onsubmit="enviarCorreoAjax(event, this)" action="${actionUrl}" method="POST">
+        <input type="hidden" name="_token" value="${csrfToken}">
+        <div class="p-2 flex-fill overflow-auto">
+          <div class="form-group mb-1">
+            <input type="email" class="form-control form-control-sm" placeholder="Para" name="correo_destino" value="${correoDestino}" required>
+          </div>
+          <div class="form-group mb-1">
+            <input type="text" class="form-control form-control-sm" placeholder="Asunto" name="asunto" required>
+          </div>
+          <div class="form-group mb-1">
+            <label for="mensaje" class="form-label">Mensaje</label>
+            <textarea class="form-control form-control-sm" name="mensaje" rows="6" placeholder="Escribe tu mensaje..." required></textarea>
+          </div>
+          <div class="form-check mb-2">
+            <input class="form-check-input" type="checkbox" value="1" id="adjuntarPdf_${idCotizacion}" name="adjuntarPdf">
+            <label class="form-check-label" for="adjuntarPdf_${idCotizacion}">
+              ¿Desea agregar en el email el PDF de la cotización?
+            </label>
+          </div>
         </div>
-        <div class="form-group mb-1">
-          <input type="email" class="form-control form-control-sm" placeholder="Cc">
+        <div class="border-top d-flex justify-content-between align-items-center px-3 py-2">
+          <button type="submit" id="enviar_btn" class="btn btn-primary btn-sm">Enviar</button>
         </div>
-        <div class="form-group mb-1">
-          <input type="email" class="form-control form-control-sm" placeholder="Cco">
-        </div>
-        <div class="form-group mb-1">
-          <input type="text" class="form-control form-control-sm" placeholder="Asunto">
-        </div>
-        <div class="form-group mb-1">
-          <textarea rows="6" class="form-control form-control-sm" placeholder="Mensaje"></textarea>
-        </div>
-      </div>
-      <div class="border-top d-flex justify-content-between align-items-center px-3 py-2">
-        <button class="btn btn-primary btn-sm">Enviar</button>
-      </div>
+      </form>
     `;
 
     contenedor.appendChild(ventana);
     cantidadVentanasCorreo++;
   }
+  function enviarCorreoAjax(event, form) {
+    event.preventDefault(); // Evita recargar la página
 
-  function minimizarVentanaCorreo(boton) {
-    const cabecera = boton.closest('div');
-    const ventana = cabecera.parentElement;
-    ventana.classList.toggle('minimizada');
+    const formData = new FormData(form);
+    const actionUrl = form.action;
+
+    // Desactiva el botón de enviar temporalmente
+    const submitBtn = form.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    submitBtn.innerText = 'Enviando...';
+
+    fetch(actionUrl, {
+      method: 'POST',
+      headers: {
+        'X-CSRF-TOKEN': formData.get('_token'),
+        'Accept': 'application/json'
+      },
+      body: formData
+    })
+      .then(async (response) => {
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw errorData;
+        }
+        return response.json();
+      })
+      .then((data) => {
+        Swal.fire({
+          icon: 'success',
+          title: '¡Correo enviado!',
+          text: data.message || 'La cotización fue enviada correctamente.',
+          timer: 3000,
+          showConfirmButton: false
+        });
+
+        // Opcional: actualizar el estado de la fila a "Enviada"
+        const idCotizacion = data.id;
+        const fila = document.querySelector(`a[onclick*="'${idCotizacion}'"]`)?.closest('tr');
+        const celdaEstado = fila?.querySelector('td:nth-child(6) span');
+        if (celdaEstado) {
+          celdaEstado.textContent = 'Enviada';
+        }
+
+        // Cierra la ventana del formulario de correo
+        cerrarVentanaCorreo(null, form.closest('.position-fixed'));
+      })
+      .catch(error => {
+        let mensaje = 'Ocurrió un error al enviar el correo.';
+        if (error?.errors) {
+          mensaje = Object.values(error.errors).flat().join('\n');
+        } else if (error?.message) {
+          mensaje = error.message;
+        }
+
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: mensaje
+        });
+      })
+      .finally(() => {
+        submitBtn.disabled = false;
+        submitBtn.innerText = 'Enviar';
+      });
+  }
+
+  function alternarVentanaCorreo(elemento) {
+    const ventana = elemento.closest('.position-fixed');
+    const botonEnviar = ventana.querySelector('#enviar_btn');
+
     if (ventana.classList.contains('minimizada')) {
+      // Maximizar
+      ventana.classList.remove('minimizada');
+      ventana.style.height = '';
+      ventana.querySelectorAll('.p-2, .form-group').forEach(el => el.classList.remove('d-none'));
+      botonEnviar.classList.remove('d-none');
+    } else {
+      // Minimizar
+      ventana.classList.add('minimizada');
       ventana.style.height = '45px';
-      ventana.querySelectorAll('.p-2, .border-top').forEach(el => el.classList.add('d-none'));
-    } else {
-      ventana.style.height = '';
-      ventana.querySelectorAll('.p-2, .border-top').forEach(el => el.classList.remove('d-none'));
+      ventana.querySelectorAll('.p-2, .form-group').forEach(el => el.classList.add('d-none'));
+      botonEnviar.classList.add('d-none');
     }
   }
 
-  function maximizarVentanaCorreo(boton) {
-    const ventana = boton.closest('.position-fixed');
-    if (ventana.classList.contains('maximizada')) {
-      ventana.classList.remove('maximizada');
-      ventana.style.width = '450px';
-      ventana.style.height = '';
-    } else {
-      ventana.classList.add('maximizada');
-      ventana.style.width = '90%';
-      ventana.style.height = '90%';
-    }
-  }
 
-  function cerrarVentanaCorreo(boton) {
+
+  function cerrarVentanaCorreo(event, boton) {
+    if (event) event.stopPropagation(); // Evita error si event es null
+
     const ventana = boton.closest('.position-fixed');
     ventana.remove();
     reorganizarVentanasCorreo();
@@ -189,4 +257,20 @@
                 table.columns.adjust().responsive.recalc();
             });
     </script>
+@stop
+@section('css')
+    <style>
+        .contenedor-enviar {
+            cursor: pointer;
+        }
+        .contenedor-enviar:hover {
+            background-color: #f8f9fa;
+        }
+        .position-fixed {
+            transition: right 0.3s ease;
+        }
+        .minimizada {
+            height: 45px;
+        }
+    </style>
 @stop
