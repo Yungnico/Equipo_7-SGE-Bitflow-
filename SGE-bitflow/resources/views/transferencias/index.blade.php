@@ -77,7 +77,8 @@
                             <th></th>
                             <th></th>
                             <th>
-                                <select class="form-select filtro-select" data-columna="1" style="min-width: 150px;">
+                                <!-- Filtro Nombre -->
+                                <select class="form-select filtro-select" data-columna="2" style="min-width: 150px;">
                                     <option value="">Nombre</option>
                                     @foreach($transferencias->pluck('nombre')->unique() as $nombre)
                                     <option value="{{ $nombre }}">{{ $nombre }}</option>
@@ -85,19 +86,37 @@
                                 </select>
                             </th>
                             <th>
-                                <select class="form-select filtro-select" data-columna="2" style="min-width: 150px;">
+                                <!-- Filtro RUT -->
+                                <select class="form-select filtro-select" data-columna="3" style="min-width: 150px;">
                                     <option value="">RUT</option>
                                     @foreach($transferencias->pluck('rut')->unique() as $rut)
                                     <option value="{{ $rut }}">{{ $rut }}</option>
                                     @endforeach
                                 </select>
                             </th>
-                            <th></th>
-                            @for($i = 2; $i < 16; $i++)
+                            <th>
+                                <select class="form-select filtro-select select2" data-columna="4" style="min-width: 150px;">
+                                    <option value="">Estado</option>
+                                    @foreach($transferencias->pluck('estado')->unique() as $estado)
+                                    <option value="{{ $estado }}">{{ $estado }}</option>
+                                    @endforeach
+                                </select>
+                            </th>
+                            <th>
+                                <select class="form-select filtro-select select2" data-columna="5" style="min-width: 150px;">
+                                    <option value="">Tipo Movimiento</option>
+                                    @foreach($transferencias->pluck('tipo_movimiento')->unique() as $mov)
+                                    <option value="{{ $mov }}">{{ ucfirst($mov) }}</option>
+                                    @endforeach
+                                </select>
+                            </th>
+
+                            @for($i = 6; $i < 19; $i++)
                                 <th>
                                 </th>
                                 @endfor
                         </tr>
+
                     </thead>
                     <tbody>
                         @forelse($transferencias as $t)
