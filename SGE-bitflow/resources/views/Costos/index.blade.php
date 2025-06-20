@@ -68,10 +68,22 @@
                 </thead>
                 <tbody>
                     @foreach($costos as $costo)
+                    @php
+                    // Obtener el primer detalle específico de este costo
+                    $detalle = $costo->detalles->where('costo_id', $costo->id)->first();
+                    $moneda_id = optional($detalle)->moneda_id;
+                    $monto = optional($detalle)->monto;
+                    @endphp
                     <tr>
                         <td>{{ $costo->concepto }}</td>
-                        <td>${{ number_format(optional($costo->detalles->first())->monto, 2, ',', '.') }}</td>
-                        <td>{{ optional(optional($costo->detalles->first())->moneda)->moneda ?? 'Sin moneda' }}</td>
+                        <td>
+                            @if($detalle)
+                            ${{ number_format($detalle->monto, 2, ',', '.') }}
+                            @else
+                            Sin monto
+                            @endif
+                        </td>
+                        <td>{{ optional($detalle->moneda)->moneda ?? 'Sin moneda' }}</td>
                         <td>{{ $costo->categoria->nombre ?? 'Sin categoría' }}</td>
                         <td>{{ $costo->subcategoria->nombre ?? 'Sin subcategoría' }}</td>
                         <td>{{ ucfirst($costo->frecuencia_pago) }}</td>
@@ -83,13 +95,13 @@
                                 data-frecuencia="{{ $costo->frecuencia_pago }}"
                                 data-categoria="{{ $costo->categoria_id }}"
                                 data-subcategoria="{{ $costo->subcategoria_id }}"
-                                data-año="{{ optional($costo->detalles->first())->año }}"
-                                data-moneda="{{ optional($costo->detalles->first())->moneda_id }}"
-                                data-monto="{{ optional($costo->detalles->first())->monto }}"
+                                data-moneda="{{ $moneda_id }}"
+                                data-monto="{{ $monto }}"
                                 data-bs-toggle="modal"
                                 data-bs-target="#modalEditarCosto">
                                 <i class="fas fa-pencil-alt"></i>
                             </button>
+
 
                             <form action="{{ route('costos.destroy', $costo->id) }}" method="POST" style="display:inline-block;">
                                 @csrf
@@ -102,6 +114,8 @@
                     </tr>
                     @endforeach
                 </tbody>
+
+
             </table>
         </div>
     </div>
@@ -266,23 +280,19 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-
 <script>
     $(document).ready(function() {
-        // Inicializa DataTable
         let table = $('#tabla-costos').DataTable({
             responsive: true,
             orderCellsTop: true,
             fixedHeader: true
         });
 
-        // Inicializa Select2
         $('#filtro-moneda, #filtro-categoria').select2({
             theme: 'bootstrap4',
             width: 'resolve'
         });
 
-        // Filtros
         $('#filtro-moneda').on('change', function() {
             table.column(2).search(this.value).draw();
         });
@@ -296,7 +306,7 @@
             table.search('').columns().search('').draw();
         });
 
-        // SUBCATEGORÍAS: Modal CREAR
+        // ===================== MODAL CREAR ===================== //
         $('#categoria_id').on('change', function() {
             const categoriaId = $(this).val();
             const subSelect = $('#subcategoria_id');
@@ -304,7 +314,10 @@
 
             if (categoriaId) {
                 fetch(`/subcategorias/${categoriaId}`)
-                    .then(res => res.json())
+                    .then(res => {
+                        if (!res.ok) throw new Error('Respuesta no válida');
+                        return res.json();
+                    })
                     .then(data => {
                         let options = '<option value="">Seleccione</option>';
                         data.forEach(sub => {
@@ -321,7 +334,9 @@
             }
         });
 
-        // SUBCATEGORÍAS: Modal EDITAR
+        // ===================== MODAL EDITAR ===================== //
+        let subcategoriaIdSeleccionada = null;
+
         $('#editar_categoria_id').on('change', function() {
             const categoriaId = $(this).val();
             const subSelect = $('#editar_subcategoria_id');
@@ -329,16 +344,20 @@
 
             if (categoriaId) {
                 fetch(`/subcategorias/${categoriaId}`)
-                    .then(res => res.json())
+                    .then(res => {
+                        if (!res.ok) throw new Error('Respuesta no válida');
+                        return res.json();
+                    })
                     .then(data => {
                         let options = '<option value="">Seleccione</option>';
                         data.forEach(sub => {
-                            options += `<option value="${sub.id}">${sub.nombre}</option>`;
+                            const selected = sub.id == subcategoriaIdSeleccionada ? 'selected' : '';
+                            options += `<option value="${sub.id}" ${selected}>${sub.nombre}</option>`;
                         });
                         subSelect.html(options).prop('disabled', false);
                     })
                     .catch(err => {
-                        console.error('Error al cargar subcategorías:', err);
+                        console.error('Error al cargar subcategorías (editar):', err);
                         subSelect.html('<option value="">Error al cargar</option>').prop('disabled', false);
                     });
             } else {
@@ -346,41 +365,25 @@
             }
         });
 
-        // Abrir modal de edición y rellenar campos
+        // Botón "Editar"
         $(document).on('click', '.btn-editar', function() {
             const btn = $(this);
             const id = btn.data('id');
+            const categoriaId = btn.data('categoria');
+            subcategoriaIdSeleccionada = btn.data('subcategoria'); // ⚠️ ASIGNACIÓN DIRECTA
 
             $('#editar_id').val(id);
             $('#editar_concepto').val(btn.data('concepto'));
             $('#editar_frecuencia_pago').val(btn.data('frecuencia'));
             $('#editar_moneda_id').val(btn.data('moneda'));
             $('#editar_monto').val(btn.data('monto'));
-            $('#formEditarCosto').attr('action', `/costos/${id}`);
 
-            // Fecha de hoy como default
             const hoy = new Date().toISOString().split('T')[0];
             $('#editar_fecha_modificacion').val(hoy);
 
-            const categoriaId = btn.data('categoria');
-            const subcategoriaId = btn.data('subcategoria');
-
+            $('#formEditarCosto').attr('action', `/costos/${id}`);
             $('#editar_categoria_id').val(categoriaId).trigger('change');
-
-            // Cargar subcategorías y seleccionar la correspondiente
-            fetch(`/subcategorias/${categoriaId}`)
-                .then(res => res.json())
-                .then(data => {
-                    let options = '<option value="">Seleccione</option>';
-                    data.forEach(sub => {
-                        const selected = sub.id == subcategoriaId ? 'selected' : '';
-                        options += `<option value="${sub.id}" ${selected}>${sub.nombre}</option>`;
-                    });
-                    $('#editar_subcategoria_id').html(options);
-                });
         });
     });
 </script>
-
-
 @stop

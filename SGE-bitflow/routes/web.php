@@ -125,7 +125,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/costos/{costo}/editar', [CostoController::class, 'edit'])->name('costos.edit');
     Route::put('/costos/{costo}', [CostoController::class, 'update'])->name('costos.update');
     Route::delete('/costos/{costo}', [CostoController::class, 'destroy'])->name('costos.destroy');
-    Route::get('/subcategorias/{categoria_id}', [SubcategoriaController::class, 'porCategoria']);
+    Route::get('/subcategorias/{categoriaId}', [SubcategoriaController::class, 'getPorCategoria']);
     Route::post('/transferencias/conciliar-egreso', [TransferenciaController::class, 'conciliarEgreso'])->name('transferencias.conciliar.egreso');
 
 

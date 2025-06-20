@@ -15,7 +15,7 @@ class Costos extends Model
 
     public function subcategoria()
     {
-        return $this->belongsTo(SubCategoriaCostos::class);
+        return $this->belongsTo(SubCategoriaCostos::class, 'subcategoria_id');
     }
 
     public function detalles()

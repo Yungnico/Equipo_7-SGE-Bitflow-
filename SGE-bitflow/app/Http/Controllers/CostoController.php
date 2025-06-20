@@ -28,7 +28,7 @@ class CostoController extends Controller
         $costo = Costos::create($request->only(['concepto', 'categoria_id', 'subcategoria_id', 'frecuencia_pago']));
 
         $frecuencia = $request->frecuencia_pago;
-        $monto_total = $request->monto;
+        $monto = $request->monto;
         $moneda_id = $request->moneda_id;
         $fecha_inicio = Carbon::parse($request->fecha_inicio);
         $periodos = match ($frecuencia) {
@@ -37,20 +37,12 @@ class CostoController extends Controller
             'trimestral' => 4,
             'mensual' => 12,
         };
-        $frecuencia_intervalo = match ($frecuencia) {
-            'anual', 'único' => '1 year',
-            'semestral' => '6 months',
-            'trimestral' => '3 months',
-            'mensual' => '1 month',
-        };
-
-        $monto_por_periodo = $monto_total / $periodos;
 
         for ($i = 0; $i < $periodos; $i++) {
             CostosDetalle::create([
                 'costo_id' => $costo->id,
                 'moneda_id' => $moneda_id,
-                'monto' => $monto_por_periodo,
+                'monto' => $monto,
                 'fecha' => $fecha_inicio->copy()->addMonths($i * match ($frecuencia) {
                     'anual', 'único' => 12,
                     'semestral' => 6,
@@ -76,13 +68,22 @@ class CostoController extends Controller
     }
     public function index()
     {
-        $costos = Costos::with('categoria', 'subcategoria', 'detalles.moneda')->get();
+        $costos = Costos::with([
+            'categoria',
+            'subcategoria',
+            'detalles' => function ($query) {
+                $query->orderBy('fecha', 'asc'); // puedes cambiar a 'id' si prefieres
+            },
+            'detalles.moneda'
+        ])->get();
+
         $categorias = CategoriaCostos::all();
         $subcategorias = SubCategoriaCostos::all();
         $monedas = Paridad::all();
 
         return view('costos.index', compact('costos', 'categorias', 'subcategorias', 'monedas'));
     }
+
     public function destroy(Costos $costo)
     {
         $costo->detalles()->delete();
@@ -107,31 +108,20 @@ class CostoController extends Controller
         $costo->update($request->only(['concepto', 'categoria_id', 'subcategoria_id', 'frecuencia_pago']));
 
         $frecuencia = $request->frecuencia_pago;
-        $monto_total = $request->monto;
+        $monto = $request->monto;
         $moneda_id = $request->moneda_id;
         $fecha_modificacion = Carbon::parse($request->fecha_modificacion);
 
-        $periodos = match ($frecuencia) {
-            'anual', 'único' => 1,
-            'semestral' => 2,
-            'trimestral' => 4,
-            'mensual' => 12,
-        };
-
-        $monto_por_periodo = $monto_total / $periodos;
-
-        // Obtener solo los detalles sin transferencia y que se puedan editar
         $detalles_editables = $costo->detalles()
             ->whereNull('transferencias_bancarias_id')
             ->where('fecha', '>=', $fecha_modificacion)
             ->orderBy('fecha')
             ->get();
 
-        // Editar los detalles existentes
         foreach ($detalles_editables as $detalle) {
             $detalle->update([
                 'moneda_id' => $moneda_id,
-                'monto' => $monto_por_periodo,
+                'monto' => $monto,
             ]);
         }
 
