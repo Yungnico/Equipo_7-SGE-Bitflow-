@@ -143,7 +143,7 @@
                             <td>
                                 @if($t->tipo_movimiento === 'ingreso')
                                 <button class="btn btn-sm btn-primary">Ingreso</button>
-                                @elseif($t->tipo_movimiento === 'egreso' && !$t->costo)
+                                @elseif($t->tipo_movimiento === 'egreso' && !$t->costoDetalle)
                                 <button type="button"
                                     class="btn btn-sm btn-danger btn-ver-egresos"
                                     data-bs-toggle="modal"
@@ -326,24 +326,33 @@
                             <thead class="table-dark">
                                 <tr>
                                     <th>ID</th>
-                                    <th>Nombre</th>
+                                    <th>Concepto</th>
                                     <th>Monto</th>
+                                    <th>Moneda</th>
+                                    <th>Categoría</th>
+                                    <th>Subcategoría</th>
                                     <th>Fecha</th>
                                     <th>Acción</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($costosDisponibles as $costo)
+                                @foreach($costosDisponibles as $detalle)
+                                @php
+                                $costo = $detalle->costo;
+                                @endphp
                                 <tr>
-                                    <td>{{ $costo->id }}</td>
-                                    <td>{{ $costo->concepto }}</td>
-                                    <td>${{ number_format(optional($costo->detalles->first())->monto, 2, ',', '.') }}</td>
-                                    <td>{{ $costo->frecuencia_pago }}</td>
+                                    <td>{{ $detalle->id }}</td>
+                                    <td>{{ $costo->concepto ?? 'Sin concepto' }}</td>
+                                    <td>${{ number_format($detalle->monto, 2, ',', '.') }}</td>
+                                    <td>{{ $detalle->moneda->moneda ?? 'Sin moneda' }}</td>
+                                    <td>{{ $costo->categoria->nombre ?? 'Sin categoría' }}</td>
+                                    <td>{{ $costo->subcategoria->nombre ?? 'Sin subcategoría' }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($detalle->fecha)->format('d-m-Y') }}</td>
                                     <td>
                                         <form method="POST" action="{{ route('transferencias.conciliar.egreso') }}" class="d-inline">
                                             @csrf
                                             <input type="hidden" name="transferencias_bancarias_id" class="input-transferencia-id">
-                                            <input type="hidden" name="costo_id" value="{{ $costo->id }}">
+                                            <input type="hidden" name="costos_detalle_id" value="{{ $detalle->id }}">
                                             <button type="submit" class="btn btn-sm btn-success">Conciliar</button>
                                         </form>
                                     </td>
@@ -357,6 +366,7 @@
         </div>
     </div>
 </div>
+
 
 
 

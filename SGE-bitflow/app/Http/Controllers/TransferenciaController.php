@@ -8,14 +8,17 @@ use App\Models\Cotizacion;
 use Illuminate\Http\Request;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
-use App\Models\Costos;
+use App\Models\CostosDetalle;
 
 class TransferenciaController extends Controller
 {
     public function index()
     {
         $transferencias = TransferenciaBancaria::all();
-        $costosDisponibles = Costos::whereNull('transferencias_bancarias_id')->get();
+        $costosDisponibles = CostosDetalle::with(['costo.categoria', 'costo.subcategoria', 'moneda'])
+            ->whereNull('transferencias_bancarias_id')
+            ->get();
+
 
         $cotizacionesDisponibles = Cotizacion::whereNull('id_transferencia')
             ->whereIn('estado', ['Borrador', 'Aceptada'])
@@ -270,13 +273,13 @@ class TransferenciaController extends Controller
     public function conciliarEgreso(Request $request)
     {
         $request->validate([
+            'costos_detalle_id' => 'required|exists:costos_detalle,id',
             'transferencias_bancarias_id' => 'required|exists:transferencias_bancarias,id',
-            'costo_id' => 'required|exists:costos,id',
         ]);
 
-        $costo = Costos::findOrFail($request->costo_id);
-        $costo->transferencias_bancarias_id = $request->transferencias_bancarias_id;
-        $costo->save();
+        $detalle = CostosDetalle::findOrFail($request->costos_detalle_id);
+        $detalle->transferencias_bancarias_id = $request->transferencias_bancarias_id;
+        $detalle->save();
 
         return redirect()->back()->with('success', 'Egreso conciliado con costo exitosamente.');
     }

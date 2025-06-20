@@ -102,10 +102,19 @@ class CostoController extends Controller
             'frecuencia_pago' => 'required|in:único,mensual,trimestral,semestral,anual',
             'moneda_id' => 'required|integer',
             'monto' => 'required|numeric',
-            'fecha_modificacion' => 'required|date' // Se mantiene para validación aunque ya no se usa
+            'fecha_modificacion' => 'required|date' // Se mantiene aunque no se use
         ]);
 
-        // Actualiza los campos base del costo
+        // Verificar si algún detalle tiene transferencia bancaria
+        $tieneTransferencias = $costo->detalles()
+            ->whereNotNull('transferencias_bancarias_id')
+            ->exists();
+
+        if ($tieneTransferencias) {
+            return redirect()->back()->with('error', 'Este costo no se puede modificar porque tiene transferencias asociadas.');
+        }
+
+        // Si no hay transferencias, editar el costo
         $costo->update($request->only([
             'concepto',
             'categoria_id',
@@ -113,17 +122,15 @@ class CostoController extends Controller
             'frecuencia_pago'
         ]));
 
-        // Nuevos valores
         $monto = $request->monto;
         $moneda_id = $request->moneda_id;
 
-        // Selecciona todos los detalles SIN transferencia bancaria
+        // Obtener detalles editables
         $detalles_editables = $costo->detalles()
             ->whereNull('transferencias_bancarias_id')
             ->orderBy('fecha')
             ->get();
 
-        // Aplica cambios
         foreach ($detalles_editables as $detalle) {
             $detalle->update([
                 'moneda_id' => $moneda_id,
