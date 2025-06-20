@@ -99,7 +99,6 @@ class CostoController extends Controller
             'categoria_id' => 'required|exists:categorias_costos,id',
             'subcategoria_id' => 'required|exists:subcategorias_costos,id',
             'frecuencia_pago' => 'required|in:único,mensual,trimestral,semestral,anual',
-            'año' => 'required|integer',
             'moneda_id' => 'required|integer',
             'monto' => 'required|numeric',
             'fecha_modificacion' => 'required|date'
@@ -119,52 +118,20 @@ class CostoController extends Controller
             'mensual' => 12,
         };
 
-        $frecuencia_intervalo = match ($frecuencia) {
-            'anual', 'único' => '1 year',
-            'semestral' => '6 months',
-            'trimestral' => '3 months',
-            'mensual' => '1 month',
-        };
-
         $monto_por_periodo = $monto_total / $periodos;
 
-        // Eliminar solo los futuros
-        $costo->detalles()->where('fecha', '>=', $fecha_modificacion)->delete();
+        // Obtener solo los detalles sin transferencia y que se puedan editar
+        $detalles_editables = $costo->detalles()
+            ->whereNull('transferencias_bancarias_id')
+            ->where('fecha', '>=', $fecha_modificacion)
+            ->orderBy('fecha')
+            ->get();
 
-        // Obtener la última fecha previa
-        $ultima_fecha = $costo->detalles()
-            ->where('fecha', '<', $fecha_modificacion)
-            ->orderBy('fecha', 'desc')
-            ->first()?->fecha;
-
-        $inicio = $ultima_fecha
-            ? Carbon::parse($ultima_fecha)->addMonths(match ($frecuencia) {
-                'anual', 'único' => 12,
-                'semestral' => 6,
-                'trimestral' => 3,
-                'mensual' => 1,
-            })
-            : $fecha_modificacion;
-
-
-        // Calcular cuántos faltan
-        $existentes = $costo->detalles()->count();
-        $faltantes = $periodos - $existentes;
-
-        for ($i = 0; $i < $faltantes; $i++) {
-            $fecha_detalle = $inicio->copy()->addMonths($i * match ($frecuencia) {
-                'anual', 'único' => 12,
-                'semestral' => 6,
-                'trimestral' => 3,
-                'mensual' => 1,
-            });
-
-
-            CostosDetalle::create([
-                'costo_id' => $costo->id,
+        // Editar los detalles existentes
+        foreach ($detalles_editables as $detalle) {
+            $detalle->update([
                 'moneda_id' => $moneda_id,
                 'monto' => $monto_por_periodo,
-                'fecha' => $fecha_detalle,
             ]);
         }
 

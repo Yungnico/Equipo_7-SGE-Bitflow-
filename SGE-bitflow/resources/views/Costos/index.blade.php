@@ -54,13 +54,11 @@
                         <th>
                             <select id="filtro-moneda" class="form-select">
                                 <option value="">Moneda</option>
-                                {{-- Aquí irían tus monedas si se pasan a la vista --}}
                             </select>
                         </th>
                         <th>
                             <select id="filtro-categoria" class="form-select">
                                 <option value="">Categoría</option>
-                                {{-- Aquí irían tus categorías si se pasan a la vista --}}
                             </select>
                         </th>
                         <th></th>
@@ -155,7 +153,7 @@
                         <div class="col-md-6">
                             <label for="subcategoria_id" class="form-label">Subcategoría</label>
                             <select name="subcategoria_id" id="subcategoria_id" class="form-select" required>
-                                <option value="">Seleccione</option>
+                                <option value="">Seleccione una categoría primero</option>
                             </select>
                         </div>
 
@@ -271,86 +269,118 @@
 
 <script>
     $(document).ready(function() {
+        // Inicializa DataTable
         let table = $('#tabla-costos').DataTable({
             responsive: true,
             orderCellsTop: true,
             fixedHeader: true
         });
 
-        // Filtro por moneda
+        // Inicializa Select2
+        $('#filtro-moneda, #filtro-categoria').select2({
+            theme: 'bootstrap4',
+            width: 'resolve'
+        });
+
+        // Filtros
         $('#filtro-moneda').on('change', function() {
             table.column(2).search(this.value).draw();
         });
 
-        // Filtro por categoría
         $('#filtro-categoria').on('change', function() {
             table.column(3).search(this.value).draw();
         });
 
-        // Limpiar filtros
         $('#reset-filtros').on('click', function() {
             $('#filtro-moneda, #filtro-categoria').val('').trigger('change');
             table.search('').columns().search('').draw();
         });
 
-        // Iniciar select2
-        $('#filtro-moneda, #filtro-categoria').select2({
-            theme: 'bootstrap4',
-            width: 'resolve'
+        // SUBCATEGORÍAS: Modal CREAR
+        $('#categoria_id').on('change', function() {
+            const categoriaId = $(this).val();
+            const subSelect = $('#subcategoria_id');
+            subSelect.prop('disabled', true).html('<option value="">Cargando...</option>');
+
+            if (categoriaId) {
+                fetch(`/subcategorias/${categoriaId}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        let options = '<option value="">Seleccione</option>';
+                        data.forEach(sub => {
+                            options += `<option value="${sub.id}">${sub.nombre}</option>`;
+                        });
+                        subSelect.html(options).prop('disabled', false);
+                    })
+                    .catch(err => {
+                        console.error('Error al cargar subcategorías:', err);
+                        subSelect.html('<option value="">Error al cargar</option>').prop('disabled', false);
+                    });
+            } else {
+                subSelect.html('<option value="">Seleccione una categoría primero</option>').prop('disabled', false);
+            }
         });
-    });
 
-    document.getElementById('categoria_id').addEventListener('change', function() {
-        const categoriaId = this.value;
-        const subcategoriaSelect = document.getElementById('subcategoria_id');
-        subcategoriaSelect.innerHTML = '<option value="">Cargando...</option>';
+        // SUBCATEGORÍAS: Modal EDITAR
+        $('#editar_categoria_id').on('change', function() {
+            const categoriaId = $(this).val();
+            const subSelect = $('#editar_subcategoria_id');
+            subSelect.prop('disabled', true).html('<option value="">Cargando...</option>');
 
-        if (categoriaId) {
+            if (categoriaId) {
+                fetch(`/subcategorias/${categoriaId}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        let options = '<option value="">Seleccione</option>';
+                        data.forEach(sub => {
+                            options += `<option value="${sub.id}">${sub.nombre}</option>`;
+                        });
+                        subSelect.html(options).prop('disabled', false);
+                    })
+                    .catch(err => {
+                        console.error('Error al cargar subcategorías:', err);
+                        subSelect.html('<option value="">Error al cargar</option>').prop('disabled', false);
+                    });
+            } else {
+                subSelect.html('<option value="">Seleccione una categoría primero</option>').prop('disabled', false);
+            }
+        });
+
+        // Abrir modal de edición y rellenar campos
+        $(document).on('click', '.btn-editar', function() {
+            const btn = $(this);
+            const id = btn.data('id');
+
+            $('#editar_id').val(id);
+            $('#editar_concepto').val(btn.data('concepto'));
+            $('#editar_frecuencia_pago').val(btn.data('frecuencia'));
+            $('#editar_moneda_id').val(btn.data('moneda'));
+            $('#editar_monto').val(btn.data('monto'));
+            $('#formEditarCosto').attr('action', `/costos/${id}`);
+
+            // Fecha de hoy como default
+            const hoy = new Date().toISOString().split('T')[0];
+            $('#editar_fecha_modificacion').val(hoy);
+
+            const categoriaId = btn.data('categoria');
+            const subcategoriaId = btn.data('subcategoria');
+
+            $('#editar_categoria_id').val(categoriaId).trigger('change');
+
+            // Cargar subcategorías y seleccionar la correspondiente
             fetch(`/subcategorias/${categoriaId}`)
-                .then(response => response.json())
+                .then(res => res.json())
                 .then(data => {
                     let options = '<option value="">Seleccione</option>';
                     data.forEach(sub => {
-                        options += `<option value="${sub.id}">${sub.nombre}</option>`;
+                        const selected = sub.id == subcategoriaId ? 'selected' : '';
+                        options += `<option value="${sub.id}" ${selected}>${sub.nombre}</option>`;
                     });
-                    subcategoriaSelect.innerHTML = options;
-                })
-                .catch(err => {
-                    console.error(err);
-                    subcategoriaSelect.innerHTML = '<option value="">Error al cargar</option>';
+                    $('#editar_subcategoria_id').html(options);
                 });
-        } else {
-            subcategoriaSelect.innerHTML = '<option value="">Seleccione</option>';
-        }
-    });
-
-    // Evento para abrir modal de edición
-    $(document).on('click', '.btn-editar', function() {
-        const btn = $(this);
-        const id = btn.data('id');
-
-        $('#editar_id').val(id);
-        $('#editar_concepto').val(btn.data('concepto'));
-        $('#editar_frecuencia_pago').val(btn.data('frecuencia'));
-        $('#editar_categoria_id').val(btn.data('categoria')).trigger('change');
-
-        // Esperar que cargue subcategorías antes de seleccionarla
-        fetch(`/subcategorias/${btn.data('categoria')}`)
-            .then(response => response.json())
-            .then(data => {
-                let options = '<option value="">Seleccione</option>';
-                data.forEach(sub => {
-                    options += `<option value="${sub.id}" ${sub.id == btn.data('subcategoria') ? 'selected' : ''}>${sub.nombre}</option>`;
-                });
-                $('#editar_subcategoria_id').html(options);
-            });
-
-        $('#editar_año').val(btn.data('año'));
-        $('#editar_moneda_id').val(btn.data('moneda'));
-        $('#editar_monto').val(btn.data('monto'));
-
-        // Set form action
-        $('#formEditarCosto').attr('action', `/costos/${id}`);
+        });
     });
 </script>
+
+
 @stop
