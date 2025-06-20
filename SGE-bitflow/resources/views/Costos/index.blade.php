@@ -126,6 +126,11 @@
                         </div>
 
                         <div class="col-md-6">
+                            <label for="fecha_inicio" class="form-label">Fecha de Inicio</label>
+                            <input type="date" class="form-control" name="fecha_inicio" required>
+                        </div>
+
+                        <div class="col-md-6">
                             <label for="frecuencia_pago" class="form-label">Frecuencia de Pago</label>
                             <select name="frecuencia_pago" class="form-select" required>
                                 <option value="">Seleccione</option>
@@ -152,12 +157,6 @@
                             <select name="subcategoria_id" id="subcategoria_id" class="form-select" required>
                                 <option value="">Seleccione</option>
                             </select>
-                        </div>
-
-
-                        <div class="col-md-6">
-                            <label for="año" class="form-label">Año</label>
-                            <input type="number" class="form-control" name="año" min="2000" value="{{ now()->year }}" required>
                         </div>
 
                         <div class="col-md-6">
@@ -202,6 +201,12 @@
                             <label for="editar_concepto" class="form-label">Concepto</label>
                             <input type="text" class="form-control" name="concepto" id="editar_concepto" required>
                         </div>
+
+                        <div class="col-md-6">
+                            <label for="fecha_modificacion" class="form-label">Aplicar cambios desde</label>
+                            <input type="date" class="form-control" name="fecha_modificacion" id="editar_fecha_modificacion" required>
+                        </div>
+
                         <div class="col-md-6">
                             <label for="editar_frecuencia_pago" class="form-label">Frecuencia de Pago</label>
                             <select name="frecuencia_pago" id="editar_frecuencia_pago" class="form-select" required>
@@ -227,10 +232,6 @@
                             <select name="subcategoria_id" id="editar_subcategoria_id" class="form-select" required>
                                 <option value="">Seleccione</option>
                             </select>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="editar_año" class="form-label">Año</label>
-                            <input type="number" class="form-control" name="año" id="editar_año" min="2000" required>
                         </div>
                         <div class="col-md-6">
                             <label for="editar_moneda_id" class="form-label">Moneda</label>

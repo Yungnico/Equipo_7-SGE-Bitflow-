@@ -10,11 +10,15 @@ return new class extends Migration {
         Schema::create('costos_detalle', function (Blueprint $table) {
             $table->id();
             $table->foreignId('costo_id')->constrained('costos')->onDelete('cascade');
-            $table->year('año');
             $table->foreignId('moneda_id')->constrained('paridades')->onDelete('cascade');
-            $table->unsignedTinyInteger('periodos')->nullable();
             $table->decimal('monto', 12, 2);
+            $table->unsignedBigInteger('transferencias_bancarias_id')->nullable();
+            $table->foreign('transferencias_bancarias_id')
+                ->references('id')
+                ->on('transferencias_bancarias')
+                ->onDelete('set null');
             $table->timestamps();
+            $table->date('fecha')->nullable();
         });
     }
 
