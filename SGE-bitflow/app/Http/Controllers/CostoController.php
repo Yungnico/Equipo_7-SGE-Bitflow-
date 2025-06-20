@@ -102,22 +102,28 @@ class CostoController extends Controller
             'frecuencia_pago' => 'required|in:único,mensual,trimestral,semestral,anual',
             'moneda_id' => 'required|integer',
             'monto' => 'required|numeric',
-            'fecha_modificacion' => 'required|date'
+            'fecha_modificacion' => 'required|date' // Se mantiene para validación aunque ya no se usa
         ]);
 
-        $costo->update($request->only(['concepto', 'categoria_id', 'subcategoria_id', 'frecuencia_pago']));
+        // Actualiza los campos base del costo
+        $costo->update($request->only([
+            'concepto',
+            'categoria_id',
+            'subcategoria_id',
+            'frecuencia_pago'
+        ]));
 
-        $frecuencia = $request->frecuencia_pago;
+        // Nuevos valores
         $monto = $request->monto;
         $moneda_id = $request->moneda_id;
-        $fecha_modificacion = Carbon::parse($request->fecha_modificacion);
 
+        // Selecciona todos los detalles SIN transferencia bancaria
         $detalles_editables = $costo->detalles()
             ->whereNull('transferencias_bancarias_id')
-            ->where('fecha', '>=', $fecha_modificacion)
             ->orderBy('fecha')
             ->get();
 
+        // Aplica cambios
         foreach ($detalles_editables as $detalle) {
             $detalle->update([
                 'moneda_id' => $moneda_id,
