@@ -276,7 +276,7 @@
                 <div class="card">
                     <div class="table-responsive">
                         <table id="tabla-cotizaciones" class="table table-striped table-bordered nowrap w-100">
-                            <thead class="table-dark">
+                            <thead>
                                 <tr>
                                     <th>Código Cotización</th>
                                     <th>Nombre</th>
@@ -323,7 +323,7 @@
                 <div class="card">
                     <div class="table-responsive">
                         <table id="tabla-costos" class="table table-striped table-bordered nowrap w-100">
-                            <thead class="table-dark">
+                            <thead>
                                 <tr>
                                     <th>ID</th>
                                     <th>Concepto</th>
@@ -336,13 +336,23 @@
                                 </tr>
                                 <tr class="bg-light">
                                     <th></th>
-                                    <th><input type="text" class="form-control form-control-sm filtro-columna" data-columna="1" placeholder="Buscar concepto"></th>
+                                    <th>
+                                        @php
+                                        $conceptosUsados = $costosDisponibles->pluck('costo.concepto')->filter()->unique();
+                                        @endphp
+                                        <select class="form-select form-select-sm filtro-columna select2" data-columna="1">
+                                            <option value="">Concepto</option>
+                                            @foreach($conceptosUsados as $concepto)
+                                            <option value="{{ $concepto }}">{{ $concepto }}</option>
+                                            @endforeach
+                                        </select>
+                                    </th>
                                     <th></th>
                                     <th>
                                         @php
                                         $monedasUsadas = $costosDisponibles->pluck('moneda.moneda')->filter()->unique();
                                         @endphp
-                                        <select class="form-select form-select-sm filtro-columna" data-columna="3">
+                                        <select class="form-select form-select-sm filtro-columna select2" data-columna="3">
                                             <option value="">Moneda</option>
                                             @foreach($monedasUsadas as $moneda)
                                             <option value="{{ $moneda }}">{{ $moneda }}</option>
@@ -353,7 +363,7 @@
                                         @php
                                         $categoriasUsadas = $costosDisponibles->pluck('costo.categoria.nombre')->filter()->unique();
                                         @endphp
-                                        <select class="form-select form-select-sm filtro-columna" data-columna="4">
+                                        <select class="form-select form-select-sm filtro-columna select2" data-columna="4">
                                             <option value="">Categoría</option>
                                             @foreach($categoriasUsadas as $categoria)
                                             <option value="{{ $categoria }}">{{ $categoria }}</option>
@@ -365,6 +375,7 @@
                                     <th></th>
                                 </tr>
                             </thead>
+
                             <tbody>
                                 @foreach($costosDisponibles as $detalle)
                                 @php
@@ -525,7 +536,7 @@
             });
         });
 
-        let tablaCostos = $('#tabla-costos').DataTable({
+        const tablaCostos = $('#tabla-costos').DataTable({
             responsive: true,
             autoWidth: false,
             orderCellsTop: true,
@@ -535,24 +546,24 @@
             initComplete: function() {
                 this.api().columns().every(function() {
                     let column = this;
-                    $('input, select', column.header()).on('keyup change clear', function() {
+                    $('select', column.header()).on('change clear', function() {
                         let val = $(this).val();
-                        if (column.search() !== val) {
-                            column.search(val ? '^' + val + '$' : '', true, false).draw();
-                        }
+                        column.search(val ? '^' + val + '$' : '', true, false).draw();
                     });
                 });
             }
         });
 
-        // Evitar que el clic en los filtros cierre el modal
+        // Evitar propagación en filtros
         $('#tabla-costos thead tr:eq(1) th').each(function() {
-            $('input, select', this).on('click', function(e) {
+            $('select', this).on('click', function(e) {
                 e.stopPropagation();
             });
         });
 
-        $('.select2').select2({
+        // Activar Select2
+        $('#modalEgresos .select2').select2({
+            dropdownParent: $('#modalEgresos'),
             theme: 'bootstrap4',
             placeholder: 'Seleccione',
             allowClear: true,
