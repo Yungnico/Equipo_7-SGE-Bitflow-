@@ -23,6 +23,10 @@
     @endif
 
     <a href="{{ route('paridades.fetch') }}" class="btn btn-success mb-3">Actualizar</a>
+ 
+    <button class="btn btn-primary mb-3" data-toggle="modal" data-target="#modalCrearParidad">
+        Agregar Paridad
+    </button>
 
     <div class="card">
         <div class="card-header">
@@ -39,10 +43,8 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($paridades as $grupo)
-                        @php
-                            $p = $grupo->first(); // Tomamos el primer registro de cada grupo
-                        @endphp
+                    
+                    @foreach ($paridades as $p)
                         <tr>
                             <td>{{ $p->moneda }}</td>
                             <td>${{ number_format($p->valor, 2, ',', '.') }}</td>
@@ -54,6 +56,10 @@
                             </td>
                         </tr>
                     @endforeach
+                    {{-- Repetir el bloque anterior para cada paridad --}}
+
+                    {{-- Si no hay paridades, mostrar un mensaje --}}
+
                     @if ($paridades->isEmpty())
                         <tr>
                             <td colspan="4" class="text-center">No hay paridades registradas.</td>
@@ -63,108 +69,60 @@
             </table>
         </div>
     </div>
+    
+    <div class="modal fade" id="modalCrearParidad" tabindex="-1" role="dialog" aria-labelledby="modalCrearParidadLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <form method="POST" action="{{ route('paridades.store') }}">
+            @csrf
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalCrearParidadLabel">Agregar Nueva Paridad</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
 
-    <div class="card-body">
-        @if (session('success'))
-            <x-adminlte-alert theme="success">{{ session('success') }}</x-adminlte-alert>
-        @endif
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="moneda">Moneda</label>
+                        <select class="form-control" id="moneda" name="moneda" required>
+                            <option value="">Seleccione una moneda</option>
+                            <option value="CLP">CLP</option>
+                            <option value="USD">USD</option>
+                            <option value="UF">UF</option>
+                            <option value="UTM">UTM</option>
+                            <option value="EUR">EUR</option>
+                            <option value="GBP">GBP</option>
+                            <option value="CHF">CHF</option>
+                            <option value="JPY">JPY</option>
+                            <option value="HKD">HKD</option>
+                            <option value="CAD">CAD</option>
+                            <option value="CNY">CNY</option>
+                            <option value="AUD">AUD</option>
+                            <option value="BRL">BRL</option>
+                            <option value="RUB">RUB</option>
+                            <option value="MXN">MXN</option>
+                        </select>
+                    </div>
 
-        @if (session('warning'))
-            <x-adminlte-alert theme="warning">{{ session('warning') }}</x-adminlte-alert>
-        @endif
+                    <div class="form-group">
+                        <label for="valor">Valor</label>
+                        <input type="number" step="0.01" class="form-control" id="valor" name="valor" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="fecha">Fecha</label>
+                        <input type="date" class="form-control" id="fecha" name="fecha" required>
+                    </div>
+                </div>
 
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>Moneda</th>
-                    <th>Valor</th>
-                    <th>Fecha</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($paridades as $paridad)
-                <tr>
-                    <td>{{ strtoupper($paridad->moneda) }}</td>
-                    <td>{{ number_format($paridad->valor, 2, ',', '.') }}</td>
-                    <td>{{ $paridad->fecha }}</td>
-                    <td>
-                        <button class="btn btn-sm btn-success editar-btn" 
-                        data-id="{{ $paridad->id }}" 
-                        data-moneda="{{ strtoupper($paridad->moneda) }}" 
-                        data-valor="{{ $paridad->valor }}" 
-                        data-bs-toggle="modal" 
-                        data-bs-target="#modalEditar">
-                        Editar
-                        </button>
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Guardar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </form>
     </div>
-</div>
-
-<!-- Modal Agregar -->
-<div class="modal fade" id="modalAgregar" tabindex="-1" aria-labelledby="modalAgregarLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <form method="POST" action="{{ route('paridades.store') }}">
-        @csrf
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Seleccionar Monedas</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-          </div>
-          <div class="modal-body">
-            @php
-                $monedasDisponibles = ['dolar' => 'Dólar', 'uf' => 'UF', 'euro' => 'Euro', 'utm' => 'UTM'];
-            @endphp
-
-            @foreach($monedasDisponibles as $codigo => $nombre)
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" value="{{ $codigo }}" name="monedas[]" id="moneda_{{ $codigo }}">
-              <label class="form-check-label" for="moneda_{{ $codigo }}">{{ $nombre }}</label>
-            </div>
-            @endforeach
-
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="submit" class="btn btn-primary">Guardar</button>
-          </div>
-        </div>
-    </form>
-  </div>
-</div>
-
-<!-- Modal Editar -->
-<div class="modal fade" id="modalEditar" tabindex="-1" aria-labelledby="modalEditarLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <form method="POST" id="formEditar">
-        @csrf
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Editar Paridad</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-          </div>
-          <div class="modal-body">
-            <div class="mb-3">
-              <label for="monedaEditar" class="form-label">Moneda</label>
-              <input type="text" class="form-control" id="monedaEditar" disabled>
-            </div>
-            <div class="mb-3">
-              <label for="valorEditar" class="form-label">Nuevo Valor</label>
-              <input type="number" step="0.0001" class="form-control" id="valorEditar" name="valor" required>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="submit" class="btn btn-primary">Actualizar</button>
-          </div>
-        </div>
-    </form>
-  </div>
-</div>
+    </div>
 
 @stop
 
@@ -186,6 +144,6 @@
             });
         });
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+
 @stop
-
-

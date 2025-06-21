@@ -55,12 +55,7 @@ Route::middleware('auth')->group(function () {
 //PARIDADES OFICIAL 
 use App\Http\Controllers\ParidadController;
 
-Route::get('/paridades', [ParidadController::class, 'index'])->name('paridades.index');
-Route::post('/paridades', [ParidadController::class, 'store'])->name('paridades.store');
-Route::get('/paridades/actualizar', [ParidadController::class, 'actualizarValores'])->name('paridades.actualizar');
-Route::post('/paridades/{id}/update', [ParidadController::class, 'update'])->name('paridades.update');
 
-//PARIDADES
 //Route::resource('paridades', ParidadController::class)->except(['create', 'store', 'destroy', 'show']);
 Route::get('/paridades', [ParidadController::class, 'index'])->middleware('can:paridades.index')->name('paridades.index');
 Route::get('/paridades/fetch', [ParidadController::class, 'fetchFromAPI'])->middleware('can:paridades.fetch')->name('paridades.fetch'); //middleware puesto
@@ -68,6 +63,8 @@ Route::get('/paridades/{paridad}/edit', [ParidadController::class, 'edit'])->mid
 Route::put('/paridades/{paridad}', [ParidadController::class, 'update'])->name('paridades.update'); //no necesita middleware
 Route::get('/paridades/recordatorio', [ParidadController::class, 'checkRecordatorioAnual'])->name('paridades.recordatorio'); //no necesita middleware
 Route::put('/paridades/{paridad}', [ParidadController::class, 'update'])->name('paridades.update'); //no necesita middleware
+Route::post('/paridades', [ParidadController::class, 'store'])->name('paridades.store');
+
 //rutas de clientes
 Route::middleware('auth')->group(function () {
 
