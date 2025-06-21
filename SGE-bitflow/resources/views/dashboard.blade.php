@@ -34,10 +34,25 @@
         new Chart(ctx, {
             type: 'bar',
             data: {
-            labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+            labels: ['1', '2', '3', '4', '5', '6'],
             datasets: [{
                 label: '# of Votes',
                 data: [12, 19, 3, 5, 2, 3],
+                borderWidth: 1
+            },
+            {
+                label: 'Another Dataset',
+                data: [5, 15, 10, 8, 12, 7],
+                borderWidth: 1
+            },
+            {
+                label: 'Third Dataset',
+                data: [2, 3, 20, 5, 1, 4],
+                borderWidth: 1
+            },
+            {
+                label: 'Fourth Dataset',
+                data: [3, 10, 13, 15, 7, 8],
                 borderWidth: 1
             }]
             },
