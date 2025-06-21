@@ -52,14 +52,29 @@
                         <th></th>
                         <th></th>
                         <th>
-                            <select id="filtro-moneda" class="form-select">
+                            @php
+                            $monedasUnicas = $costos->pluck('detalles')->flatten()->pluck('moneda.moneda')->filter()->unique();
+                            @endphp
+
+                            <select id="filtro-moneda" class="form-select" style="min-width: 120px;">
                                 <option value="">Moneda</option>
+                                @foreach($monedasUnicas as $moneda)
+                                <option value="{{ $moneda }}">{{ $moneda }}</option>
+                                @endforeach
                             </select>
                         </th>
                         <th>
-                            <select id="filtro-categoria" class="form-select">
+                            @php
+                            $categoriasUnicas = $costos->pluck('categoria.nombre')->filter()->unique();
+                            @endphp
+
+                            <select id="filtro-categoria-costos" class="form-select" style="min-width: 150px;">
                                 <option value="">Categoría</option>
+                                @foreach($categoriasUnicas as $categoria)
+                                <option value="{{ $categoria }}">{{ $categoria }}</option>
+                                @endforeach
                             </select>
+
                         </th>
                         <th></th>
                         <th></th>
@@ -67,10 +82,11 @@
                     </tr>
                 </thead>
                 <tbody>
+
                     @foreach($costos as $costo)
                     @php
                     // Obtener el primer detalle específico de este costo
-                    $detalle = $costo->detalles->where('costo_id', $costo->id)->first();
+                    $detalle = $costo->detalles->where('costo_id', $costo->id)->first(); //last
                     $moneda_id = optional($detalle)->moneda_id;
                     $monto = optional($detalle)->monto;
                     @endphp
@@ -288,23 +304,21 @@
             fixedHeader: true
         });
 
-        $('#filtro-moneda, #filtro-categoria').select2({
-            theme: 'bootstrap4',
-            width: 'resolve'
-        });
-
         $('#filtro-moneda').on('change', function() {
-            table.column(2).search(this.value).draw();
+            table.column(2).search($(this).val()).draw();
         });
 
-        $('#filtro-categoria').on('change', function() {
-            table.column(3).search(this.value).draw();
+        $('#filtro-categoria-costos').on('change', function() {
+            table.column(3).search($(this).find('option:selected').text()).draw();
         });
+
 
         $('#reset-filtros').on('click', function() {
-            $('#filtro-moneda, #filtro-categoria').val('').trigger('change');
+            $('#filtro-moneda, #filtro-categoria-costos').val('').trigger('change');
             table.search('').columns().search('').draw();
         });
+
+
 
         // ===================== MODAL CREAR ===================== //
         $('#categoria_id').on('change', function() {
