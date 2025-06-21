@@ -64,6 +64,7 @@ Route::put('/paridades/{paridad}', [ParidadController::class, 'update'])->name('
 Route::get('/paridades/recordatorio', [ParidadController::class, 'checkRecordatorioAnual'])->name('paridades.recordatorio'); //no necesita middleware
 Route::put('/paridades/{paridad}', [ParidadController::class, 'update'])->name('paridades.update'); //no necesita middleware
 Route::post('/paridades', [ParidadController::class, 'store'])->name('paridades.store');
+Route::delete('/paridades/{paridad}', [ParidadController::class, 'destroy'])->name('paridades.destroy');
 
 //rutas de clientes
 Route::middleware('auth')->group(function () {

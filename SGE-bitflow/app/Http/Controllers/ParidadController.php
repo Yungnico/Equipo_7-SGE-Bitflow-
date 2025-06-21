@@ -18,19 +18,24 @@ class ParidadController extends Controller
         $request->validate([
             'moneda' => 'required|string|max:10',
             'valor' => 'required|numeric|min:0',
-            'fecha' => 'required|date',
+            'fecha' => 'nullable|date',
         ]);
 
-        $existe = Paridad::where('moneda', $request->moneda)
-            ->where('fecha', $request->fecha)
-            ->exists();
+        $fecha = $request->input('fecha') ?? now()->toDateString();
 
+        $existe = Paridad::where('moneda', $request->moneda)
+            ->where('fecha', $fecha)
+            ->exists();
 
         if ($existe) {
             return redirect()->back()->with('error', 'Ya existe una paridad con esa moneda y fecha.');
         }
 
-        Paridad::create($request->only(['moneda', 'valor', 'fecha']));
+        Paridad::create([
+            'moneda' => $request->moneda,
+            'valor' => $request->valor,
+            'fecha' => $fecha
+        ]);
 
         return redirect()->route('paridades.index')->with('success', 'Paridad agregada exitosamente.');
     }
@@ -38,20 +43,22 @@ class ParidadController extends Controller
 
     public function index()
     {
-        //obtener la última fecha por moneda y que no se vea repetido
         $sub = \DB::table('paridades')
             ->selectRaw('moneda, MAX(fecha) as fecha')
-            ->whereIn('moneda', self::MONEDAS_VALIDAS)
             ->groupBy('moneda');
 
-      
         $paridades = Paridad::joinSub($sub, 'ultimas', function ($join) {
             $join->on('paridades.moneda', '=', 'ultimas.moneda')
                 ->on('paridades.fecha', '=', 'ultimas.fecha');
         })->get();
 
-        return view('paridades.index', compact('paridades'));
+        $todasLasMonedas = ['CLP', 'USD', 'UF', 'UTM', 'EUR', 'GBP', 'CHF', 'JPY', 'HKD', 'CAD', 'CNY', 'AUD', 'BRL', 'RUB', 'MXN'];
+        $monedasUsadas = $paridades->pluck('moneda')->toArray();
+        $monedasDisponibles = array_diff($todasLasMonedas, $monedasUsadas);
+
+        return view('paridades.index', compact('paridades', 'monedasDisponibles'));
     }
+
 
 
 
@@ -154,4 +161,10 @@ class ParidadController extends Controller
 
         return redirect()->route('paridades.index');
     }
+    public function destroy(Paridad $paridad)
+    {
+        $paridad->delete();
+        return redirect()->route('paridades.index')->with('success', 'Paridad eliminada correctamente.');
+    }
+
 }

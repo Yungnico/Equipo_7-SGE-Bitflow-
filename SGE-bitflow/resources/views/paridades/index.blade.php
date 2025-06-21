@@ -25,13 +25,11 @@
     <a href="{{ route('paridades.fetch') }}" class="btn btn-success mb-3">Actualizar</a>
  
     <button class="btn btn-primary mb-3" data-toggle="modal" data-target="#modalCrearParidad">
-        Agregar Paridad
+        Agregar paridad
     </button>
 
     <div class="card">
-        <div class="card-header">
-            <h3 class="card-title">Listado de Paridades</h3>
-        </div>
+
         <div class="card-body">
             <table id="tabla-paridades" class="table table-bordered table-striped">
                 <thead>
@@ -50,9 +48,19 @@
                             <td>${{ number_format($p->valor, 2, ',', '.') }}</td>
                             <td>{{ \Carbon\Carbon::parse($p->fecha)->format('d/m/Y') }}</td>
                             <td class="text-center">
-                                <a href="{{ route('paridades.edit', $p) }}" class="btn btn-warning btn-sm">
-                                    <i class="fas fa-edit" style="color: white"></i>
-                                </a>
+                                <div class="d-flex justify-content-center">
+                                    <a href="{{ route('paridades.edit', $p) }}" class="btn btn-warning btn-sm mr-1">
+                                        <i class="fas fa-edit" style="color: white"></i>
+                                    </a>
+
+                                    <form action="{{ route('paridades.destroy', $p) }}" method="POST" class="form-eliminar">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger btn-sm">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </form>
+                                </div>
                             </td>
                         </tr>
                     @endforeach
@@ -87,32 +95,23 @@
                         <label for="moneda">Moneda</label>
                         <select class="form-control" id="moneda" name="moneda" required>
                             <option value="">Seleccione una moneda</option>
-                            <option value="CLP">CLP</option>
-                            <option value="USD">USD</option>
-                            <option value="UF">UF</option>
-                            <option value="UTM">UTM</option>
-                            <option value="EUR">EUR</option>
-                            <option value="GBP">GBP</option>
-                            <option value="CHF">CHF</option>
-                            <option value="JPY">JPY</option>
-                            <option value="HKD">HKD</option>
-                            <option value="CAD">CAD</option>
-                            <option value="CNY">CNY</option>
-                            <option value="AUD">AUD</option>
-                            <option value="BRL">BRL</option>
-                            <option value="RUB">RUB</option>
-                            <option value="MXN">MXN</option>
+                            @foreach ($monedasDisponibles as $moneda)
+                                <option value="{{ $moneda }}">{{ $moneda }}</option>
+                            @endforeach
                         </select>
                     </div>
+
 
                     <div class="form-group">
                         <label for="valor">Valor</label>
                         <input type="number" step="0.01" class="form-control" id="valor" name="valor" required>
                     </div>
+                    
                     <div class="form-group">
                         <label for="fecha">Fecha</label>
-                        <input type="date" class="form-control" id="fecha" name="fecha" required>
+                        <input type="date" class="form-control" id="fecha" name="fecha" value="{{ now()->toDateString() }}">
                     </div>
+
                 </div>
 
                 <div class="modal-footer">
@@ -127,6 +126,9 @@
 @stop
 
 @section('js')
+    {{-- Sweet Alert para eliminar paridad --}}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     {{-- CDN de DataTables --}}
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
@@ -145,5 +147,32 @@
         });
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const forms = document.querySelectorAll('.form-eliminar');
+
+            forms.forEach(form => {
+                form.addEventListener('submit', function (e) {
+                    e.preventDefault(); // Prevenir envío inmediato
+
+                    Swal.fire({
+                        title: '¿Estás seguro?',
+                        text: 'Esta paridad será eliminada.',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#6c757d',
+                        confirmButtonText: 'Sí, eliminar',
+                        cancelButtonText: 'Cancelar'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit(); // Si confirma, enviar el formulario
+                        }
+                    });
+                });
+            });
+        });
+    </script>
 
 @stop
