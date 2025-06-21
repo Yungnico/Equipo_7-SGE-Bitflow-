@@ -301,7 +301,10 @@
         let table = $('#tabla-costos').DataTable({
             responsive: true,
             orderCellsTop: true,
-            fixedHeader: true
+            fixedHeader: true,
+            language: {
+                url: '{{ asset("datatables/es-CL.json")}}'
+            },
         });
 
         $('#filtro-moneda').on('change', function() {
