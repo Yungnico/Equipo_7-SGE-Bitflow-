@@ -47,20 +47,30 @@
                         <th></th>
                         <th></th>
                         <th>
+                            @php
+                            $monedasUsadas = $servicios->pluck('moneda.moneda')->filter()->unique();
+                            @endphp
+
                             <select id="filtro-moneda" class="form-select">
                                 <option value="">Moneda</option>
-                                @foreach($monedas as $moneda)
-                                <option value="{{ $moneda->moneda }}">{{ $moneda->moneda }}</option>
+                                @foreach($monedasUsadas as $moneda)
+                                <option value="{{ $moneda }}">{{ $moneda }}</option>
                                 @endforeach
                             </select>
+
                         </th>
                         <th>
+                            @php
+                            $categoriasUsadas = $servicios->pluck('categoria.nombre')->filter()->unique();
+                            @endphp
+
                             <select id="filtro-categoria" class="form-select">
                                 <option value="">Categoría</option>
-                                @foreach($categorias as $categoria)
-                                <option value="{{ $categoria->nombre }}">{{ $categoria->nombre }}</option>
+                                @foreach($categoriasUsadas as $categoria)
+                                <option value="{{ $categoria }}">{{ $categoria }}</option>
                                 @endforeach
                             </select>
+
                         </th>
                         <th></th>
                     </tr>
