@@ -334,6 +334,36 @@
                                     <th>Fecha</th>
                                     <th>Acción</th>
                                 </tr>
+                                <tr class="bg-light">
+                                    <th></th>
+                                    <th><input type="text" class="form-control form-control-sm filtro-columna" data-columna="1" placeholder="Buscar concepto"></th>
+                                    <th></th>
+                                    <th>
+                                        @php
+                                        $monedasUsadas = $costosDisponibles->pluck('moneda.moneda')->filter()->unique();
+                                        @endphp
+                                        <select class="form-select form-select-sm filtro-columna" data-columna="3">
+                                            <option value="">Moneda</option>
+                                            @foreach($monedasUsadas as $moneda)
+                                            <option value="{{ $moneda }}">{{ $moneda }}</option>
+                                            @endforeach
+                                        </select>
+                                    </th>
+                                    <th>
+                                        @php
+                                        $categoriasUsadas = $costosDisponibles->pluck('costo.categoria.nombre')->filter()->unique();
+                                        @endphp
+                                        <select class="form-select form-select-sm filtro-columna" data-columna="4">
+                                            <option value="">Categoría</option>
+                                            @foreach($categoriasUsadas as $categoria)
+                                            <option value="{{ $categoria }}">{{ $categoria }}</option>
+                                            @endforeach
+                                        </select>
+                                    </th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
                             </thead>
                             <tbody>
                                 @foreach($costosDisponibles as $detalle)
@@ -494,6 +524,41 @@
                 input.value = transferenciaId;
             });
         });
+
+        let tablaCostos = $('#tabla-costos').DataTable({
+            responsive: true,
+            autoWidth: false,
+            orderCellsTop: true,
+            language: {
+                url: '{{ asset("datatables/es-CL.json") }}'
+            },
+            initComplete: function() {
+                this.api().columns().every(function() {
+                    let column = this;
+                    $('input, select', column.header()).on('keyup change clear', function() {
+                        let val = $(this).val();
+                        if (column.search() !== val) {
+                            column.search(val ? '^' + val + '$' : '', true, false).draw();
+                        }
+                    });
+                });
+            }
+        });
+
+        // Evitar que el clic en los filtros cierre el modal
+        $('#tabla-costos thead tr:eq(1) th').each(function() {
+            $('input, select', this).on('click', function(e) {
+                e.stopPropagation();
+            });
+        });
+
+        $('.select2').select2({
+            theme: 'bootstrap4',
+            placeholder: 'Seleccione',
+            allowClear: true,
+            width: '100%'
+        });
+
     });
 </script>
 @endsection
