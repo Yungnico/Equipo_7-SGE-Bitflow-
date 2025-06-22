@@ -16,7 +16,7 @@
 @stop
 
 @section('content')
-<div class="container mt-4">
+<div class="container-fluid mt-5 px-0">
 
     {{-- Botones de acciones --}}
     <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
@@ -38,7 +38,7 @@
     <div class="card">
         <div class="card-body">
             <table id="tabla-costos" class="table table-striped table-bordered align-middle">
-                <thead class="table-dark">
+                <thead>
                     <tr>
                         <th>Concepto</th>
                         <th>Monto</th>
@@ -52,16 +52,29 @@
                         <th></th>
                         <th></th>
                         <th>
-                            <select id="filtro-moneda" class="form-select">
+                            @php
+                            $monedasUnicas = $costos->pluck('detalles')->flatten()->pluck('moneda.moneda')->filter()->unique();
+                            @endphp
+
+                            <select id="filtro-moneda" class="form-select" style="min-width: 120px;">
                                 <option value="">Moneda</option>
-                                {{-- Aquí irían tus monedas si se pasan a la vista --}}
+                                @foreach($monedasUnicas as $moneda)
+                                <option value="{{ $moneda }}">{{ $moneda }}</option>
+                                @endforeach
                             </select>
                         </th>
                         <th>
-                            <select id="filtro-categoria" class="form-select">
+                            @php
+                            $categoriasUnicas = $costos->pluck('categoria.nombre')->filter()->unique();
+                            @endphp
+
+                            <select id="filtro-categoria-costos" class="form-select" style="min-width: 150px;">
                                 <option value="">Categoría</option>
-                                {{-- Aquí irían tus categorías si se pasan a la vista --}}
+                                @foreach($categoriasUnicas as $categoria)
+                                <option value="{{ $categoria }}">{{ $categoria }}</option>
+                                @endforeach
                             </select>
+
                         </th>
                         <th></th>
                         <th></th>
@@ -69,11 +82,24 @@
                     </tr>
                 </thead>
                 <tbody>
+
                     @foreach($costos as $costo)
+                    @php
+                    // Obtener el primer detalle específico de este costo
+                    $detalle = $costo->detalles->where('costo_id', $costo->id)->first(); //last
+                    $moneda_id = optional($detalle)->moneda_id;
+                    $monto = optional($detalle)->monto;
+                    @endphp
                     <tr>
                         <td>{{ $costo->concepto }}</td>
-                        <td>${{ number_format(optional($costo->detalles->first())->monto, 2, ',', '.') }}</td>
-                        <td>{{ optional(optional($costo->detalles->first())->moneda)->moneda ?? 'Sin moneda' }}</td>
+                        <td>
+                            @if($detalle)
+                            ${{ number_format($detalle->monto, 2, ',', '.') }}
+                            @else
+                            Sin monto
+                            @endif
+                        </td>
+                        <td>{{ optional($detalle->moneda)->moneda ?? 'Sin moneda' }}</td>
                         <td>{{ $costo->categoria->nombre ?? 'Sin categoría' }}</td>
                         <td>{{ $costo->subcategoria->nombre ?? 'Sin subcategoría' }}</td>
                         <td>{{ ucfirst($costo->frecuencia_pago) }}</td>
@@ -85,13 +111,13 @@
                                 data-frecuencia="{{ $costo->frecuencia_pago }}"
                                 data-categoria="{{ $costo->categoria_id }}"
                                 data-subcategoria="{{ $costo->subcategoria_id }}"
-                                data-año="{{ optional($costo->detalles->first())->año }}"
-                                data-moneda="{{ optional($costo->detalles->first())->moneda_id }}"
-                                data-monto="{{ optional($costo->detalles->first())->monto }}"
+                                data-moneda="{{ $moneda_id }}"
+                                data-monto="{{ $monto }}"
                                 data-bs-toggle="modal"
                                 data-bs-target="#modalEditarCosto">
                                 <i class="fas fa-pencil-alt"></i>
                             </button>
+
 
                             <form action="{{ route('costos.destroy', $costo->id) }}" method="POST" style="display:inline-block;">
                                 @csrf
@@ -104,6 +130,8 @@
                     </tr>
                     @endforeach
                 </tbody>
+
+
             </table>
         </div>
     </div>
@@ -123,6 +151,11 @@
                         <div class="col-md-6">
                             <label for="concepto" class="form-label">Concepto</label>
                             <input type="text" class="form-control" name="concepto" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="fecha_inicio" class="form-label">Fecha de Inicio</label>
+                            <input type="date" class="form-control" name="fecha_inicio" required>
                         </div>
 
                         <div class="col-md-6">
@@ -150,14 +183,8 @@
                         <div class="col-md-6">
                             <label for="subcategoria_id" class="form-label">Subcategoría</label>
                             <select name="subcategoria_id" id="subcategoria_id" class="form-select" required>
-                                <option value="">Seleccione</option>
+                                <option value="">Seleccione una categoría primero</option>
                             </select>
-                        </div>
-
-
-                        <div class="col-md-6">
-                            <label for="año" class="form-label">Año</label>
-                            <input type="number" class="form-control" name="año" min="2000" value="{{ now()->year }}" required>
                         </div>
 
                         <div class="col-md-6">
@@ -178,7 +205,6 @@
 
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-success">Guardar</button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                     </div>
                 </div>
             </form>
@@ -203,6 +229,12 @@
                             <label for="editar_concepto" class="form-label">Concepto</label>
                             <input type="text" class="form-control" name="concepto" id="editar_concepto" required>
                         </div>
+
+                        <div class="col-md-6">
+                            <label for="fecha_modificacion" class="form-label">Aplicar cambios desde</label>
+                            <input type="date" class="form-control" name="fecha_modificacion" id="editar_fecha_modificacion" required>
+                        </div>
+
                         <div class="col-md-6">
                             <label for="editar_frecuencia_pago" class="form-label">Frecuencia de Pago</label>
                             <select name="frecuencia_pago" id="editar_frecuencia_pago" class="form-select" required>
@@ -230,10 +262,6 @@
                             </select>
                         </div>
                         <div class="col-md-6">
-                            <label for="editar_año" class="form-label">Año</label>
-                            <input type="number" class="form-control" name="año" id="editar_año" min="2000" required>
-                        </div>
-                        <div class="col-md-6">
                             <label for="editar_moneda_id" class="form-label">Moneda</label>
                             <select name="moneda_id" id="editar_moneda_id" class="form-select" required>
                                 <option value="">Seleccione</option>
@@ -250,7 +278,6 @@
 
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-primary">Actualizar</button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                     </div>
                 </div>
             </form>
@@ -269,89 +296,111 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-
 <script>
     $(document).ready(function() {
         let table = $('#tabla-costos').DataTable({
             responsive: true,
             orderCellsTop: true,
-            fixedHeader: true
+            fixedHeader: true,
+            language: {
+                url: '{{ asset("datatables/es-CL.json")}}'
+            },
         });
 
-        // Filtro por moneda
         $('#filtro-moneda').on('change', function() {
-            table.column(2).search(this.value).draw();
+            table.column(2).search($(this).val()).draw();
         });
 
-        // Filtro por categoría
-        $('#filtro-categoria').on('change', function() {
-            table.column(3).search(this.value).draw();
+        $('#filtro-categoria-costos').on('change', function() {
+            table.column(3).search($(this).find('option:selected').text()).draw();
         });
 
-        // Limpiar filtros
+
         $('#reset-filtros').on('click', function() {
-            $('#filtro-moneda, #filtro-categoria').val('').trigger('change');
+            $('#filtro-moneda, #filtro-categoria-costos').val('').trigger('change');
             table.search('').columns().search('').draw();
         });
 
-        // Iniciar select2
-        $('#filtro-moneda, #filtro-categoria').select2({
-            theme: 'bootstrap4',
-            width: 'resolve'
-        });
-    });
 
-    document.getElementById('categoria_id').addEventListener('change', function() {
-        const categoriaId = this.value;
-        const subcategoriaSelect = document.getElementById('subcategoria_id');
-        subcategoriaSelect.innerHTML = '<option value="">Cargando...</option>';
 
-        if (categoriaId) {
-            fetch(`/subcategorias/${categoriaId}`)
-                .then(response => response.json())
-                .then(data => {
-                    let options = '<option value="">Seleccione</option>';
-                    data.forEach(sub => {
-                        options += `<option value="${sub.id}">${sub.nombre}</option>`;
+        // ===================== MODAL CREAR ===================== //
+        $('#categoria_id').on('change', function() {
+            const categoriaId = $(this).val();
+            const subSelect = $('#subcategoria_id');
+            subSelect.prop('disabled', true).html('<option value="">Cargando...</option>');
+
+            if (categoriaId) {
+                fetch(`/subcategorias/${categoriaId}`)
+                    .then(res => {
+                        if (!res.ok) throw new Error('Respuesta no válida');
+                        return res.json();
+                    })
+                    .then(data => {
+                        let options = '<option value="">Seleccione</option>';
+                        data.forEach(sub => {
+                            options += `<option value="${sub.id}">${sub.nombre}</option>`;
+                        });
+                        subSelect.html(options).prop('disabled', false);
+                    })
+                    .catch(err => {
+                        console.error('Error al cargar subcategorías:', err);
+                        subSelect.html('<option value="">Error al cargar</option>').prop('disabled', false);
                     });
-                    subcategoriaSelect.innerHTML = options;
-                })
-                .catch(err => {
-                    console.error(err);
-                    subcategoriaSelect.innerHTML = '<option value="">Error al cargar</option>';
-                });
-        } else {
-            subcategoriaSelect.innerHTML = '<option value="">Seleccione</option>';
-        }
-    });
+            } else {
+                subSelect.html('<option value="">Seleccione una categoría primero</option>').prop('disabled', false);
+            }
+        });
 
-    // Evento para abrir modal de edición
-    $(document).on('click', '.btn-editar', function() {
-        const btn = $(this);
-        const id = btn.data('id');
+        // ===================== MODAL EDITAR ===================== //
+        let subcategoriaIdSeleccionada = null;
 
-        $('#editar_id').val(id);
-        $('#editar_concepto').val(btn.data('concepto'));
-        $('#editar_frecuencia_pago').val(btn.data('frecuencia'));
-        $('#editar_categoria_id').val(btn.data('categoria')).trigger('change');
+        $('#editar_categoria_id').on('change', function() {
+            const categoriaId = $(this).val();
+            const subSelect = $('#editar_subcategoria_id');
+            subSelect.prop('disabled', true).html('<option value="">Cargando...</option>');
 
-        // Esperar que cargue subcategorías antes de seleccionarla
-        fetch(`/subcategorias/${btn.data('categoria')}`)
-            .then(response => response.json())
-            .then(data => {
-                let options = '<option value="">Seleccione</option>';
-                data.forEach(sub => {
-                    options += `<option value="${sub.id}" ${sub.id == btn.data('subcategoria') ? 'selected' : ''}>${sub.nombre}</option>`;
-                });
-                $('#editar_subcategoria_id').html(options);
-            });
+            if (categoriaId) {
+                fetch(`/subcategorias/${categoriaId}`)
+                    .then(res => {
+                        if (!res.ok) throw new Error('Respuesta no válida');
+                        return res.json();
+                    })
+                    .then(data => {
+                        let options = '<option value="">Seleccione</option>';
+                        data.forEach(sub => {
+                            const selected = sub.id == subcategoriaIdSeleccionada ? 'selected' : '';
+                            options += `<option value="${sub.id}" ${selected}>${sub.nombre}</option>`;
+                        });
+                        subSelect.html(options).prop('disabled', false);
+                    })
+                    .catch(err => {
+                        console.error('Error al cargar subcategorías (editar):', err);
+                        subSelect.html('<option value="">Error al cargar</option>').prop('disabled', false);
+                    });
+            } else {
+                subSelect.html('<option value="">Seleccione una categoría primero</option>').prop('disabled', false);
+            }
+        });
 
-        $('#editar_año').val(btn.data('año'));
-        $('#editar_moneda_id').val(btn.data('moneda'));
-        $('#editar_monto').val(btn.data('monto'));
+        // Botón "Editar"
+        $(document).on('click', '.btn-editar', function() {
+            const btn = $(this);
+            const id = btn.data('id');
+            const categoriaId = btn.data('categoria');
+            subcategoriaIdSeleccionada = btn.data('subcategoria'); // ⚠️ ASIGNACIÓN DIRECTA
 
-        // Set form action
-        $('#formEditarCosto').attr('action', `/costos/${id}`);
+            $('#editar_id').val(id);
+            $('#editar_concepto').val(btn.data('concepto'));
+            $('#editar_frecuencia_pago').val(btn.data('frecuencia'));
+            $('#editar_moneda_id').val(btn.data('moneda'));
+            $('#editar_monto').val(btn.data('monto'));
+
+            const hoy = new Date().toISOString().split('T')[0];
+            $('#editar_fecha_modificacion').val(hoy);
+
+            $('#formEditarCosto').attr('action', `/costos/${id}`);
+            $('#editar_categoria_id').val(categoriaId).trigger('change');
+        });
     });
 </script>
 @stop

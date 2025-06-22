@@ -13,10 +13,21 @@
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <link href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@1.5.2/dist/select2-bootstrap4.min.css" rel="stylesheet" />
 
+<style>
+    td.details-control {
+        background: url('https://www.datatables.net/examples/resources/details_open.png') no-repeat center center;
+        cursor: pointer;
+    }
+
+    tr.shown td.details-control {
+        background: url('https://www.datatables.net/examples/resources/details_close.png') no-repeat center center;
+    }
+</style>
+
 @endsection
 
 @section('content')
-<div class="container mt-5">
+<div class="container-fluid mt-5 px-0">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="h3">Transferencias Bancarias</h1>
         <form action="{{ route('transferencias.importar') }}" method="POST" enctype="multipart/form-data" class="d-flex gap-2">
@@ -38,9 +49,10 @@
     <div class="card">
         <div class="card-body">
             <div class="table-responsive">
-                <table id="tabla-transferencias" class="table table-striped table-bordered nowrap w-100">
-                    <thead class="table-dark">
+                <table id="tabla-transferencias" class="table table-striped table-bordered align-middle">
+                    <thead>
                         <tr>
+                            <th></th>
                             <th>ID</th>
                             <th>Nombre</th>
                             <th>RUT</th>
@@ -63,8 +75,10 @@
 
                         <tr class="filtros">
                             <th></th>
+                            <th></th>
                             <th>
-                                <select class="form-select filtro-select" data-columna="1" style="min-width: 150px;">
+                                <!-- Filtro Nombre -->
+                                <select class="form-select filtro-select" data-columna="2" style="min-width: 150px;">
                                     <option value="">Nombre</option>
                                     @foreach($transferencias->pluck('nombre')->unique() as $nombre)
                                     <option value="{{ $nombre }}">{{ $nombre }}</option>
@@ -72,23 +86,42 @@
                                 </select>
                             </th>
                             <th>
-                                <select class="form-select filtro-select" data-columna="2" style="min-width: 150px;">
+                                <!-- Filtro RUT -->
+                                <select class="form-select filtro-select" data-columna="3" style="min-width: 150px;">
                                     <option value="">RUT</option>
                                     @foreach($transferencias->pluck('rut')->unique() as $rut)
                                     <option value="{{ $rut }}">{{ $rut }}</option>
                                     @endforeach
                                 </select>
                             </th>
-                            <th></th>
-                            @for($i = 2; $i < 16; $i++)
+                            <th>
+                                <select class="form-select filtro-select select2" data-columna="4" style="min-width: 150px;">
+                                    <option value="">Estado</option>
+                                    @foreach($transferencias->pluck('estado')->unique() as $estado)
+                                    <option value="{{ $estado }}">{{ $estado }}</option>
+                                    @endforeach
+                                </select>
+                            </th>
+                            <th>
+                                <select class="form-select filtro-select select2" data-columna="5" style="min-width: 150px;">
+                                    <option value="">Tipo Movimiento</option>
+                                    @foreach($transferencias->pluck('tipo_movimiento')->unique() as $mov)
+                                    <option value="{{ $mov }}">{{ ucfirst($mov) }}</option>
+                                    @endforeach
+                                </select>
+                            </th>
+
+                            @for($i = 6; $i < 19; $i++)
                                 <th>
                                 </th>
                                 @endfor
                         </tr>
+
                     </thead>
                     <tbody>
                         @forelse($transferencias as $t)
                         <tr>
+                            <td class="details-control"></td>
                             <td class="text-center fw-bold">{{ $t->id }}</td>
                             <td>{{ $t->nombre }}</td>
                             <td>{{ $t->rut }}</td>
@@ -110,7 +143,7 @@
                             <td>
                                 @if($t->tipo_movimiento === 'ingreso')
                                 <button class="btn btn-sm btn-primary">Ingreso</button>
-                                @elseif($t->tipo_movimiento === 'egreso' && !$t->costo)
+                                @elseif($t->tipo_movimiento === 'egreso' && !$t->costoDetalle)
                                 <button type="button"
                                     class="btn btn-sm btn-danger btn-ver-egresos"
                                     data-bs-toggle="modal"
@@ -243,7 +276,7 @@
                 <div class="card">
                     <div class="table-responsive">
                         <table id="tabla-cotizaciones" class="table table-striped table-bordered nowrap w-100">
-                            <thead class="table-dark">
+                            <thead>
                                 <tr>
                                     <th>Código Cotización</th>
                                     <th>Nombre</th>
@@ -290,27 +323,77 @@
                 <div class="card">
                     <div class="table-responsive">
                         <table id="tabla-costos" class="table table-striped table-bordered nowrap w-100">
-                            <thead class="table-dark">
+                            <thead>
                                 <tr>
                                     <th>ID</th>
-                                    <th>Nombre</th>
+                                    <th>Concepto</th>
                                     <th>Monto</th>
+                                    <th>Moneda</th>
+                                    <th>Categoría</th>
+                                    <th>Subcategoría</th>
                                     <th>Fecha</th>
                                     <th>Acción</th>
                                 </tr>
+                                <tr class="bg-light">
+                                    <th></th>
+                                    <th>
+                                        @php
+                                        $conceptosUsados = $costosDisponibles->pluck('costo.concepto')->filter()->unique();
+                                        @endphp
+                                        <select class="form-select form-select-sm filtro-columna select2" data-columna="1">
+                                            <option value="">Concepto</option>
+                                            @foreach($conceptosUsados as $concepto)
+                                            <option value="{{ $concepto }}">{{ $concepto }}</option>
+                                            @endforeach
+                                        </select>
+                                    </th>
+                                    <th></th>
+                                    <th>
+                                        @php
+                                        $monedasUsadas = $costosDisponibles->pluck('moneda.moneda')->filter()->unique();
+                                        @endphp
+                                        <select class="form-select form-select-sm filtro-columna select2" data-columna="3">
+                                            <option value="">Moneda</option>
+                                            @foreach($monedasUsadas as $moneda)
+                                            <option value="{{ $moneda }}">{{ $moneda }}</option>
+                                            @endforeach
+                                        </select>
+                                    </th>
+                                    <th>
+                                        @php
+                                        $categoriasUsadas = $costosDisponibles->pluck('costo.categoria.nombre')->filter()->unique();
+                                        @endphp
+                                        <select class="form-select form-select-sm filtro-columna select2" data-columna="4">
+                                            <option value="">Categoría</option>
+                                            @foreach($categoriasUsadas as $categoria)
+                                            <option value="{{ $categoria }}">{{ $categoria }}</option>
+                                            @endforeach
+                                        </select>
+                                    </th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
                             </thead>
+
                             <tbody>
-                                @foreach($costosDisponibles as $costo)
+                                @foreach($costosDisponibles as $detalle)
+                                @php
+                                $costo = $detalle->costo;
+                                @endphp
                                 <tr>
-                                    <td>{{ $costo->id }}</td>
-                                    <td>{{ $costo->concepto }}</td>
-                                    <td>${{ number_format(optional($costo->detalles->first())->monto, 2, ',', '.') }}</td>
-                                    <td>{{ $costo->frecuencia_pago }}</td>
+                                    <td>{{ $detalle->id }}</td>
+                                    <td>{{ $costo->concepto ?? 'Sin concepto' }}</td>
+                                    <td>${{ number_format($detalle->monto, 2, ',', '.') }}</td>
+                                    <td>{{ $detalle->moneda->moneda ?? 'Sin moneda' }}</td>
+                                    <td>{{ $costo->categoria->nombre ?? 'Sin categoría' }}</td>
+                                    <td>{{ $costo->subcategoria->nombre ?? 'Sin subcategoría' }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($detalle->fecha)->format('d-m-Y') }}</td>
                                     <td>
                                         <form method="POST" action="{{ route('transferencias.conciliar.egreso') }}" class="d-inline">
                                             @csrf
                                             <input type="hidden" name="transferencias_bancarias_id" class="input-transferencia-id">
-                                            <input type="hidden" name="costo_id" value="{{ $costo->id }}">
+                                            <input type="hidden" name="costos_detalle_id" value="{{ $detalle->id }}">
                                             <button type="submit" class="btn btn-sm btn-success">Conciliar</button>
                                         </form>
                                     </td>
@@ -324,6 +407,7 @@
         </div>
     </div>
 </div>
+
 
 
 
@@ -343,8 +427,6 @@
 <script>
     $.fn.dataTable.ext.errMode = 'throw';
 
-
-
     let tabla;
 
     $(document).ready(function() {
@@ -356,7 +438,19 @@
             orderCellsTop: true,
             language: {
                 url: '{{ asset("datatables/es-CL.json")}}'
-            }
+            },
+            columnDefs: [{
+                    targets: 0,
+                    orderable: false,
+                    className: 'details-control',
+                    data: null,
+                    defaultContent: ''
+                },
+                {
+                    targets: [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
+                    visible: false
+                }
+            ]
         });
 
         $('.filtro-select').select2({
@@ -364,8 +458,10 @@
             placeholder: 'Seleccione una opción',
             allowClear: true,
             width: '100%',
-            noResults: function() {
-                return 'No se encontraron resultados';
+            language: {
+                noResults: function() {
+                    return 'No se encontraron resultados';
+                }
             }
         });
 
@@ -373,27 +469,46 @@
             const columna = $(this).data('columna');
             const valor = $(this).val();
             tabla.column(columna).search(valor || '', false, true).draw();
-
         });
-    });
 
-    $('#reset-filtros').on('click', function() {
-        $('.filtro-select').val('').trigger('change');
-        tabla.columns().search('').draw();
-    });
+        function format(rowData) {
+            return `
+                <table class="table table-bordered mb-0">
+                    <tr><th>Estado</th><td>${rowData[4]}</td></tr>
+                    <tr><th>Tipo Movimiento</th><td>${rowData[5]}</td></tr>
+                    <tr><th>Fecha Transacción</th><td>${rowData[6]}</td></tr>
+                    <tr><th>Hora</th><td>${rowData[7]}</td></tr>
+                    <tr><th>Fecha Contable</th><td>${rowData[8]}</td></tr>
+                    <tr><th>Cuenta</th><td>${rowData[9]}</td></tr>
+                    <tr><th>Tipo Cuenta</th><td>${rowData[10]}</td></tr>
+                    <tr><th>Banco</th><td>${rowData[11]}</td></tr>
+                    <tr><th>Código</th><td>${rowData[12]}</td></tr>
+                    <tr><th>Tipo</th><td>${rowData[13]}</td></tr>
+                    <tr><th>Glosa</th><td>${rowData[14]}</td></tr>
+                    <tr><th>Ingreso</th><td>${rowData[15]}</td></tr>
+                    <tr><th>Egreso</th><td>${rowData[16]}</td></tr>
+                    <tr><th>Saldo</th><td>${rowData[17]}</td></tr>
+                    <tr><th>Comentario</th><td>${rowData[18]}</td></tr>
+                </table>
+            `;
+        }
 
-    document.addEventListener('DOMContentLoaded', function() {
-        let modal = document.getElementById('modalConciliar');
+        $('#tabla-transferencias tbody').on('click', 'td.details-control', function() {
+            let tr = $(this).closest('tr');
+            let row = tabla.row(tr);
 
-        modal.addEventListener('show.bs.modal', function(event) {
-            let button = event.relatedTarget;
-            let transferenciaId = button.getAttribute('data-id');
+            if (row.child.isShown()) {
+                row.child.hide();
+                tr.removeClass('shown');
+            } else {
+                row.child(format(row.data())).show();
+                tr.addClass('shown');
+            }
+        });
 
-            // Asignar el id de transferencia a todos los formularios dentro del modal
-            let inputs = modal.querySelectorAll('.input-transferencia-id');
-            inputs.forEach(input => {
-                input.value = transferenciaId;
-            });
+        $('#reset-filtros').on('click', function() {
+            $('.filtro-select').val('').trigger('change');
+            tabla.columns().search('').draw();
         });
 
         $('#tabla-cotizaciones').DataTable({
@@ -403,19 +518,58 @@
             }
         });
 
-    });
-
-    document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('.btn-ver-egresos').forEach(btn => {
             btn.addEventListener('click', function() {
                 const transferenciaId = this.getAttribute('data-transferencia-id');
-
-                // Rellenar todos los inputs ocultos dentro del modal
                 document.querySelectorAll('#modalEgresos .input-transferencia-id').forEach(input => {
                     input.value = transferenciaId;
                 });
             });
         });
+
+        const modal = document.getElementById('modalConciliar');
+        modal.addEventListener('show.bs.modal', function(event) {
+            const button = event.relatedTarget;
+            const transferenciaId = button.getAttribute('data-id');
+            modal.querySelectorAll('.input-transferencia-id').forEach(input => {
+                input.value = transferenciaId;
+            });
+        });
+
+        const tablaCostos = $('#tabla-costos').DataTable({
+            responsive: true,
+            autoWidth: false,
+            orderCellsTop: true,
+            language: {
+                url: '{{ asset("datatables/es-CL.json") }}'
+            },
+            initComplete: function() {
+                this.api().columns().every(function() {
+                    let column = this;
+                    $('select', column.header()).on('change clear', function() {
+                        let val = $(this).val();
+                        column.search(val ? '^' + val + '$' : '', true, false).draw();
+                    });
+                });
+            }
+        });
+
+        // Evitar propagación en filtros
+        $('#tabla-costos thead tr:eq(1) th').each(function() {
+            $('select', this).on('click', function(e) {
+                e.stopPropagation();
+            });
+        });
+
+        // Activar Select2
+        $('#modalEgresos .select2').select2({
+            dropdownParent: $('#modalEgresos'),
+            theme: 'bootstrap4',
+            placeholder: 'Seleccione',
+            allowClear: true,
+            width: '100%'
+        });
+
     });
 </script>
 @endsection

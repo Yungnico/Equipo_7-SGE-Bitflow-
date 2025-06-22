@@ -10,21 +10,16 @@ class Costos extends Model
 
     public function categoria()
     {
-        return $this->belongsTo(Categoria::class);
+        return $this->belongsTo(CategoriaCostos::class);
     }
 
     public function subcategoria()
     {
-        return $this->belongsTo(SubCategoriaCostos::class);
+        return $this->belongsTo(SubCategoriaCostos::class, 'subcategoria_id');
     }
 
     public function detalles()
     {
         return $this->hasOne(CostosDetalle::class, 'costo_id');
-    }
-
-    public function transferencia()
-    {
-        return $this->belongsTo(TransferenciaBancaria::class, 'transferencias_bancarias_id');
     }
 }

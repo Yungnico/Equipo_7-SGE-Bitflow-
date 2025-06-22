@@ -33,8 +33,8 @@ class TransferenciaBancaria extends Model
     {
         return $this->hasOne(Cotizacion::class, 'factura_asociada');
     }
-    public function costo()
+    public function costoDetalle()
     {
-        return $this->hasOne(Costos::class, 'transferencias_bancarias_id');
+        return $this->hasOne(CostosDetalle::class, 'transferencias_bancarias_id');
     }
 }

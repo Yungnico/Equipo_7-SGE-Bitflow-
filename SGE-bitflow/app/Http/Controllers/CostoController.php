@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Costos;
 use App\Models\CostosDetalle;
 use App\Models\CategoriaCostos;
@@ -11,6 +12,7 @@ use Illuminate\Http\Request;
 
 class CostoController extends Controller
 {
+
     public function store(Request $request)
     {
         $request->validate([
@@ -18,30 +20,42 @@ class CostoController extends Controller
             'categoria_id' => 'required|exists:categorias_costos,id',
             'subcategoria_id' => 'required|exists:subcategorias_costos,id',
             'frecuencia_pago' => 'required|in:único,mensual,trimestral,semestral,anual',
-            'año' => 'required|integer',
             'moneda_id' => 'required|integer',
-            'monto' => 'required|numeric'
+            'monto' => 'required|numeric',
+            'fecha_inicio' => 'required|date'
         ]);
 
         $costo = Costos::create($request->only(['concepto', 'categoria_id', 'subcategoria_id', 'frecuencia_pago']));
 
-        $periodos = match ($request->frecuencia_pago) {
+        $frecuencia = $request->frecuencia_pago;
+        $monto = $request->monto;
+        $moneda_id = $request->moneda_id;
+        $fecha_inicio = Carbon::parse($request->fecha_inicio);
+        $periodos = match ($frecuencia) {
             'anual', 'único' => 1,
             'semestral' => 2,
             'trimestral' => 4,
             'mensual' => 12,
         };
 
-        CostosDetalle::create([
-            'costo_id' => $costo->id,
-            'año' => $request->año,
-            'moneda_id' => $request->moneda_id,
-            'periodos' => $periodos,
-            'monto' => $request->monto,
-        ]);
+        for ($i = 0; $i < $periodos; $i++) {
+            CostosDetalle::create([
+                'costo_id' => $costo->id,
+                'moneda_id' => $moneda_id,
+                'monto' => $monto,
+                'fecha' => $fecha_inicio->copy()->addMonths($i * match ($frecuencia) {
+                    'anual', 'único' => 12,
+                    'semestral' => 6,
+                    'trimestral' => 3,
+                    'mensual' => 1,
+                }),
+            ]);
+        }
 
         return redirect()->back()->with('success', 'Costo creado correctamente.');
     }
+
+
 
     public function edit(Costos $costo)
     {
@@ -54,13 +68,22 @@ class CostoController extends Controller
     }
     public function index()
     {
-        $costos = Costos::with('categoria', 'subcategoria', 'detalles.moneda')->get();
+        $costos = Costos::with([
+            'categoria',
+            'subcategoria',
+            'detalles' => function ($query) {
+                $query->orderBy('fecha', 'asc'); // puedes cambiar a 'id' si prefieres
+            },
+            'detalles.moneda'
+        ])->get();
+
         $categorias = CategoriaCostos::all();
         $subcategorias = SubCategoriaCostos::all();
         $monedas = Paridad::all();
 
         return view('costos.index', compact('costos', 'categorias', 'subcategorias', 'monedas'));
     }
+
     public function destroy(Costos $costo)
     {
         $costo->detalles()->delete();
@@ -77,29 +100,43 @@ class CostoController extends Controller
             'categoria_id' => 'required|exists:categorias_costos,id',
             'subcategoria_id' => 'required|exists:subcategorias_costos,id',
             'frecuencia_pago' => 'required|in:único,mensual,trimestral,semestral,anual',
-            'año' => 'required|integer',
             'moneda_id' => 'required|integer',
-            'monto' => 'required|numeric'
+            'monto' => 'required|numeric',
+            'fecha_modificacion' => 'required|date' // Se mantiene aunque no se use
         ]);
 
-        $costo->update($request->only(['concepto', 'categoria_id', 'subcategoria_id', 'frecuencia_pago']));
+        // Verificar si algún detalle tiene transferencia bancaria
+        $tieneTransferencias = $costo->detalles()
+            ->whereNotNull('transferencias_bancarias_id')
+            ->exists();
 
-        $costo->detalles()->delete(); // Borramos el anterior detalle
+        if ($tieneTransferencias) {
+            return redirect()->back()->with('error', 'Este costo no se puede modificar porque tiene transferencias asociadas.');
+        }
 
-        $periodos = match ($request->frecuencia_pago) {
-            'anual', 'único' => 1,
-            'semestral' => 2,
-            'trimestral' => 4,
-            'mensual' => 12,
-        };
+        // Si no hay transferencias, editar el costo
+        $costo->update($request->only([
+            'concepto',
+            'categoria_id',
+            'subcategoria_id',
+            'frecuencia_pago'
+        ]));
 
-        CostosDetalle::create([
-            'costo_id' => $costo->id,
-            'año' => $request->año,
-            'moneda_id' => $request->moneda_id,
-            'periodos' => $periodos, // O renómbralo a 'periodos'
-            'monto' => $request->monto,
-        ]);
+        $monto = $request->monto;
+        $moneda_id = $request->moneda_id;
+
+        // Obtener detalles editables
+        $detalles_editables = $costo->detalles()
+            ->whereNull('transferencias_bancarias_id')
+            ->orderBy('fecha')
+            ->get();
+
+        foreach ($detalles_editables as $detalle) {
+            $detalle->update([
+                'moneda_id' => $moneda_id,
+                'monto' => $monto,
+            ]);
+        }
 
         return redirect()->back()->with('success', 'Costo actualizado correctamente.');
     }
