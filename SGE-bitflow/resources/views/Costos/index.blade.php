@@ -105,7 +105,7 @@
                         <td>{{ ucfirst($costo->frecuencia_pago) }}</td>
                         <td class="d-flex gap-2 justify-content-center">
                             <button
-                                class="btn btn-sm btn-primary btn-editar"
+                                class="btn btn-sm btn-outline-primary btn-editar"
                                 data-id="{{ $costo->id }}"
                                 data-concepto="{{ $costo->concepto }}"
                                 data-frecuencia="{{ $costo->frecuencia_pago }}"
@@ -115,14 +115,14 @@
                                 data-monto="{{ $monto }}"
                                 data-bs-toggle="modal"
                                 data-bs-target="#modalEditarCosto">
-                                <i class="fas fa-pencil-alt"></i>
+                                <i class="fas fa-edit"></i>
                             </button>
 
 
                             <form action="{{ route('costos.destroy', $costo->id) }}" method="POST" style="display:inline-block;">
                                 @csrf
                                 @method('DELETE')
-                                <button class="btn btn-sm btn-danger" onclick="return confirm('¿Eliminar este costo?')">
+                                <button class="btn btn-sm btn-outline-danger" onclick="return confirm('¿Eliminar este costo?')">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </form>

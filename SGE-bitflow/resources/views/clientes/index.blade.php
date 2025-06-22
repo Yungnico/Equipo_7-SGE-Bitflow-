@@ -97,8 +97,8 @@
                                 @endif
                             </td>
                             <td>{{ $cliente->plazo_pago_habil_dias }}</td>
-                            <td class="text-nowrap">
-                                <button class="btn btn-sm btn-outline-warning btn-sm mb-1" onclick='abrirModalEditar({!! json_encode($cliente) !!})'>
+                            <td class="text-nowrap text-center">
+                                <button class="btn btn-sm btn-outline-primary btn-sm mb-1" onclick='abrirModalEditar({!! json_encode($cliente) !!})'>
                                     <i class="fas fa-edit"></i>
                                 </button>
 
@@ -109,7 +109,7 @@
                                         <i class="fas fa-trash-alt"></i>
                                     </button>
                                 </form>
-                                <a href="{{ route('clientes.contactos.index', [$cliente->id, $cliente->nombre_fantasia]) }}" class="btn btn-outline-primary btn-sm mb-1">
+                                <a href="{{ route('clientes.contactos.index', [$cliente->id, $cliente->nombre_fantasia]) }}" class="btn btn-outline-warning btn-sm mb-1">
                                     <i class="fas fa-id-badge"></i>
                                 </a>
                             </td>

@@ -93,7 +93,7 @@
                                 data-precio="{{ $servicio->precio }}"
                                 data-moneda="{{ $servicio->moneda->moneda}}"
                                 data-categoria="{{ $servicio->categoria_id }}">
-                                <i class="fas fa-pencil-alt"></i>
+                                <i class="fas fa-edit"></i>
                             </button>
                             <form action="{{ route('servicios.destroy', $servicio->id) }}" method="POST" style="display:inline-block;">
                                 @csrf

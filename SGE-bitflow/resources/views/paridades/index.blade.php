@@ -49,14 +49,14 @@
                             <td>{{ \Carbon\Carbon::parse($p->fecha)->format('d/m/Y') }}</td>
                             <td class="text-center">
                                 <div class="d-flex justify-content-center">
-                                    <a href="{{ route('paridades.edit', $p) }}" class="btn btn-warning btn-sm mr-1">
-                                        <i class="fas fa-edit" style="color: white"></i>
+                                    <a href="{{ route('paridades.edit', $p) }}" class="btn btn-outline-primary btn-sm mr-1">
+                                        <i class="fas fa-edit"></i>
                                     </a>
 
                                     <form action="{{ route('paridades.destroy', $p) }}" method="POST" class="form-eliminar">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm">
+                                        <button type="submit" class="btn btn-outline-danger btn-sm">
                                             <i class="fas fa-trash-alt"></i>
                                         </button>
                                     </form>
