@@ -31,7 +31,7 @@
     <div class="card">
 
         <div class="card-body">
-            <table id="tabla-paridades" class="table table-bordered table-striped">
+            <table id="tabla-paridades" class="table table-bordered table-striped table-hover">
                 <thead>
                     <tr>
                         <th>Moneda</th>
