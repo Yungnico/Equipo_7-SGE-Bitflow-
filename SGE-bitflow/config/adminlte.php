@@ -488,7 +488,7 @@ return [
                 [
                     'type' => 'js',
                     'asset' => false,
-                    'location' => '//cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js',
+                    'location' => '//cdn.jsdelivr.net/npm/chart.js',
                 ],
             ],
         ],

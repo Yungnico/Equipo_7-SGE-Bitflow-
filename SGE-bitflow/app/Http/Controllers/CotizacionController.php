@@ -18,9 +18,34 @@ use App\Models\CotizacionDetalle;
 use App\Models\DetalleFactura;
 use App\Models\Facturacion;
 use Illuminate\Support\Facades\Log;
+use Carbon\Carbon;
 
 class CotizacionController extends Controller
 {
+
+    public function getCotizacionesKpi(Request $request)
+    {
+        $inicio = $request->inicio ?? Carbon::now()->startOfMonth();
+        $fin = $request->fin ?? Carbon::now()->endOfMonth();
+
+        $query = DB::table('cotizaciones')
+            ->select('estado', DB::raw('count(*) as cantidad'))
+            ->whereBetween('created_at', [$inicio, $fin])
+            ->groupBy('estado')
+            ->get();
+
+        // KPIs definidos
+        $generadas = $query->whereNotIn('estado', ['Borrador', 'Anulada'])->sum('cantidad');
+        $pendientes = $query->whereIn('estado', ['Aceptada', 'Facturada'])->sum('cantidad');
+        $pagadas = $query->where('estado', 'Pagada')->sum('cantidad');
+        $rechazadas = $query->where('estado', 'Rechazada')->sum('cantidad');
+
+        return response()->json([
+            'labels' => ['Generadas', 'Pend. Pago', 'Pagadas', 'Rechazadas'],
+            'data' => [$generadas, $pendientes, $pagadas, $rechazadas]
+        ]);
+    }
+
     public function prepararPDF($id){
         $cotizacion = Cotizacion::with(['cliente', 'itemsLibres', 'servicios'])->findOrFail($id);
         return view('cotizaciones.prepararPDF', compact('cotizacion'));

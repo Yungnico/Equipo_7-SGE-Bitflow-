@@ -10,12 +10,13 @@ use App\Http\Controllers\CrudUserController;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\MonedaController;
 use App\Http\Controllers\CotizacionController;
-use App\Models\Cotizacion;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\ClienteExportController;
 use App\Http\Controllers\TransferenciaController;
 use App\Http\Controllers\FacturacionController;
+
+Route::get('/facturas/kpi', [FacturacionController::class, 'kpi']);
+
+Route::get('/cotizaciones/kpi', [CotizacionController::class, 'getCotizacionesKpi'])->name('cotizaciones.kpi');
 
 Route::get('/facturacion/upload', function () {
     return view('facturacion.upload');
