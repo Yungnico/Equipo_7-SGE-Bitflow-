@@ -15,24 +15,26 @@
 @if (session('success'))
     <div class="alert alert-success">{{ session('success') }}</div>
 @endif
+<div class="card">
+    <div class="card-body">
+        <form action="{{ route('paridades.update', $paridad) }}" method="POST">
+            @csrf
+            @method('PUT')
 
-<form action="{{ route('paridades.update', $paridad) }}" method="POST">
-    @csrf
-    @method('PUT')
+            <div class="form-group">
+                <label for="valor">Valor</label>
+                <input type="number" step="0.01" name="valor" id="valor" class="form-control @error('valor') is-invalid @enderror" 
+                    value="{{ old('valor', $paridad->valor) }}" required>
+                @error('valor')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
 
-    <div class="form-group">
-        <label for="valor">Valor</label>
-        <input type="number" step="0.01" name="valor" id="valor" class="form-control @error('valor') is-invalid @enderror" 
-               value="{{ old('valor', $paridad->valor) }}" required>
-        @error('valor')
-            <div class="invalid-feedback">{{ $message }}</div>
-        @enderror
+            <button type="submit" class="btn btn-primary mt-3">Guardar Cambios</button>
+            <a href="{{ route('paridades.index') }}" class="btn btn-secondary mt-3">Cancelar</a>
+        </form>
     </div>
-
-    <button type="submit" class="btn btn-primary mt-3">Guardar Cambios</button>
-    <a href="{{ route('paridades.index') }}" class="btn btn-secondary mt-3">Cancelar</a>
-</form>
-
+</div>
 @stop
 
 @section('js')

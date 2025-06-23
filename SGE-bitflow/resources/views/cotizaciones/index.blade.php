@@ -5,128 +5,62 @@
 @section('content')
 <div id="composerContainer" class="position-relative"></div>
 <div class="content py-5">
-    <div class="mb-3 text-right">
-              <button class="btn btn-primary" data-toggle="modal" data-target="#modal_agregacioncotizacion">Agregar Cotización</button>
-          </div>
-    <table id="myTable" class="table table-bordered table-striped">
-        <thead>
-            <tr>
-                <th>Código Cotización</th>
-                <th>Cliente </th>
-                <th>Fecha</th>
-                <th>Moneda</th>
-                <th>Total</th>
-                <th>Estado</th>
-                <th>Acciones</th>
-                
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($cotizaciones as $cotizacion)
-                <tr>
-                    <td>{{ $cotizacion->codigo_cotizacion }}</td>
-                    <td>{{ $cotizacion->cliente->razon_social }}</td>
-                    <td>{{ $cotizacion->fecha_cotizacion }}</td>
-                    <td>{{ $cotizacion->moneda }}</td>
-                    <td>{{$cotizacion->total_iva}}</td>
-                    <td>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span>{{ $cotizacion->estado }}</span>
-                                      <button 
-                                            class="btn btn-sm btn-outline-primary" 
-                                            data-toggle="modal" 
-                                            data-target="#modalEstado{{ $cotizacion->id }}">
-                                            <i class="fas fa-edit"></i>
-                                            </button>
-                                    </div>
-                                    <div class="modal fade" id="modalEstado{{ $cotizacion->id }}" tabindex="-1" role="dialog" aria-labelledby="modalEstadoLabel{{ $cotizacion->id }}" aria-hidden="true">
-                                    <div class="modal-dialog" role="document">
-                                        <form method="POST" action="{{ route('cotizaciones.editarestado', $cotizacion->id_cotizacion) }}" enctype="multipart/form-data">
-                                            @csrf
-                                            @method('PUT')
-                                            <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="modalEstadoLabel{{ $cotizacion->id }}">
-                                                    Cambiar estado de la cotizacion #{{ $cotizacion->id }}
-                                                </h5>
-                                                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
-                                                <span aria-hidden="true">&times;</span>
-                                                </button>
-                                            </div>
+    <div class="card">
+        <div class="card-body">
+            <table id="myTable" class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Código Cotización</th>
+                        <th>Cliente </th>
+                        <th>Fecha</th>
+                        <th>Moneda</th>
+                        <th>Total</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
 
-                                            <div class="modal-body">
-                                                <div class="form-row">
-                                                        <!-- Código cotización -->
-                                                        <div class="form-group col-md-6">
-                                                            <label for="codigo_cotizacion">Código Cotización:</label>
-                                                            <input type="text" class="form-control" id="codigo_cotizacion" name="codigo_cotizacion" value="{{ $cotizacion->codigo_cotizacion }}" readonly>
-                                                        </div>
-                                        
-                                                        <!-- Estado -->
-                                                        <div class="form-group col-md-6">
-                                                            <label for="estado">Estado:</label>
-                                                            <select name="estado" id="estado" class="form-control">
-                                                                <option value="Aceptada">Aceptada</option>
-                                                                <option value="Enviada">Enviada</option>
-                                                                <option value="Facturada">Facturada</option>
-                                                                <option value="Pagada">Pagada</option>
-                                                                <option value="Anulada">Anulada</option>
-                                                                <option value="Rechazada">Rechazada</option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                        
-                                                    <!-- Archivos adicionales -->
-                                                    <div class="form-group d-none" id="archivos_adicionales">
-                                                        <label for="archivo_cliente">Archivos del cliente (orden de compra o servicio):</label>
-                                                        <input type="file" class="form-control" name="archivo_cliente[]" multiple>
-                                                        {{-- <a href="{{ route('cotizacion.conciliar',$cotizacion->id_cotizacion) }}" class="mt-3 btn btn-success px-4 py-2 mb-3">
-                                                            Conciliar Facturas
-                                                        </a> --}}
-                                                        
-                                                    </div>
-                                        
-                                                    <!-- Motivo de rechazo -->
-                                                    <div class="form-group d-none" id="motivo_rechazo">
-                                                        <label for="motivo">Motivo del rechazo/anulación:</label>
-                                                        <textarea name="motivo" class="form-control" rows="3"></textarea>
-                                                    </div>
-                                        
-                                                    <button type="submit" class="btn btn-primary">Guardar</button>
-                                                    <a href="{{ route('cotizaciones.index') }}" class="btn btn-secondary">Cancelar</a>
-                                                </form>
-                                            </div>
-
-                                            </div>
-                                        </form>
-                                    </div>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($cotizaciones as $cotizacion)
+                        <tr>
+                            <td>{{ $cotizacion->codigo_cotizacion }}</td>
+                            <td>{{ $cotizacion->cliente->razon_social }}</td>
+                            <td>{{ $cotizacion->fecha_cotizacion }}</td>
+                            <td>{{ $cotizacion->moneda }}</td>
+                            <td>{{$cotizacion->total_iva}}</td>
+                            <td>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span>{{ $cotizacion->estado }}</span>
+                                    <a href="{{ route('cotizaciones.edit', $cotizacion->id_cotizacion) }}" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
                                 </div>
-                        </div>
-                    </td>
-                    <td class="text-center">
-                        <a href="{{ route('cotizaciones.prepararPDF', ['id' => $cotizacion->id_cotizacion]) }}" class="btn btn-sm btn-outline-secondary">
-                            <i class="fas fa-file-pdf"></i>
-                        </a>
-                        
-                        <a class="btn btn-sm btn-outline-info"  onclick="crearVentanaCorreo(  '{{ $cotizacion->codigo_cotizacion }}',  '{{ $cotizacion->id_cotizacion }}',  '{{ $cotizacion->email }}',  '{{ csrf_token() }}',  '{{ route('cotizaciones.enviar', $cotizacion->id_cotizacion) }}')">
-                                <i class="fas fa-envelope"></i>
-                        </a>
-                        {{-- <a href="{{ route('cotizaciones.prepararEmail', ['id' => $cotizacion->id_cotizacion]) }}" class="btn btn-sm btn-info">
-                            <i class="fas fa-envelope"></i>
-                        </a> --}}
-                        {{-- <a href="#" class="btn btn-sm btn-danger" onclick="event.preventDefault(); document.getElementById('delete-form-{{ $cotizacion->id_cotizacion }}').submit();">
-                            <i class="fas fa-trash"></i>
-                        </a> --}}
-                        
-                        <form id="delete-form-{{ $cotizacion->id_cotizacion }}" action="{{ route('cotizaciones.destroy', $cotizacion->id_cotizacion) }}" method="POST" style="display: none;">
-                            @csrf
-                            @method('DELETE')
-                        </form>
-                    </td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
+                            </td>
+                            <td class="text-center">
+                                <a href="{{ route('cotizaciones.prepararPDF', ['id' => $cotizacion->id_cotizacion]) }}" class="btn btn-sm btn-outline-secondary">
+                                    <i class="fas fa-file-pdf"></i>
+                                </a>
+                                <a class="btn btn-sm btn-outline-info"  onclick="crearVentanaCorreo(  '{{ $cotizacion->codigo_cotizacion }}',  '{{ $cotizacion->id_cotizacion }}',  '{{ $cotizacion->email }}',  '{{ csrf_token() }}',  '{{ route('cotizaciones.enviar', $cotizacion->id_cotizacion) }}')">
+                                        <i class="fas fa-envelope"></i>
+                                </a>
+                                {{-- <a href="{{ route('cotizaciones.prepararEmail', ['id' => $cotizacion->id_cotizacion]) }}" class="btn btn-sm btn-info">
+                                    <i class="fas fa-envelope"></i>
+                                </a> --}}
+                                {{-- <a href="#" class="btn btn-sm btn-danger" onclick="event.preventDefault(); document.getElementById('delete-form-{{ $cotizacion->id_cotizacion }}').submit();">
+                                    <i class="fas fa-trash"></i>
+                                </a> --}}
+                                
+                                <form id="delete-form-{{ $cotizacion->id_cotizacion }}" action="{{ route('cotizaciones.destroy', $cotizacion->id_cotizacion) }}" method="POST" style="display: none;">
+                                    @csrf
+                                    @method('DELETE')
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>                 
+    </div>
 </div>
   @if(session('success'))
   <script>

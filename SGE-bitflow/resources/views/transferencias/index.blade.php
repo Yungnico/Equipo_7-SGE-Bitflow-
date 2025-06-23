@@ -27,7 +27,7 @@
 @endsection
 
 @section('content')
-<div class="container-fluid mt-5 px-0">
+<div class="container-fluid mt-1 px-0">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="h3">Transferencias Bancarias</h1>
         <form action="{{ route('transferencias.importar') }}" method="POST" enctype="multipart/form-data" class="d-flex gap-2">
@@ -37,14 +37,15 @@
         </form>
     </div>
 
-    <a href="{{ route('transferencias.conciliar') }}" class="btn btn-success px-4 py-2 mb-3">
-        Conciliar Transferencias
-    </a>
+    <div class="d-flex justify-content-end align-items-center mb-4 flex-wrap gap-2">
+        <a href="{{ route('transferencias.conciliar') }}" class="btn btn-success px-4 py-2 mb-3">
+            Conciliar Transferencias
+        </a>
 
-    <button type="button" id="reset-filtros" class="btn btn-secondary px-4 py-2 mb-3">
-        Limpiar Filtros
-    </button>
-
+        <button type="button" id="reset-filtros" class="btn btn-secondary px-4 py-2 mb-3">
+            Limpiar Filtros
+        </button>
+    </div>
 
     <div class="card">
         <div class="card-body">
