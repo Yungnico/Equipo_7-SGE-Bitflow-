@@ -236,7 +236,7 @@ class FacturacionController extends Controller
                 'iva' => 'required|numeric',
                 'total' => 'required|numeric',
             ]);
-
+            
             $factura = Facturacion::create([
                 'folio' => $request->folio,
                 'tipo_dte' => $request->tipo_dte,
