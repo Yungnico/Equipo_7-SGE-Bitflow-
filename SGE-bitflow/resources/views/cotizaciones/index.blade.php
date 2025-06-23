@@ -1,70 +1,71 @@
 @extends('adminlte::page')
 @section('title', 'Cotizaciones')
-@section('css')
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-<!-- DataTables CSS -->
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap4.min.css">
-@stop
+@section('plugins.Datatables', true)
+@section('plugins.DatatablesPlugin', true)
 @section('content')
 <div class="content py-5">
-    <div class="card">
-        <div class="card-body">
-            <table id="myTable" class="table table-bordered table-striped table-hover">
-                <thead>
-                    <tr>
-                        <th>Código Cotización</th>
-                        <th>Cliente </th>
-                        <th>Fecha</th>
-                        <th>Moneda</th>
-                        <th>total</th>
-                        <th>Estado</th>
-                        <th>Acciones</th>
+  <div class="card">
+    <div class="card-body">
 
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($cotizaciones as $cotizacion)
-                        <tr>
-                            <td>{{ $cotizacion->codigo_cotizacion }}</td>
-                            <td>{{ $cotizacion->cliente->razon_social }}</td>
-                            <td>{{ $cotizacion->fecha_cotizacion }}</td>
-                            <td>{{ $cotizacion->moneda }}</td>
-                            <td>{{$cotizacion->total_iva}}</td>
-                            <td>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <span>{{ $cotizacion->estado }}</span>
-                                    <a href="{{ route('cotizaciones.edit', $cotizacion->id_cotizacion) }}" class="btn btn-sm btn-outline-primary">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                </div>
-                            </td>
-                            <td class="text-center">
-                                <a href="{{ route('cotizaciones.prepararPDF', ['id' => $cotizacion->id_cotizacion]) }}" class="btn btn-sm btn-outline-secondary">
-                                    <i class="fas fa-file-pdf"></i>
+        <table id="myTable" class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Código Cotización</th>
+                    <th>Cliente </th>
+                    <th>Fecha</th>
+                    <th>Moneda</th>
+                    <th>total</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                    
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($cotizaciones as $cotizacion)
+                    <tr>
+                        <td>{{ $cotizacion->codigo_cotizacion }}</td>
+                        <td>{{ $cotizacion->cliente->razon_social }}</td>
+                        <td>{{ $cotizacion->fecha_cotizacion }}</td>
+                        <td>{{ $cotizacion->moneda }}</td>
+                        <td>{{$cotizacion->total_iva}}</td>
+                        <td>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span>{{ $cotizacion->estado }}</span>
+                                <a href="{{ route('cotizaciones.edit', $cotizacion->id_cotizacion) }}" class="btn btn-sm btn-warning">
+                                    <i class="fas fa-edit"></i>
                                 </a>
-                                <a href="{{ route('cotizaciones.prepararEmail', ['id' => $cotizacion->id_cotizacion]) }}" class="btn btn-sm btn-outline-info">
+                            </div>
+                        </td>
+                        <td>
+                            <a href="{{ route('cotizaciones.prepararPDF', ['id' => $cotizacion->id_cotizacion]) }}" class="btn btn-sm btn-secondary">
+                                <i class="fas fa-file-pdf"></i>
+                            </a>
+                            <a class="btn btn-sm btn-primary"  onclick="crearVentanaCorreo(  '{{ $cotizacion->codigo_cotizacion }}',  '{{ $cotizacion->id_cotizacion }}',  '{{ $cotizacion->email }}',  '{{ csrf_token() }}',  '{{ route('cotizaciones.enviar', $cotizacion->id_cotizacion) }}')">
                                     <i class="fas fa-envelope"></i>
-                                </a>
-                                {{-- <a href="#" class="btn btn-sm btn-outline-danger" onclick="event.preventDefault(); document.getElementById('delete-form-{{ $cotizacion->id_cotizacion }}').submit();">
-                                    <i class="fas fa-trash"></i>
-                                </a> --}}
-                                
-                                <form id="delete-form-{{ $cotizacion->id_cotizacion }}" action="{{ route('cotizaciones.destroy', $cotizacion->id_cotizacion) }}" method="POST" style="display: none;">
-                                    @csrf
-                                    @method('DELETE')
-                                </form>
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
+                            </a>
+                            {{-- <a href="{{ route('cotizaciones.prepararEmail', ['id' => $cotizacion->id_cotizacion]) }}" class="btn btn-sm btn-primary">
+                                <i class="fas fa-envelope"></i>
+                            </a> --}}
+                            {{-- <a href="#" class="btn btn-sm btn-danger" onclick="event.preventDefault(); document.getElementById('delete-form-{{ $cotizacion->id_cotizacion }}').submit();">
+                                <i class="fas fa-trash"></i>
+                            </a> --}}
+                            
+                            <form id="delete-form-{{ $cotizacion->id_cotizacion }}" action="{{ route('cotizaciones.destroy', $cotizacion->id_cotizacion) }}" method="POST" style="display: none;">
+                                @csrf
+                                @method('DELETE')
+                            </form>
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+      </div>
     </div>
 </div>
     
 @stop
 @section('js')
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <!-- Bootstrap 4 JS -->
@@ -86,22 +87,21 @@
             });
         });
     </script>
-    @endif
-        <script>
-            $(document).ready(function () {
-        const table = $('#myTable').DataTable({
-            responsive: true,
-            autoWidth: false,
-            language: {
-                url: '{{ asset("datatables/es-CL.json")}}'
-            }
-        });
-    
-        // Ajuste inmediato si cambia el tamaño de la ventana
+@endif
+    <script>
+        $(document).ready(function () {
+            $('#myTable').DataTable({
+                "language": {
+                    responsive: true,
+                    autoWidth: true,
+                    url: '{{ asset("datatables/es-CL.json")}}'
+                }
+            });
+      });
+      
         $(window).on('resize', function() {
-            table.columns.adjust().responsive.recalc();
+            $('#myTable').DataTable().columns.adjust().responsive.recalc();
         });
-    
         // Ajuste al cambiar de pestaña en AdminLTE (si estás usando tabs)
         $('a[data-toggle="tab"]').on('shown.bs.tab', function () {
             table.columns.adjust().responsive.recalc();
@@ -111,7 +111,23 @@
         setTimeout(() => {
             table.columns.adjust().responsive.recalc();
         }, 500);
-    });
 
-    </script>
+</script>
+
+@stop
+@section('css')
+    <style>
+        .contenedor-enviar {
+            cursor: pointer;
+        }
+        .contenedor-enviar:hover {
+            background-color: #f8f9fa;
+        }
+        .position-fixed {
+            transition: right 0.3s ease;
+        }
+        .minimizada {
+            height: 45px;
+        }
+    </style>
 @stop
