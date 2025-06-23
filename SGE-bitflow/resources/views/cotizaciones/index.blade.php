@@ -14,7 +14,7 @@
                     <th>Cliente </th>
                     <th>Fecha</th>
                     <th>Moneda</th>
-                    <th>total</th>
+                    <th>Total</th>
                     <th>Estado</th>
                     <th>Acciones</th>
                     
@@ -31,19 +31,19 @@
                         <td>
                             <div class="d-flex justify-content-between align-items-center">
                                 <span>{{ $cotizacion->estado }}</span>
-                                <a href="{{ route('cotizaciones.edit', $cotizacion->id_cotizacion) }}" class="btn btn-sm btn-warning">
+                                <a href="{{ route('cotizaciones.edit', $cotizacion->id_cotizacion) }}" class="btn btn-sm btn-outline-primary">
                                     <i class="fas fa-edit"></i>
                                 </a>
                             </div>
                         </td>
-                        <td>
-                            <a href="{{ route('cotizaciones.prepararPDF', ['id' => $cotizacion->id_cotizacion]) }}" class="btn btn-sm btn-secondary">
+                        <td class="text-center">
+                            <a href="{{ route('cotizaciones.prepararPDF', ['id' => $cotizacion->id_cotizacion]) }}" class="btn btn-sm btn-outline-secondary">
                                 <i class="fas fa-file-pdf"></i>
                             </a>
-                            <a class="btn btn-sm btn-primary"  onclick="crearVentanaCorreo(  '{{ $cotizacion->codigo_cotizacion }}',  '{{ $cotizacion->id_cotizacion }}',  '{{ $cotizacion->email }}',  '{{ csrf_token() }}',  '{{ route('cotizaciones.enviar', $cotizacion->id_cotizacion) }}')">
+                            <a class="btn btn-sm btn-outline-info"  onclick="crearVentanaCorreo(  '{{ $cotizacion->codigo_cotizacion }}',  '{{ $cotizacion->id_cotizacion }}',  '{{ $cotizacion->email }}',  '{{ csrf_token() }}',  '{{ route('cotizaciones.enviar', $cotizacion->id_cotizacion) }}')">
                                     <i class="fas fa-envelope"></i>
                             </a>
-                            {{-- <a href="{{ route('cotizaciones.prepararEmail', ['id' => $cotizacion->id_cotizacion]) }}" class="btn btn-sm btn-primary">
+                            {{-- <a href="{{ route('cotizaciones.prepararEmail', ['id' => $cotizacion->id_cotizacion]) }}" class="btn btn-sm btn-info">
                                 <i class="fas fa-envelope"></i>
                             </a> --}}
                             {{-- <a href="#" class="btn btn-sm btn-danger" onclick="event.preventDefault(); document.getElementById('delete-form-{{ $cotizacion->id_cotizacion }}').submit();">
