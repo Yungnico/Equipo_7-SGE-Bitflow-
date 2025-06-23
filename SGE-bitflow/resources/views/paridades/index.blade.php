@@ -22,11 +22,13 @@
         <x-adminlte-alert theme="danger">{{ session('error') }}</x-adminlte-alert>
     @endif
 
-    <a href="{{ route('paridades.fetch') }}" class="btn btn-success mb-3">Actualizar</a>
+    <div class="text-right mb-3">
+        <a href="{{ route('paridades.fetch') }}" class="btn btn-success mb-3">Actualizar</a>
  
-    <button class="btn btn-primary mb-3" data-toggle="modal" data-target="#modalCrearParidad">
-        Agregar paridad
-    </button>
+        <button class="btn btn-primary mb-3" data-toggle="modal" data-target="#modalCrearParidad">
+            Agregar paridad
+        </button>
+    </div>
 
     <div class="card">
 

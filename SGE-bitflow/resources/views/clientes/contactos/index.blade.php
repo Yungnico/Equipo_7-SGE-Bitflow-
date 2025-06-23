@@ -21,17 +21,19 @@
 
     <h2 class="mb-3">Contactos de {{ $cliente->nombre_fantasia }}</h2>
     
+    <div class="text-right mb-3">
+        <a href="{{ route('clientes.contactos.create', $cliente->id) }}" class="btn btn-primary">Agregar contacto</a>
+        <a href="{{ route('clientes.index')}}" class="btn btn-secondary">Regresar</a>
+    </div>
 
-    <a href="{{ route('clientes.contactos.create', $cliente->id) }}" class="btn btn-primary mb-3">Agregar contacto</a>
-    <a href="{{ route('clientes.index')}}" class="btn btn-secondary mb-3">Volver</a>
     @if ($cliente->contactos->isEmpty())
         <div class="alert alert-info">No hay contactos registrados.</div>
     @else
         <div class="card">
             <div class="card-body">
                 
-                    <table id="contactos-table" class="table table-bordered table-striped dt-responsive nowrap" style="width:100%">
-                        <thead class="thead-light">
+                    <table id="contactos-table" class="table table-bordered table-striped dt-responsive nowrap table-hover" style="width:100%">
+                        <thead>
                             <tr>
                                 <th>Nombre</th>
                                 <th>Email</th>
@@ -47,8 +49,8 @@
                                     <td>{{ $contacto->email_contacto }}</td>
                                     <td>{{ $contacto->telefono_contacto }}</td>
                                     <td>{{ $contacto->tipo_contacto }}</td>
-                                    <td class="text-nowrap">
-                                        <a href="{{ route('contactos.edit', $contacto->id) }}" class="btn btn-outline-warning btn-sm mb-1">
+                                    <td class="text-nowrap text-center">
+                                        <a href="{{ route('contactos.edit', $contacto->id) }}" class="btn btn-outline-primary btn-sm mb-1">
                                             <i class="fa fa-edit"></i>
                                         </a>
                                         <form action="{{ route('clientes.contactos.destroy', [$cliente->id, $contacto->id]) }}" method="POST" class="form-eliminar d-inline">

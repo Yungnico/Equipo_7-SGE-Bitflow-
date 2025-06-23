@@ -10,7 +10,7 @@
 <div class="content py-5">
     <div class="card">
         <div class="card-body">
-            <table id="myTable" class="table table-bordered table-striped">
+            <table id="myTable" class="table table-bordered table-striped table-hover">
                 <thead>
                     <tr>
                         <th>Código Cotización</th>
