@@ -5,58 +5,62 @@
 @section('content')
 <div id="composerContainer" class="position-relative"></div>
 <div class="content py-5">
-    <table id="myTable" class="table table-bordered table-striped">
-        <thead>
-            <tr>
-                <th>Código Cotización</th>
-                <th>Cliente </th>
-                <th>Fecha</th>
-                <th>Moneda</th>
-                <th>Total</th>
-                <th>Estado</th>
-                <th>Acciones</th>
-                
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($cotizaciones as $cotizacion)
-                <tr>
-                    <td>{{ $cotizacion->codigo_cotizacion }}</td>
-                    <td>{{ $cotizacion->cliente->razon_social }}</td>
-                    <td>{{ $cotizacion->fecha_cotizacion }}</td>
-                    <td>{{ $cotizacion->moneda }}</td>
-                    <td>{{$cotizacion->total_iva}}</td>
-                    <td>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span>{{ $cotizacion->estado }}</span>
-                            <a href="{{ route('cotizaciones.edit', $cotizacion->id_cotizacion) }}" class="btn btn-sm btn-outline-primary">
-                                <i class="fas fa-edit"></i>
-                            </a>
-                        </div>
-                    </td>
-                    <td class="text-center">
-                        <a href="{{ route('cotizaciones.prepararPDF', ['id' => $cotizacion->id_cotizacion]) }}" class="btn btn-sm btn-outline-secondary">
-                            <i class="fas fa-file-pdf"></i>
-                        </a>
-                        <a class="btn btn-sm btn-outline-info"  onclick="crearVentanaCorreo(  '{{ $cotizacion->codigo_cotizacion }}',  '{{ $cotizacion->id_cotizacion }}',  '{{ $cotizacion->email }}',  '{{ csrf_token() }}',  '{{ route('cotizaciones.enviar', $cotizacion->id_cotizacion) }}')">
-                                <i class="fas fa-envelope"></i>
-                        </a>
-                        {{-- <a href="{{ route('cotizaciones.prepararEmail', ['id' => $cotizacion->id_cotizacion]) }}" class="btn btn-sm btn-info">
-                            <i class="fas fa-envelope"></i>
-                        </a> --}}
-                        {{-- <a href="#" class="btn btn-sm btn-danger" onclick="event.preventDefault(); document.getElementById('delete-form-{{ $cotizacion->id_cotizacion }}').submit();">
-                            <i class="fas fa-trash"></i>
-                        </a> --}}
-                        
-                        <form id="delete-form-{{ $cotizacion->id_cotizacion }}" action="{{ route('cotizaciones.destroy', $cotizacion->id_cotizacion) }}" method="POST" style="display: none;">
-                            @csrf
-                            @method('DELETE')
-                        </form>
-                    </td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
+    <div class="card">
+        <div class="card-body">
+            <table id="myTable" class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Código Cotización</th>
+                        <th>Cliente </th>
+                        <th>Fecha</th>
+                        <th>Moneda</th>
+                        <th>Total</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($cotizaciones as $cotizacion)
+                        <tr>
+                            <td>{{ $cotizacion->codigo_cotizacion }}</td>
+                            <td>{{ $cotizacion->cliente->razon_social }}</td>
+                            <td>{{ $cotizacion->fecha_cotizacion }}</td>
+                            <td>{{ $cotizacion->moneda }}</td>
+                            <td>{{$cotizacion->total_iva}}</td>
+                            <td>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span>{{ $cotizacion->estado }}</span>
+                                    <a href="{{ route('cotizaciones.edit', $cotizacion->id_cotizacion) }}" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                </div>
+                            </td>
+                            <td class="text-center">
+                                <a href="{{ route('cotizaciones.prepararPDF', ['id' => $cotizacion->id_cotizacion]) }}" class="btn btn-sm btn-outline-secondary">
+                                    <i class="fas fa-file-pdf"></i>
+                                </a>
+                                <a class="btn btn-sm btn-outline-info"  onclick="crearVentanaCorreo(  '{{ $cotizacion->codigo_cotizacion }}',  '{{ $cotizacion->id_cotizacion }}',  '{{ $cotizacion->email }}',  '{{ csrf_token() }}',  '{{ route('cotizaciones.enviar', $cotizacion->id_cotizacion) }}')">
+                                        <i class="fas fa-envelope"></i>
+                                </a>
+                                {{-- <a href="{{ route('cotizaciones.prepararEmail', ['id' => $cotizacion->id_cotizacion]) }}" class="btn btn-sm btn-info">
+                                    <i class="fas fa-envelope"></i>
+                                </a> --}}
+                                {{-- <a href="#" class="btn btn-sm btn-danger" onclick="event.preventDefault(); document.getElementById('delete-form-{{ $cotizacion->id_cotizacion }}').submit();">
+                                    <i class="fas fa-trash"></i>
+                                </a> --}}
+                                
+                                <form id="delete-form-{{ $cotizacion->id_cotizacion }}" action="{{ route('cotizaciones.destroy', $cotizacion->id_cotizacion) }}" method="POST" style="display: none;">
+                                    @csrf
+                                    @method('DELETE')
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>                 
+    </div>
 </div>
   @if(session('success'))
   <script>

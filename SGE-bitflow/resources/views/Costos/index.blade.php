@@ -19,7 +19,7 @@
 <div class="container-fluid mt-5 px-0">
 
     {{-- Botones de acciones --}}
-    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
+    <div class="d-flex justify-content-end align-items-center mb-4 flex-wrap">
         <div class="d-flex gap-2">
             <button type="button" class="btn btn-success px-4 py-2" data-bs-toggle="modal" data-bs-target="#modalCrearCosto">
                 Agregar Costo
