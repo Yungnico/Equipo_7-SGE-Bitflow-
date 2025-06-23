@@ -126,6 +126,7 @@
                             <td>{{ $t->nombre }}</td>
                             <td>{{ $t->rut }}</td>
                             <td>
+                                @if($t->tipo_movimiento === 'ingreso')
                                 @if($t->estado === 'Pendiente')
                                 <button
                                     class="btn btn-sm btn-warning btn-conciliar"
@@ -139,7 +140,9 @@
                                 @else
                                 {{ $t->estado }}
                                 @endif
+                                @endif
                             </td>
+
                             <td>
                                 @if($t->tipo_movimiento === 'ingreso')
                                 <button class="btn btn-sm btn-primary">Ingreso</button>

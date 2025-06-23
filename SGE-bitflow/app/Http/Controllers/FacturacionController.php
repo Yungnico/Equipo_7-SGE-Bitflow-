@@ -16,6 +16,37 @@ class FacturacionController extends Controller
     /**
      * Display a listing of the resource.
      */
+
+     public function kpi(Request $request)
+    {
+        $inicio = $request->input('inicio');
+        $fin = $request->input('fin');
+
+        $query = Facturacion::query();
+
+        if ($inicio && $fin) {
+            $query->whereBetween('fecha_emision', [$inicio, $fin]);
+        }
+
+        $facturas = $query->get();
+        $facturasPagadas = $facturas->where('estado', 'pagada');
+        return response()->json([
+            'labels' => [
+                'Emitidas', 'Pend. Pago', 'Pagadas', 'Anuladas',
+                'Total Neto', 'IVA', 'Total Facturado'
+            ],
+            'data' => [
+                $facturas->count(),
+                $facturas->where('estado', 'pendiente')->count(),
+                $facturas->where('estado', 'pagada')->count(),
+                $facturas->where('estado', 'anulada')->count(),
+                $facturasPagadas->sum('total_neto'),
+                $facturasPagadas->sum('iva'),
+                $facturasPagadas->sum('total')
+            ]
+        ]);
+    }
+
     public function index()
     {
         $clientes = \App\Models\Cliente::all();
@@ -205,7 +236,7 @@ class FacturacionController extends Controller
                 'iva' => 'required|numeric',
                 'total' => 'required|numeric',
             ]);
-
+            
             $factura = Facturacion::create([
                 'folio' => $request->folio,
                 'tipo_dte' => $request->tipo_dte,
