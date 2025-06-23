@@ -5,6 +5,9 @@
 @section('content')
 <div id="composerContainer" class="position-relative"></div>
 <div class="content py-5">
+    <div class="mb-3 text-right">
+              <button class="btn btn-primary" data-toggle="modal" data-target="#modal_agregacioncotizacion">Agregar Cotización</button>
+          </div>
     <table id="myTable" class="table table-bordered table-striped">
         <thead>
             <tr>
@@ -29,15 +32,82 @@
                     <td>
                         <div class="d-flex justify-content-between align-items-center">
                             <span>{{ $cotizacion->estado }}</span>
-                            <a href="{{ route('cotizaciones.edit', $cotizacion->id_cotizacion) }}" class="btn btn-sm btn-outline-primary">
-                                <i class="fas fa-edit"></i>
-                            </a>
+                                      <button 
+                                            class="btn btn-sm btn-outline-primary" 
+                                            data-toggle="modal" 
+                                            data-target="#modalEstado{{ $cotizacion->id }}">
+                                            <i class="fas fa-edit"></i>
+                                            </button>
+                                    </div>
+                                    <div class="modal fade" id="modalEstado{{ $cotizacion->id }}" tabindex="-1" role="dialog" aria-labelledby="modalEstadoLabel{{ $cotizacion->id }}" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <form method="POST" action="{{ route('cotizaciones.editarestado', $cotizacion->id_cotizacion) }}" enctype="multipart/form-data">
+                                            @csrf
+                                            @method('PUT')
+                                            <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="modalEstadoLabel{{ $cotizacion->id }}">
+                                                    Cambiar estado de la cotizacion #{{ $cotizacion->id }}
+                                                </h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                                                <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+
+                                            <div class="modal-body">
+                                                <div class="form-row">
+                                                        <!-- Código cotización -->
+                                                        <div class="form-group col-md-6">
+                                                            <label for="codigo_cotizacion">Código Cotización:</label>
+                                                            <input type="text" class="form-control" id="codigo_cotizacion" name="codigo_cotizacion" value="{{ $cotizacion->codigo_cotizacion }}" readonly>
+                                                        </div>
+                                        
+                                                        <!-- Estado -->
+                                                        <div class="form-group col-md-6">
+                                                            <label for="estado">Estado:</label>
+                                                            <select name="estado" id="estado" class="form-control">
+                                                                <option value="Aceptada">Aceptada</option>
+                                                                <option value="Enviada">Enviada</option>
+                                                                <option value="Facturada">Facturada</option>
+                                                                <option value="Pagada">Pagada</option>
+                                                                <option value="Anulada">Anulada</option>
+                                                                <option value="Rechazada">Rechazada</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                        
+                                                    <!-- Archivos adicionales -->
+                                                    <div class="form-group d-none" id="archivos_adicionales">
+                                                        <label for="archivo_cliente">Archivos del cliente (orden de compra o servicio):</label>
+                                                        <input type="file" class="form-control" name="archivo_cliente[]" multiple>
+                                                        {{-- <a href="{{ route('cotizacion.conciliar',$cotizacion->id_cotizacion) }}" class="mt-3 btn btn-success px-4 py-2 mb-3">
+                                                            Conciliar Facturas
+                                                        </a> --}}
+                                                        
+                                                    </div>
+                                        
+                                                    <!-- Motivo de rechazo -->
+                                                    <div class="form-group d-none" id="motivo_rechazo">
+                                                        <label for="motivo">Motivo del rechazo/anulación:</label>
+                                                        <textarea name="motivo" class="form-control" rows="3"></textarea>
+                                                    </div>
+                                        
+                                                    <button type="submit" class="btn btn-primary">Guardar</button>
+                                                    <a href="{{ route('cotizaciones.index') }}" class="btn btn-secondary">Cancelar</a>
+                                                </form>
+                                            </div>
+
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
                         </div>
                     </td>
                     <td class="text-center">
                         <a href="{{ route('cotizaciones.prepararPDF', ['id' => $cotizacion->id_cotizacion]) }}" class="btn btn-sm btn-outline-secondary">
                             <i class="fas fa-file-pdf"></i>
                         </a>
+                        
                         <a class="btn btn-sm btn-outline-info"  onclick="crearVentanaCorreo(  '{{ $cotizacion->codigo_cotizacion }}',  '{{ $cotizacion->id_cotizacion }}',  '{{ $cotizacion->email }}',  '{{ csrf_token() }}',  '{{ route('cotizaciones.enviar', $cotizacion->id_cotizacion) }}')">
                                 <i class="fas fa-envelope"></i>
                         </a>
@@ -72,7 +142,29 @@
 @stop
 @section('js')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function actualizarCamposAdicionales() {
+        const estado = document.getElementById('estado').value;
+        const archivos = document.getElementById('archivos_adicionales');
+        const motivo = document.getElementById('motivo_rechazo');
 
+        archivos.classList.add('d-none');
+        motivo.classList.add('d-none');
+
+        if (['Pagada', 'Aceptada'].includes(estado)) {
+            archivos.classList.remove('d-none');
+        }
+
+        if (['Anulada', 'Rechazada'].includes(estado)) {
+            motivo.classList.remove('d-none');
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        actualizarCamposAdicionales();
+        document.getElementById('estado').addEventListener('change', actualizarCamposAdicionales);
+    });
+</script>
 <script>
   let cantidadVentanasCorreo = 0;
 
@@ -101,10 +193,10 @@
             <input type="email" class="form-control form-control-sm" placeholder="Para" name="correo_destino" value="${correoDestino}" required>
           </div>
           <div class="form-group mb-1">
-            <input type="text" class="form-control form-control-sm" placeholder="CC" name="copia" required>
+            <input type="email" class="form-control form-control-sm" placeholder="CC" name="copia">
           </div>
           <div class="form-group mb-1">
-            <input type="text" class="form-control form-control-sm" placeholder="CCO" name="copia_oculta" required>
+            <input type="email" class="form-control form-control-sm" placeholder="CCO" name="copia_oculta">
           </div>
           <div class="form-group mb-1">
             <input type="text" class="form-control form-control-sm" placeholder="Asunto" name="asunto" required>

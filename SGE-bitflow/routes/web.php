@@ -62,7 +62,7 @@ Route::middleware('auth')->group(function () {
 
 //PARIDADES OFICIAL 
 use App\Http\Controllers\ParidadController;
-
+use App\Models\Facturacion;
 
 //Route::resource('paridades', ParidadController::class)->except(['create', 'store', 'destroy', 'show']);
 Route::get('/paridades', [ParidadController::class, 'index'])->middleware('can:paridades.index')->name('paridades.index');
@@ -149,10 +149,10 @@ Route::middleware('auth')->group(function () {
     #    return view('password.change');
     #})->name('password.change');
     #Route::put('/password', [ProfileController::class, 'updatePassword'])->name('password.update');
+    Route::put('/clientes/{id}', [ClienteController::class, 'update'])->name('clientes.update');
+    Route::get('/dashboard/buenos-clientes', [FacturacionController::class, 'rankingBuenosClientesAjax']);
 
-    // Rutas de Clientes
-    Route::resource('clientes', ClienteController::class)->middleware('can:cliente.index'); //middleware puesto
-    Route::get('/clientes/{id}/info', [ClienteController::class, 'getCliente'])->middleware('can:cliente.info')->name('clientes.info'); //middleware puesto
+    Route::resource('clientes', ClienteController::class)->except(['update']); //middleware puesto
 
     // Rutas de contactos anidados bajo clientes
     Route::prefix('clientes/{cliente}')->name('clientes.')->group(function () {
@@ -161,6 +161,10 @@ Route::middleware('auth')->group(function () {
         Route::resource('contactos', ContactoClienteController::class)->middleware('can:cliente.contacto')->except(['create', 'show', 'store']); //middleware puesto
         Route::get('contactos/info', [ContactoClienteController::class, 'getContactos'])->name('contactos.info');
     });
+    // Rutas de Clientes
+    
+    Route::get('/clientes/{id}/info', [ClienteController::class, 'getCliente'])->middleware('can:cliente.info')->name('clientes.info'); //middleware puesto
+
 
     // Rutas del perfil
     Route::prefix('profile')->name('profile.')->group(function () {

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Facturacion;
 use Illuminate\Http\Request;
 use App\Models\DetalleFactura;
+use App\Models\Cliente;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -17,6 +18,69 @@ class FacturacionController extends Controller
     /**
      * Display a listing of the resource.
      */
+    public function rankingBuenosClientesAjax(Request $request)
+    {
+        $fechaInicio = $request->input('fecha_inicio');
+        $fechaFin = $request->input('fecha_fin');
+
+        $query = DB::table('facturacion')
+            ->leftJoin('clientes', 'facturacion.rut_receptor', '=', 'clientes.rut')
+            ->select(
+                'facturacion.rut_receptor',
+                'facturacion.razon_social_receptor',
+                DB::raw('COALESCE(clientes.plazo_pago_habil_dias, 30) as plazo_pago'),
+                DB::raw('DATE(facturacion.updated_at) as fecha_pago'),
+                DB::raw('DATEDIFF(facturacion.fecha_emision, facturacion.created_at) as dias_para_pago')
+            )
+            ->where('facturacion.estado', 'pagada');
+
+        if ($fechaInicio && $fechaFin) {
+            $query->whereBetween('facturacion.updated_at', [$fechaInicio, $fechaFin]);
+        }
+
+        $facturas = $query->get();
+
+        $ranking = [];
+
+        foreach ($facturas as $factura) {
+            if ($factura->dias_para_pago <= $factura->plazo_pago) {
+                $rut = $factura->rut_receptor;
+                $fechaPago = $factura->fecha_pago;
+
+                if (!isset($ranking[$rut])) {
+                    $ranking[$rut] = [
+                        'razon_social' => $factura->razon_social_receptor,
+                        'facturas_por_dia' => []
+                    ];
+                }
+
+                if (!isset($ranking[$rut]['facturas_por_dia'][$fechaPago])) {
+                    $ranking[$rut]['facturas_por_dia'][$fechaPago] = 0;
+                }
+
+                $ranking[$rut]['facturas_por_dia'][$fechaPago]++;
+            }
+        }
+
+        $buenosClientes = [];
+
+        foreach ($ranking as $rut => $cliente) {
+            $buenosPorDia = array_filter($cliente['facturas_por_dia'], function ($cantidad) {
+                return $cantidad >= 5;
+            });
+
+            if (count($buenosPorDia) > 0) {
+                $buenosClientes[] = [
+                    'rut' => $rut,
+                    'razon_social' => $cliente['razon_social'],
+                    'dias_buenos' => count($buenosPorDia),
+                    'total_facturas_buenas' => array_sum($buenosPorDia)
+                ];
+            }
+        }
+
+        return response()->json($buenosClientes);
+    }
 
      public function graficoPorCliente(Request $request)
     {
@@ -27,7 +91,7 @@ class FacturacionController extends Controller
         }
         $data = DB::table('facturacion')
             ->select('razon_social_receptor as cliente', DB::raw('SUM(total) as total_facturado'))
-            ->where('estado', 'Pagada')
+            ->where('estado', 'pagada')
             ->whereBetween('fecha_emision', [$inicio, $fin])
             ->groupBy('razon_social_receptor')
             ->orderByDesc('total_facturado')
@@ -140,7 +204,7 @@ class FacturacionController extends Controller
         if (!$request->hasFile('archivo')) {
             return back()->with('error', 'No se seleccionó ningún archivo.');
         }
-
+        $clientes = null;
         $archivo = $request->file('archivo');
         $extension = strtolower($archivo->getClientOriginalExtension());
         $path = $archivo->getRealPath();
@@ -185,6 +249,12 @@ class FacturacionController extends Controller
                                 'total' => floatval($cols[22]),
                                 'estado' => 'emitida',
                             ]);
+                            $cliente = Cliente::create([
+                                'rut' => $cols[13],
+                                'razon_social' => $cols[14],
+                                'plazo_pago_habil_dias' => 30,
+                            ]);
+
                         } catch (\Exception $e) {
                             Log::error("Error insertando factura en línea $linea: " . $e->getMessage());
                         }
@@ -247,6 +317,11 @@ class FacturacionController extends Controller
                                 'iva' => floatval($cols[21]),
                                 'total' => floatval($cols[22]),
                                 'estado' => 'emitida',
+                            ]);
+                             $cliente = Cliente::create([
+                                'rut' => $cols[13],
+                                'razon_social' => $cols[14],
+                                'plazo_pago_habil_dias' => 30,
                             ]);
                         } catch (\Exception $e) {
                             Log::error("Error insertando factura en línea $linea: " . $e->getMessage());

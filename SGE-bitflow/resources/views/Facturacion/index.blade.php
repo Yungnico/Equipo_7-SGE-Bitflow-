@@ -175,7 +175,7 @@
                             <select type="text" class="form-control" id="rut_receptor" name="rut_receptor" value="" required>
                                 <option value="">Seleccione un Cliente</option>
                                 @foreach ($clientes as $cliente)
-                                    <option value="{{ $cliente->id }}">{{ $cliente->rut }}</option>
+                                    <option value="{{ $cliente->rut }}">{{ $cliente->rut }}</option>
                                 @endforeach
                             </select>
                         </div>

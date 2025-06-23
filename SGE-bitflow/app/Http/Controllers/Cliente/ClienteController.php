@@ -164,7 +164,11 @@ class ClienteController extends Controller
 
     public function update(UpdateClienteRequest $request, Cliente $cliente)
     {
-        $data = $request->validated();
+        $cliente = Cliente::findOrFail($request->id);
+        $request->merge([
+            'rut' => $this->normalizarRut($request->rut) // Normalizar el RUT antes de la validación
+        ]);
+        $data = $request->validated();  
 
         // Reemplazar logo si se sube uno nuevo
         if ($request->hasFile('logo')) {
@@ -174,11 +178,18 @@ class ClienteController extends Controller
 
             $data['logo'] = $request->file('logo')->store('logos', 'public');
         }
-
-        $cliente->update($data);
+        $cliente->rut = $this->normalizarRut($data['rut']); // Normalizar el RUT antes de actualizar
+        $cliente->razon_social = $data['razon_social'];
+        $cliente->nombre_fantasia = $data['nombre_fantasia'];
+        $cliente->giro = $data['giro'];
+        $cliente->direccion = $data['direccion'] ?? null; // Asegurarse
+        $cliente->plazo_pago_habil_dias = $data['plazo_pago_habil_dias'] ?? null; // Asegurarse de que sea nullable
+        $cliente->logo = $data['logo'] ?? $cliente->logo; // Mantener el logo existente si no se sube uno nuevo
+        $cliente->save();
 
         return redirect()->route('clientes.index')->with('success', 'Cliente actualizado correctamente: ' . $cliente->razon_social . ' (' . $cliente->rut . ')');
     }
+
     public function show($id)
     {
         $cliente = Cliente::findOrFail($id);

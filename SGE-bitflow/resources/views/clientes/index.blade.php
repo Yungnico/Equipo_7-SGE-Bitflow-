@@ -7,6 +7,7 @@
 @stop
 
 @section('content')
+<meta name="csrf-token" content="{{ csrf_token() }}">
 <div class="container-fluid">
 
     @if(session('success'))
@@ -30,7 +31,6 @@
             <a href="{{ route('clientes.exportar', array_merge(request()->all(), ['formato_exportacion' => 'pdf'])) }}" class="btn btn-success">Exportar a PDF</a>
         </div>
     </div>
-
 
     @if($clientes->count())
     <div class="card">
@@ -58,55 +58,115 @@
                 </div>
             </form>
 
-                <table id="clientes-table" class="table table-striped table-bordered table-hover">
-                    <thead>
-                        <tr>
-                            <th>Razón social</th>
-                            <th>RUT</th>
-                            <th>Nombre fantasía</th>
-                            <th>Giro</th>
-                            <th>Dirección</th>
-                            <th>Logo</th>
-                            <th>Días Hábiles</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($clientes as $cliente)
-                        <tr>
-                            <td>{{ $cliente->razon_social }}</td>
-                            <td>{{ $cliente->rut }}</td>
-                            <td>{{ $cliente->nombre_fantasia }}</td>
-                            <td>{{ $cliente->giro }}</td>
-                            <td>{{ $cliente->direccion }}</td>
-                            <td>
-                                @if($cliente->logo)
-                                <img src="{{ asset('storage/' . $cliente->logo) }}" class="img-fluid" style="max-width: 80px;">
-                                @else
-                                Sin logo
-                                @endif
-                            </td>
-                            <td>{{ $cliente->plazo_pago_habil_dias }}</td>
-                            <td class="text-nowrap text-center">
-                                <button class="btn btn-sm btn-outline-primary btn-sm mb-1" onclick='abrirModalEditar({!! json_encode($cliente) !!})'>
-                                    <i class="fas fa-edit"></i>
+            <table id="clientes-table" class="table table-striped table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Razón social</th>
+                        <th>RUT</th>
+                        <th>Nombre fantasía</th>
+                        <th>Giro</th>
+                        <th>Dirección</th>
+                        <th>Logo</th>
+                        <th>Días Hábiles</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($clientes as $cliente)
+                    <tr>
+                        <td>{{ $cliente->razon_social }}</td>
+                        <td>{{ $cliente->rut }}</td>
+                        <td>{{ $cliente->nombre_fantasia }}</td>
+                        <td>{{ $cliente->giro }}</td>
+                        <td>{{ $cliente->direccion }}</td>
+                        <td>
+                            @if($cliente->logo)
+                            <img src="{{ asset('storage/' . $cliente->logo) }}" class="img-fluid" style="max-width: 80px;">
+                            @else
+                            Sin logo
+                            @endif
+                        </td>
+                        <td>{{ $cliente->plazo_pago_habil_dias }}</td>
+                        <td class="text-nowrap text-center">
+                            <button class="btn btn-sm btn-outline-primary btn-sm mb-1" data-toggle="modal" data-target="#modalEditarCliente{{$cliente->id}}">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <!-- Modal Editar Cliente -->
+                            <div class="modal fade" id="modalEditarCliente{{$cliente->id}}" tabindex="-1" role="dialog" aria-labelledby="modalEditarClienteLabel{{$cliente->id}}" aria-hidden="true">
+                                <div class="modal-dialog modal-lg" role="document">
+                                    <form id="formEditarCliente{{$cliente->id}}" enctype="multipart/form-data">
+                                        @csrf
+                                        @method('PUT')
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="modalEditarClienteLabel{{$cliente->id}}">Editar Cliente</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="form-row">
+                                                    <input type="hidden" name="id" value="{{$cliente->id}}">
+                                                    <div class="form-group col-md-6">
+                                                        <label for="editar_razon_social{{$cliente->id}}">Razón Social*</label>
+                                                        <input type="text" class="form-control" name="razon_social" id="editar_razon_social{{$cliente->id}}" value="{{$cliente->razon_social}}" required>
+                                                    </div>
+                                                    <div class="form-group col-md-6">
+                                                        <label for="editar_rut{{$cliente->id}}">RUT*</label>
+                                                        <input type="text" class="form-control" name="rut" id="editar_rut{{$cliente->id}}" value="{{$cliente->rut}}" required>
+                                                    </div>
+                                                </div>
+                                                <div class="form-row">
+                                                    <div class="form-group col-md-6">
+                                                        <label for="editar_nombre_fantasia{{$cliente->id}}">Nombre Fantasía</label>
+                                                        <input type="text" class="form-control" name="nombre_fantasia" id="editar_nombre_fantasia{{$cliente->id}}" value="{{$cliente->nombre_fantasia}}">
+                                                    </div>
+                                                    <div class="form-group col-md-6">
+                                                        <label for="editar_giro{{$cliente->id}}">Giro</label>
+                                                        <input type="text" class="form-control" name="giro" id="editar_giro{{$cliente->id}}" value="{{$cliente->giro}}">
+                                                    </div>
+                                                </div>
+                                                <div class="form-row">
+                                                    <div class="form-group col-md-6">
+                                                        <label for="editar_direccion{{$cliente->id}}">Dirección</label>
+                                                        <input type="text" class="form-control" name="direccion" id="editar_direccion{{$cliente->id}}" value="{{$cliente->direccion}}">
+                                                    </div>
+                                                    <div class="form-group col-md-6">
+                                                        <label for="editar_logo{{$cliente->id}}">Logo (JPG o PNG)</label>
+                                                        <input type="file" class="form-control" name="logo" id="editar_logo{{$cliente->id}}">
+                                                    </div>
+                                                </div>
+                                                <div class="form-row">
+                                                    <div class="form-group col-md-6">
+                                                        <label for="editar_dias{{$cliente->id}}">Plazo de Pago (días hábiles)</label>
+                                                        <input type="number" class="form-control" name="plazo_pago_habil_dias" id="editar_dias{{$cliente->id}}" value="{{$cliente->plazo_pago_habil_dias}}" min="0">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="submit" class="btn btn-primary btn-actualizar-cliente" data-id="{{$cliente->id}}">Actualizar</button>
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <!-- Fin Modal Editar Cliente -->
+                            <form action="{{ route('clientes.destroy', $cliente) }}" method="POST" class="form-eliminar d-inline">
+                                @csrf
+                                @method('DELETE')
+                                <button class="btn btn-outline-danger btn-sm mb-1">
+                                    <i class="fas fa-trash-alt"></i>
                                 </button>
-
-                                <form action="{{ route('clientes.destroy', $cliente) }}" method="POST" class="form-eliminar d-inline">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="btn btn-outline-danger btn-sm mb-1">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
-                                </form>
-                                <a href="{{ route('clientes.contactos.index', [$cliente->id, $cliente->nombre_fantasia]) }}" class="btn btn-outline-warning btn-sm mb-1">
-                                    <i class="fas fa-id-badge"></i>
-                                </a>
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                            </form>
+                            <a href="{{ route('clientes.contactos.index', [$cliente->id, $cliente->nombre_fantasia]) }}" class="btn btn-outline-warning btn-sm mb-1">
+                                <i class="fas fa-id-badge"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
         </div>
     </div>
     @else
@@ -115,8 +175,6 @@
     </div>
     @endif
 </div>
-@endsection
-
 <!-- Modal para Crear Cliente -->
 <div class="modal fade" id="modalCrearCliente" tabindex="-1" role="dialog" aria-labelledby="modalCrearClienteLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
@@ -181,77 +239,13 @@
         </form>
     </div>
 </div>
-
-<div class="modal fade" id="modalEditarCliente" tabindex="-1" role="dialog" aria-labelledby="modalEditarClienteLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-        <form id="formEditarCliente" method="POST" enctype="multipart/form-data">
-            @csrf
-            @method('PUT')
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalEditarClienteLabel">Editar Cliente</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label for="editar_razon_social">Razón Social*</label>
-                            <input type="text" class="form-control" name="razon_social" id="editar_razon_social" required>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label for="editar_rut">RUT*</label>
-                            <input type="text" class="form-control" name="rut" id="editar_rut" required>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label for="editar_nombre_fantasia">Nombre Fantasía</label>
-                            <input type="text" class="form-control" name="nombre_fantasia" id="editar_nombre_fantasia">
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label for="editar_giro">Giro</label>
-                            <input type="text" class="form-control" name="giro" id="editar_giro">
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label for="editar_direccion">Dirección</label>
-                            <input type="text" class="form-control" name="direccion" id="editar_direccion">
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label for="editar_logo">Logo (JPG o PNG)</label>
-                            <input type="file" class="form-control" name="logo" id="editar_logo">
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label for="plazo_pago_habil_dias">Plazo de Pago (días hábiles)</label>
-                            <input type="number" class="form-control" name="plazo_pago_habil_dias" id="editar_dias">
-                        </div>
-                    </div>
-
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Actualizar</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
-
-
+@endsection
 
 @section('js')
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <!-- SweetAlert2 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 <!-- DataTables -->
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
 <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
@@ -267,10 +261,9 @@
             language: {
                 url: '{{ asset("datatables/es-CL.json")}}'
             }
-            
         });
 
-        // Confirmación SweetAlert
+        // Confirmación SweetAlert para eliminar
         const forms = document.querySelectorAll('.form-eliminar');
         forms.forEach(form => {
             form.addEventListener('submit', function(e) {
@@ -294,21 +287,36 @@
     });
 </script>
 <script>
-    function abrirModalEditar(cliente) {
-        // Rellenar campos
-        document.getElementById('editar_razon_social').value = cliente.razon_social;
-        document.getElementById('editar_rut').value = cliente.rut;
-        document.getElementById('editar_nombre_fantasia').value = cliente.nombre_fantasia ?? '';
-        document.getElementById('editar_giro').value = cliente.giro ?? '';
-        document.getElementById('editar_direccion').value = cliente.direccion ?? '';
-        document.getElementById('editar_dias').value = cliente.plazo_pago_habil_dias ?? '';
-        // Actualizar acción del formulario
-        const form = document.getElementById('formEditarCliente');
-        form.action = `/clientes/${cliente.id}`; // Asegúrate de que esta ruta coincida con la definida en tus routes
-
-        // Mostrar modal
-        $('#modalEditarCliente').modal('show');
-    }
+$(document).ready(function() {
+    // AJAX para actualizar cliente
+    $('form[id^="formEditarCliente"]').on('submit', function(e) {
+        e.preventDefault();
+        var id_cliente = $(this).find('input[name="id"]').val();
+        var form = $(this);
+        var id = form.find('.btn-actualizar-cliente').data('id');
+        var formData = new FormData(this);
+        formData.append('_method', 'PUT'); // Asegurar que se envíe el método PUT
+        formData.append('_token', $('meta[name="csrf-token"]').attr('content')); // Agregar CSRF token
+        formData.append('id',id_cliente); // Asegurar que el ID se envíe correctamente
+        $.ajax({
+            url: '/clientes/' + id,
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+            success: function(response) {
+                Swal.fire('¡Actualizado!', 'El cliente fue actualizado correctamente.', 'success').then(() => {
+                    location.reload();
+                });
+            },
+            error: function(xhr) {
+                let msg = 'Error al actualizar el cliente.';
+                if(xhr.responseJSON && xhr.responseJSON.message) msg = xhr.responseJSON.message;
+                Swal.fire('Error', msg, 'error');
+            }
+        });
+    });
+});
 </script>
-
 @endsection

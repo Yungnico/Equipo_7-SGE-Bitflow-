@@ -27,13 +27,10 @@ class UpdateClienteRequest extends FormRequest
                 'required',
                 'string',
                 'max:100',
-                Rule::unique('clientes')->ignore($this->cliente),
             ],
             'rut' => [
                 'required',
                 'string',
-                'regex:/^\d{1,2}\.\d{3}\.\d{3}-[0-9kK]{1}$/',
-                Rule::unique('clientes')->ignore($this->cliente),
             ],
             'nombre_fantasia' => 'required|string|max:100',
             'giro' => 'required|string|max:100',

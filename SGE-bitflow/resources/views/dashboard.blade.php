@@ -335,6 +335,26 @@
             </x-adminlte-card>
         </div>
 </div>
+<div class="row mt-3">
+    <div class="col">
+        <x-adminlte-card title="Ranking Buenos Clientes" theme="success" icon="fas fa-star" collapsible>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <select id="rango_buenos_clientes" class="form-control">
+                    <option value="custom">Seleccionar rango personalizado</option>
+                    <option value="last7">Últimos 7 días</option>
+                    <option value="last30">Últimos 30 días</option>
+                    <option value="last90">Últimos 90 días</option>
+                    <option value="thisYear">Año actual</option>
+                </select>
+                <input type="text" id="rango_buenos_clientes_fp" class="form-control w-50 ml-2" placeholder="Seleccionar rango de fechas" disabled>
+            </div>
+
+            <div id="buenosClientesContainer" style="min-height: 250px; max-height: 300px; overflow-y: auto;">
+                <p class="text-center">Cargando datos...</p>
+            </div>
+        </x-adminlte-card>
+    </div>
+</div>
 
 @endsection
 
@@ -352,6 +372,97 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         // Variables globales para el gráfico de KPIs
+        let fechaInicio = null;
+        let fechaFin = null;
+        function loadBuenosClientes() {
+
+            // Si quieres manejar el rango personalizado, aquí debes tomar los valores de fecha
+            // Por ahora lo dejo simple
+
+            $.ajax({
+                url: '/dashboard/buenos-clientes',
+                method: 'GET',
+                data: {
+                    fecha_inicio: fechaInicio,
+                    fecha_fin: fechaFin
+                },
+                success: function (data) {
+                    const container = $('#buenosClientesContainer');
+                    container.empty();
+
+                    if (data.length === 0) {
+                        container.append('<p class="text-center">No hay buenos clientes en este período.</p>');
+                        return;
+                    }
+
+                    data.forEach(cliente => {
+                        container.append(`
+                            <div class="small-box bg-light mb-2 p-2">
+                                <div class="inner">
+                                    <strong>${cliente.razon_social}</strong><br>
+                                    RUT: ${cliente.rut}<br>
+                                    Días con +5 facturas pagadas: ${cliente.dias_buenos}<br>
+                                    Total facturas buenas: ${cliente.total_facturas_buenas}
+                                </div>
+                            </div>
+                        `);
+                    });
+                },
+                error: function () {
+                    $('#buenosClientesContainer').html('<p class="text-danger">Error al cargar los datos.</p>');
+                }
+            });
+        }
+        function setBuenosclientedate(value) {
+            const today = new Date();
+            let start = new Date();
+            let end = new Date();
+
+            switch (value) {
+                case 'last7':
+                    start.setDate(today.getDate() - 6);
+                    break;
+                case 'last30':
+                    start.setDate(today.getDate() - 29);
+                    break;
+                case 'last90':
+                    start.setDate(today.getDate() - 89);
+                    break;
+                case 'thisYear':
+                    start = new Date(today.getFullYear(), 0, 1);
+                    break;
+                case 'custom':
+                    document.getElementById("rango_buenos_clientes_fp").disabled = false;
+                    return;
+            }
+            end.setDate(end.getDate() + 1); 
+            fechaInicio = start.toISOString().split('T')[0];
+            fechaFin = end.toISOString().split('T')[0];
+            document.getElementById("rango_buenos_clientes_fp").value = `${fechaInicio} to ${fechaFin}`;
+            document.getElementById("rango_buenos_clientes_fp").disabled = true;
+            loadBuenosClientes();
+        }
+        document.addEventListener("DOMContentLoaded", function () {
+            flatpickr("#rango_buenos_clientes_fp", {
+                mode: "range",
+                dateFormat: "Y-m-d",
+                onChange: function (selectedDates) {
+                    if (selectedDates.length === 2) {
+                        fechaInicio = selectedDates[0].toISOString().split('T')[0];
+                        fechaFin = selectedDates[1].toISOString().split('T')[0];
+                        loadBuenosClientes();
+                    }
+                }
+            });
+            document.getElementById("rango_buenos_clientes").addEventListener("change", function () {
+                setBuenosclientedate(this.value);
+            });
+
+            // Cargar por defecto últimos 30 días
+            document.getElementById("rango_buenos_clientes").value = "last30";
+            setBuenosclientedate("last30");
+        });
+
 
         let showingChart = true;
         let chartInstance = null;
@@ -771,7 +882,10 @@
                     }
                 });
             });
-    }
+    }   
+    $('#rango_buenos_clientes').on('change', function () {
+        loadBuenosClientes();
+    });
 
     function loadGraficoFacturadoVsIngresos() {
         fetch('/facturas/facturado-vs-ingresos')
@@ -811,6 +925,7 @@
         loadGraficoClientes();
         loadGraficoComparativo();
         loadGraficoFacturadoVsIngresos();
+        loadBuenosClientes();
     });
     </script>
 @endsection

@@ -29,9 +29,6 @@
             </button>
         </div>
 
-        <div>
-            {{-- Opcionalmente puedes poner categorías aquí si usas un mantenedor --}}
-        </div>
     </div>
 
     {{-- Tabla de costos --}}

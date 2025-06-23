@@ -17,34 +17,9 @@ use App\Mail\CotizacionMailable;
 use App\Models\CotizacionDetalle;
 use App\Models\DetalleFactura;
 use App\Models\Facturacion;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Log;
-
 
 class CotizacionController extends Controller
 {
-    public function getCotizacionesKpi(Request $request)
-    {
-        $inicio = $request->inicio ?? Carbon::now()->startOfMonth();
-        $fin = $request->fin ?? Carbon::now()->endOfMonth();
-
-        $query = DB::table('cotizaciones')
-            ->select('estado', DB::raw('count(*) as cantidad'))
-            ->whereBetween('created_at', [$inicio, $fin])
-            ->groupBy('estado')
-            ->get();
-
-        // KPIs definidos
-        $generadas = $query->whereNotIn('estado', ['Borrador', 'Anulada'])->sum('cantidad');
-        $pendientes = $query->whereIn('estado', ['Aceptada', 'Facturada'])->sum('cantidad');
-        $pagadas = $query->where('estado', 'Pagada')->sum('cantidad');
-        $rechazadas = $query->where('estado', 'Rechazada')->sum('cantidad');
-
-        return response()->json([
-            'labels' => ['Generadas', 'Pend. Pago', 'Pagadas', 'Rechazadas'],
-            'data' => [$generadas, $pendientes, $pagadas, $rechazadas]
-        ]);
-    }
     public function prepararPDF($id){
         $cotizacion = Cotizacion::with(['cliente', 'itemsLibres', 'servicios'])->findOrFail($id);
         return view('cotizaciones.prepararPDF', compact('cotizacion'));
@@ -72,7 +47,7 @@ class CotizacionController extends Controller
         return view('cotizaciones.cotizacionMail', compact('cotizacion'));
     }
 
-     public function enviarCorreo(Request $request, $id)
+    public function enviarCorreo(Request $request, $id)
     {
         $request->validate([
             'correo_destino' => 'required|email',
@@ -96,7 +71,7 @@ class CotizacionController extends Controller
             }
 
             $correoMailable = new CotizacionMailable($asunto, $mensaje, $cotizacion->codigo_cotizacion, $adjuntarPdf);
-            Mail::to('nvasquezsu@ing.ucsc.cl')->send($correoMailable);
+            Mail::to($correo)->send($correoMailable);
 
             // Limpiar archivo PDF temporal
             if ($adjuntarPdf == 1) {
@@ -116,36 +91,7 @@ class CotizacionController extends Controller
                 'error' => $e->getMessage()
             ], 500);
         }
-
-        // $request->validate([
-        //     'correo_destino' => 'required|email',
-        //     'asunto' => 'required|string|max:255',
-        //     'mensaje' => 'required|string',
-        // ]);
-
-        // $correo = $request->correo_destino;
-        // $asunto = $request->asunto;
-        // $mensaje = $request->mensaje;
-        // $adjuntarPdf = $request->adjuntarPdf;
-
-        // $cotizacion = Cotizacion::with(['cliente', 'servicios', 'itemsLibres'])->findOrFail($id);
-        // $cotizacion->update(['estado' => 'Enviada']);
-        // $cotizacion->save();
-        // if ($adjuntarPdf == 1) {
-        //     $pdf = Pdf::loadView('cotizaciones.pdf', compact('cotizacion'));
-        //     Storage::disk('public')->put($cotizacion->codigo_cotizacion . '.pdf', $pdf->output());
-        // }
-
-        // $correoMailable = new CotizacionMailable($asunto, $mensaje, $cotizacion->codigo_cotizacion, $adjuntarPdf);
-        
-
-
-        // Mail::to($correo)->send($correoMailable);
-        // Storage::disk('public')->delete($cotizacion->codigo_cotizacion . '.pdf'); // Eliminar el PDF después de enviarlo
-        // $cotizaciones = Cotizacion::with(['cliente', 'servicios', 'itemsLibres'])->get();
-        // return view('cotizaciones.index',compact('cotizaciones'))->with('success', 'Correo enviado correctamente.');
     }
-
 
 
 
