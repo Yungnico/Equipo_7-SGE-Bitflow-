@@ -1,4 +1,5 @@
 @extends('adminlte::page')
+@section('title', 'PDF Cotización')
 
 @section('content')
 @php
@@ -103,6 +104,7 @@
             <button type="sumbit" name="accion" value="guardar" class="btn btn-primary" id="btnGuardarPDF">
                 <i class="fas fa-download"></i> Guardar PDF
             </button>
+            <a href="{{ route('cotizaciones.index') }}" class="btn btn-secondary ml-2">Regresar</a>
         </div>
     </form>
 </body>
