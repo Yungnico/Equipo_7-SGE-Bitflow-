@@ -84,7 +84,7 @@
                         <td>{{ $servicio->moneda->moneda ?? 'Sin moneda' }}</td>
                         <td>{{ $servicio->categoria->nombre ?? 'Sin categoría' }}</td>
                         <td class="d-flex gap-2 justify-content-center">
-                            <button class="btn btn-sm btn-primary"
+                            <button class="btn btn-sm btn-outline-primary"
                                 data-bs-toggle="modal"
                                 data-bs-target="#modalEditarServicio"
                                 data-id="{{ $servicio->id }}"
@@ -93,12 +93,12 @@
                                 data-precio="{{ $servicio->precio }}"
                                 data-moneda="{{ $servicio->moneda->moneda}}"
                                 data-categoria="{{ $servicio->categoria_id }}">
-                                <i class="fas fa-pencil-alt"></i>
+                                <i class="fas fa-edit"></i>
                             </button>
                             <form action="{{ route('servicios.destroy', $servicio->id) }}" method="POST" style="display:inline-block;">
                                 @csrf
                                 @method('DELETE')
-                                <button class="btn btn-sm btn-danger" onclick="return confirm('¿Estás seguro de eliminar este servicio?')">
+                                <button class="btn btn-sm btn-outline-danger" onclick="return confirm('¿Estás seguro de eliminar este servicio?')">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </form>

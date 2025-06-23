@@ -64,7 +64,7 @@ class CostoController extends Controller
         $monedas = Paridad::all();
         $detalle = $costo->detalles;
 
-        return view('costos.edit', compact('costo', 'categorias', 'subcategorias', 'monedas', 'detalle'));
+        return view('Costos.edit', compact('costo', 'categorias', 'subcategorias', 'monedas', 'detalle'));
     }
     public function index()
     {
@@ -81,7 +81,7 @@ class CostoController extends Controller
         $subcategorias = SubCategoriaCostos::all();
         $monedas = Paridad::all();
 
-        return view('costos.index', compact('costos', 'categorias', 'subcategorias', 'monedas'));
+        return view('Costos.index', compact('costos', 'categorias', 'subcategorias', 'monedas'));
     }
 
     public function destroy(Costos $costo)

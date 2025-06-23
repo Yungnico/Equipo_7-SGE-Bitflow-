@@ -48,13 +48,13 @@
                                     <td>{{ $contacto->telefono_contacto }}</td>
                                     <td>{{ $contacto->tipo_contacto }}</td>
                                     <td class="text-nowrap">
-                                        <a href="{{ route('contactos.edit', $contacto->id) }}" class="btn btn-warning btn-sm mb-1">
-                                            <i class="fa fa-edit" style="color:white"></i>
+                                        <a href="{{ route('contactos.edit', $contacto->id) }}" class="btn btn-outline-warning btn-sm mb-1">
+                                            <i class="fa fa-edit"></i>
                                         </a>
                                         <form action="{{ route('clientes.contactos.destroy', [$cliente->id, $contacto->id]) }}" method="POST" class="form-eliminar d-inline">
                                             @csrf
                                             @method('DELETE')
-                                            <button class="btn btn-danger btn-sm mb-1">
+                                            <button class="btn btn-outline-danger btn-sm mb-1">
                                                 <i class="fas fa-trash-alt"></i>
                                             </button>
                                         </form>

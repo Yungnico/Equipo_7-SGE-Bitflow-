@@ -11,7 +11,7 @@
 <div class="content py-5">
     <div class="card">
         <div class="card-body">
-            <table id="borrador" class="table table-bordered table-striped table-hover">
+            <table id="myTable" class="table table-bordered table-striped">
                 <thead>
                     <tr>
                         <th>Código Cotización</th>
@@ -31,8 +31,8 @@
                             <td>{{ $cotizacion->moneda }}</td>
                             <td>{{ $cotizacion->estado }}</td>
                             <td class="text-center">
-                                <a href="#" class="btn btn-sm btn-danger" onclick="event.preventDefault(); document.getElementById('delete-form-{{ $cotizacion->id_cotizacion }}').submit();">
-                                    <i class="fas fa-trash "></i>
+                                <a href="#" class="btn btn-sm btn-outline-danger" onclick="event.preventDefault(); document.getElementById('delete-form-{{ $cotizacion->id_cotizacion }}').submit();">
+                                    <i class="fas fa-trash"></i>
                                 </a>
                                 <form id="delete-form-{{ $cotizacion->id_cotizacion }}" action="{{ route('cotizaciones.destroy', $cotizacion->id_cotizacion) }}" method="POST" style="display: none;">
                                     @csrf
@@ -44,7 +44,7 @@
                 </tbody>
             </table>
         </div>
-    </div>
+    </div>  
 </div>
 @stop
 

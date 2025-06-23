@@ -24,3 +24,4 @@ class Paridad extends Model
         return $this->hasMany(Servicio::class);
     }
 }
+

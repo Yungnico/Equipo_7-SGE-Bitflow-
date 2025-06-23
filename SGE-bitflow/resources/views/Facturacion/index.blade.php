@@ -27,7 +27,7 @@
         </div>
         <div class="card p-3 mt-4">
             <div class="content">
-                <table id="myTable" class="table table-bordered table-striped">
+                <table id="myTable" class="table table-bordered table-striped table-hover">
                     <thead>
                         <th>Folio</th>
                         <th>Tipo DTE </th>
@@ -54,10 +54,10 @@
                                     <div class="d-flex justify-content-between align-items-center">
                                         <span>{{ $factura->estado }}</span>
                                         <button 
-                                            class="btn btn-sm btn-warning" 
+                                            class="btn btn-sm btn-outline-primary" 
                                             data-toggle="modal" 
                                             data-target="#modalEstado{{ $factura->id }}">
-                                            <i class="fas fa-edit" style="color:white"></i>
+                                            <i class="fas fa-edit"></i>
                                             </button>
                                     </div>
                                 </td>
@@ -180,7 +180,7 @@
                             <select type="text" class="form-control" id="rut_receptor" name="rut_receptor" value="" required>
                                 <option value="">Seleccione un Cliente</option>
                                 @foreach ($clientes as $cliente)
-                                    <option value="{{ $cliente->rut }}">{{ $cliente->rut }}</option>
+                                    <option value="{{ $cliente->id }}">{{ $cliente->rut }}</option>
                                 @endforeach
                             </select>
                         </div>

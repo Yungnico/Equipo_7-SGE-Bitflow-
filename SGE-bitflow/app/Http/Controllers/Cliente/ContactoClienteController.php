@@ -68,7 +68,7 @@ class ContactoClienteController extends Controller
         ], [
             'email_contacto.email.required' => 'El correo no tiene un formato válido.',
             'email_contacto.unique.required' => 'Este correo no puede ser ingresado.', 
-            'telefono_contacto.numeric.required' => 'El teléfono solo debe contener números.',
+            'telefono_contacto.numeric.required' => 'El teléfono sólo debe contener números.',
             'tipo_contacto.required' => 'Debe seleccionar un tipo de contacto.',
             'tipo_contacto.in' => 'El tipo de contacto seleccionado no es válido.',
             

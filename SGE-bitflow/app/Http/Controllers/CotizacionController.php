@@ -17,9 +17,35 @@ use App\Mail\CotizacionMailable;
 use App\Models\CotizacionDetalle;
 use App\Models\DetalleFactura;
 use App\Models\Facturacion;
+use Illuminate\Support\Facades\Log;
+use Carbon\Carbon;
 
 class CotizacionController extends Controller
 {
+
+    public function getCotizacionesKpi(Request $request)
+    {
+        $inicio = $request->inicio ?? Carbon::now()->startOfMonth();
+        $fin = $request->fin ?? Carbon::now()->endOfMonth();
+
+        $query = DB::table('cotizaciones')
+            ->select('estado', DB::raw('count(*) as cantidad'))
+            ->whereBetween('created_at', [$inicio, $fin])
+            ->groupBy('estado')
+            ->get();
+
+        // KPIs definidos
+        $generadas = $query->whereNotIn('estado', ['Borrador', 'Anulada'])->sum('cantidad');
+        $pendientes = $query->whereIn('estado', ['Aceptada', 'Facturada'])->sum('cantidad');
+        $pagadas = $query->where('estado', 'Pagada')->sum('cantidad');
+        $rechazadas = $query->where('estado', 'Rechazada')->sum('cantidad');
+
+        return response()->json([
+            'labels' => ['Generadas', 'Pend. Pago', 'Pagadas', 'Rechazadas'],
+            'data' => [$generadas, $pendientes, $pagadas, $rechazadas]
+        ]);
+    }
+
     public function prepararPDF($id){
         $cotizacion = Cotizacion::with(['cliente', 'itemsLibres', 'servicios'])->findOrFail($id);
         return view('cotizaciones.prepararPDF', compact('cotizacion'));
@@ -55,27 +81,70 @@ class CotizacionController extends Controller
             'mensaje' => 'required|string',
         ]);
 
-        $correo = $request->correo_destino;
-        $asunto = $request->asunto;
-        $mensaje = $request->mensaje;
-        $adjuntarPdf = $request->adjuntarPdf;
+        try {
+            $correo = $request->correo_destino;
+            $asunto = $request->asunto;
+            $mensaje = $request->mensaje;
+            $adjuntarPdf = $request->adjuntarPdf;
 
-        $cotizacion = Cotizacion::with(['cliente', 'servicios', 'itemsLibres'])->findOrFail($id);
-        $cotizacion->update(['estado' => 'Enviada']);
-        $cotizacion->save();
-        if ($adjuntarPdf == 1) {
-            $pdf = Pdf::loadView('cotizaciones.pdf', compact('cotizacion'));
-            Storage::disk('public')->put($cotizacion->codigo_cotizacion . '.pdf', $pdf->output());
+            $cotizacion = Cotizacion::with(['cliente', 'servicios', 'itemsLibres'])->findOrFail($id);
+            $cotizacion->estado = 'Enviada';
+            $cotizacion->save();
+
+            if ($adjuntarPdf == 1) {
+                $pdf = pdf::loadView('cotizaciones.pdf', compact('cotizacion'));
+                Storage::disk('public')->put($cotizacion->codigo_cotizacion . '.pdf', $pdf->output());
+            }
+
+            $correoMailable = new CotizacionMailable($asunto, $mensaje, $cotizacion->codigo_cotizacion, $adjuntarPdf);
+            Mail::to('nvasquezsu@ing.ucsc.cl')->send($correoMailable);
+
+            // Limpiar archivo PDF temporal
+            if ($adjuntarPdf == 1) {
+                Storage::disk('public')->delete($cotizacion->codigo_cotizacion . '.pdf');
+            }
+
+            return response()->json([
+                'message' => 'Correo enviado correctamente.',
+                'estado' => 'Enviada',
+                'id' => $cotizacion->id_cotizacion
+            ], 200);
+
+        } catch (\Exception $e) {
+            Log::error('Error al enviar correo: ' . $e->getMessage());
+            return response()->json([
+                'message' => 'Error al enviar el correo.',
+                'error' => $e->getMessage()
+            ], 500);
         }
 
-        $correoMailable = new CotizacionMailable($asunto, $mensaje, $cotizacion->codigo_cotizacion, $adjuntarPdf);
+        // $request->validate([
+        //     'correo_destino' => 'required|email',
+        //     'asunto' => 'required|string|max:255',
+        //     'mensaje' => 'required|string',
+        // ]);
+
+        // $correo = $request->correo_destino;
+        // $asunto = $request->asunto;
+        // $mensaje = $request->mensaje;
+        // $adjuntarPdf = $request->adjuntarPdf;
+
+        // $cotizacion = Cotizacion::with(['cliente', 'servicios', 'itemsLibres'])->findOrFail($id);
+        // $cotizacion->update(['estado' => 'Enviada']);
+        // $cotizacion->save();
+        // if ($adjuntarPdf == 1) {
+        //     $pdf = Pdf::loadView('cotizaciones.pdf', compact('cotizacion'));
+        //     Storage::disk('public')->put($cotizacion->codigo_cotizacion . '.pdf', $pdf->output());
+        // }
+
+        // $correoMailable = new CotizacionMailable($asunto, $mensaje, $cotizacion->codigo_cotizacion, $adjuntarPdf);
         
 
 
-        Mail::to($correo)->send($correoMailable);
-        Storage::disk('public')->delete($cotizacion->codigo_cotizacion . '.pdf'); // Eliminar el PDF después de enviarlo
-        $cotizaciones = Cotizacion::with(['cliente', 'servicios', 'itemsLibres'])->get();
-        return view('cotizaciones.index',compact('cotizaciones'))->with('success', 'Correo enviado correctamente.');
+        // Mail::to($correo)->send($correoMailable);
+        // Storage::disk('public')->delete($cotizacion->codigo_cotizacion . '.pdf'); // Eliminar el PDF después de enviarlo
+        // $cotizaciones = Cotizacion::with(['cliente', 'servicios', 'itemsLibres'])->get();
+        // return view('cotizaciones.index',compact('cotizaciones'))->with('success', 'Correo enviado correctamente.');
     }
 
 
@@ -193,10 +262,11 @@ class CotizacionController extends Controller
             ]);
 
             $total = 0;
+            $total_iva = 0;
 
             foreach ($request->input('servicios', []) as $servicio) {
                 $servicioModel = Servicio::findOrFail($servicio['servicio']);
-                $subtotal = $servicioModel->precio * $servicio['cantidad'];
+                $subtotal = $servicio['precio'] * $servicio['cantidad'];
                 $cotizacion->servicios()->attach($servicioModel->id, [
                     'cantidad' => $servicio['cantidad'],
                     'precio_unitario' => $servicio['precio'],
