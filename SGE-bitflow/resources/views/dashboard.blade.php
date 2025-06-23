@@ -741,8 +741,33 @@
                             data: valores,
                             borderColor: i === 0 ? 'rgba(255,99,132,1)' : 'rgba(54,162,235,1)',
                             backgroundColor: 'transparent',
-                            tension: 0.2
+                            tension: 0.2,
+                            pointBackgroundColor: 'white',
+                            pointBorderColor: i === 0 ? 'rgba(255,99,132,1)' : 'rgba(54,162,235,1)',
+                            pointRadius: 4,
+                            pointHoverRadius: 6
                         }))
+                    },
+                    options: {
+                        responsive: true,
+                        interaction: {
+                            mode: 'nearest',
+                            axis: 'x',
+                            intersect: false
+                        },
+                        plugins: {
+                            tooltip: {
+                                enabled: true
+                            },
+                            legend: {
+                                position: 'top'
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
                     }
                 });
             });
