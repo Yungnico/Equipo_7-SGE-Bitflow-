@@ -3,9 +3,6 @@
 @section('title', 'Dashboard')
 
 @section('content_header')
-    @can('dashboard')
-        <h1>Futuras Métricas</h1>
-    @endcan
 @stop
 
 @section('content')
@@ -307,21 +304,32 @@
 </div>
 <div class="row">
         <!-- Gráfico de torta por cliente -->
-        <div class="col-md-4">
+        <div class="col-sm-4">
             <x-adminlte-card title="Montos facturados por cliente" theme="teal" icon="fas fa-chart-pie" collapsible>
-                <canvas id="graficoClientes" style="min-height: 300px;"></canvas>
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <select id="rango_clientes" class="form-control ">
+                        <option value="custom">Seleccionar rango personalizado</option>
+                        <option value="last7">Últimos 7 días</option>
+                        <option value="last30">Últimos 30 días</option>
+                        <option value="last90">Últimos 90 días</option>
+                        <option value="thisYear">Año actual</option>
+                    </select>
+
+                    <input type="text" id="rango_clientes_fp" class="form-control w-50" placeholder="Seleccionar rango de fechas" disabled>
+                </div>
+                <canvas id="graficoClientes" style="min-height: 250px; max-height: 250px;"></canvas>
             </x-adminlte-card>
         </div>
 
         <!-- Gráfico de serie comparativo año actual vs anterior -->
-        <div class="col-md-4">
+        <div class="col-sm-4">
             <x-adminlte-card title="Comparativo Año Actual vs Anterior" theme="info" icon="fas fa-chart-line" collapsible>
                 <canvas id="graficoComparativo" style="min-height: 300px;"></canvas>
             </x-adminlte-card>
         </div>
 
         <!-- Gráfico de barras: Facturado vs Ingresos -->
-        <div class="col-md-4">
+        <div class="col-sm-4">
             <x-adminlte-card title="Total Facturado vs Ingresos" theme="warning" icon="fas fa-chart-bar" collapsible>
                 <canvas id="graficoFacturadoIngresos" style="min-height: 300px;"></canvas>
             </x-adminlte-card>
@@ -333,6 +341,10 @@
 @section('css')
     {{-- Add here extra stylesheets --}}
     {{-- <link rel="stylesheet" href="/css/admin_custom.css"> --}}
+    <!-- Estilos -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+
 @stop
 
 @section('js')
@@ -628,32 +640,91 @@
             document.getElementById("facturaQuickRange").value = "last30";
             setFacturaRange("last30");
         });
+
+        // Cargar gráfico de clientes, comparativo y facturado vs ingresos
+        // Variables globales para los gráficos de clientes, comparativo y facturado vs ingresos
+
+        flatpickr("#rango_clientes_fp", {
+            mode: "range",
+            dateFormat: "Y-m-d",
+            locale: "es",
+            onClose: function (selectedDates) {
+                if (selectedDates.length === 2) {
+                    facturaStart = selectedDates[0].toISOString().split("T")[0];
+                    facturaEnd = selectedDates[1].toISOString().split("T")[0];
+                    loadGraficoClientes();
+                }
+            }
+        });
+        document.getElementById('rango_clientes').addEventListener('change', function () {
+            const value = this.value;
+            const today = new Date();
+            const start = new Date();
+
+            if (value === 'custom') {
+                document.getElementById('rango_clientes_fp').disabled = false;
+                return;
+            }
+
+            document.getElementById('rango_clientes_fp').disabled = true;
+
+            switch (value) {
+                case 'last7':
+                    start.setDate(today.getDate() - 6);
+                    break;
+                case 'last30':
+                    start.setDate(today.getDate() - 29);
+                    break;
+                case 'last90':
+                    start.setDate(today.getDate() - 89);
+                    break;
+                case 'thisYear':
+                    start.setMonth(0, 1);
+                    break;
+            }
+
+            facturaStart = start.toISOString().split("T")[0];
+            facturaEnd = today.toISOString().split("T")[0];
+
+            loadGraficoClientes();
+        });
         function loadGraficoClientes() {
-        const params = new URLSearchParams({ inicio: facturaStart, fin: facturaEnd });
+            const params = new URLSearchParams({ inicio: facturaStart, fin: facturaEnd });
 
-        fetch(`/facturas/por-cliente?${params.toString()}`)
-            .then(res => res.json())
-            .then(data => {
-                const labels = data.map(d => d.cliente);
-                const valores = data.map(d => d.total_facturado);
+            fetch(`/facturas/por-cliente?${params.toString()}`)
+                .then(res => res.json())
+                .then(data => {
+                    const labels = data.map(d => d.cliente);
+                    const valores = data.map(d => d.total_facturado);
 
-                const ctx = document.getElementById('graficoClientes').getContext('2d');
-                if (window.clienteChart) window.clienteChart.destroy();
+                    const ctx = document.getElementById('graficoClientes').getContext('2d');
+                    if (window.clienteChart) window.clienteChart.destroy();
 
-                window.clienteChart = new Chart(ctx, {
-                    type: 'pie',
-                    data: {
-                        labels,
-                        datasets: [{
-                            label: 'Total Facturado',
-                            data: valores,
-                            backgroundColor: labels.map(() => `hsl(${Math.random() * 360}, 60%, 70%)`)
-                        }]
-                    }
+                    window.clienteChart = new Chart(ctx, {
+                        type: 'pie',
+                        data: {
+                            labels,
+                            datasets: [{
+                                label: 'Total Facturado',
+                                data: valores,
+                                backgroundColor: labels.map(() => `hsl(${Math.random() * 360}, 60%, 70%)`)
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    position: 'bottom'
+                                }
+                            }
+                        }
+                    });
                 });
-            });
-    }
-
+        }
+        document.addEventListener("DOMContentLoaded", function () {
+            document.getElementById('rango_clientes').value = 'last90';
+            document.getElementById('rango_clientes').dispatchEvent(new Event('change'));
+        });
     function loadGraficoComparativo() {
         fetch(`/facturas/comparativo-anual`)
             .then(res => res.json())
