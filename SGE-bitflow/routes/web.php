@@ -16,6 +16,10 @@ use App\Http\Controllers\FacturacionController;
 use App\Http\Controllers\CostoController;
 use App\Http\Controllers\SubcategoriaController;
 
+
+Route::get('/facturas/por-cliente', [FacturacionController::class, 'graficoPorCliente']);
+Route::get('/facturas/comparativo-anual', [FacturacionController::class, 'comparativoAnual']);
+Route::get('/facturas/facturado-vs-ingresos', [FacturacionController::class, 'facturadoVsIngresos']);
 Route::get('/facturas/kpi', [FacturacionController::class, 'kpi']);
 
 Route::get('/cotizaciones/kpi', [CotizacionController::class, 'getCotizacionesKpi'])->name('cotizaciones.kpi');

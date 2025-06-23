@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Reader\Csv;
+use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\Shared\Date as ExcelDate;
 
 class FacturacionController extends Controller
@@ -17,6 +18,82 @@ class FacturacionController extends Controller
      * Display a listing of the resource.
      */
 
+     public function graficoPorCliente(Request $request)
+    {
+        $inicio = $request->input('inicio');
+        $fin = $request->input('fin');
+        if (!$inicio || !$fin) {
+            return response()->json(['error' => 'Faltan fechas'], 400);
+        }
+        $data = DB::table('facturacion')
+            ->select('razon_social_receptor as cliente', DB::raw('SUM(total) as total_facturado'))
+            ->where('estado', 'Pagada')
+            ->whereBetween('fecha_emision', [$inicio, $fin])
+            ->groupBy('razon_social_receptor')
+            ->orderByDesc('total_facturado')
+            ->get();
+
+        return response()->json($data);
+    }
+
+    public function comparativoAnual()
+    {
+        $datos = DB::table('facturacion')
+            ->select(
+                DB::raw('MONTH(fecha_emision) as mes'),
+                DB::raw('YEAR(fecha_emision) as anio'),
+                DB::raw('SUM(total) as total')
+            )
+            ->where('estado', 'Pagada')
+            ->whereIn(DB::raw('YEAR(fecha_emision)'), [now()->year, now()->year - 1])
+            ->groupBy(DB::raw('YEAR(fecha_emision)'), DB::raw('MONTH(fecha_emision)'))
+            ->orderBy('mes')
+            ->get();
+
+        $res = [
+            'labels' => ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'],
+            'datasets' => [
+                'Año ' . (now()->year - 1) => array_fill(0, 12, 0),
+                'Año ' . now()->year => array_fill(0, 12, 0),
+            ]
+        ];
+
+        foreach ($datos as $d) {
+            $res['datasets']['Año ' . $d->anio][$d->mes - 1] = round($d->total, 0);
+        }
+
+        return response()->json($res);
+    }
+
+    public function facturadoVsIngresos()
+    {
+        $year = now()->year;
+
+        $query = DB::table('facturacion')
+            ->select(
+                DB::raw('MONTH(fecha_emision) as mes'),
+                DB::raw('SUM(total) as facturado'),
+                DB::raw('SUM(CASE WHEN estado = "Pagada" THEN total ELSE 0 END) as ingresos')
+            )
+            ->whereYear('fecha_emision', $year)
+            ->groupBy(DB::raw('MONTH(fecha_emision)'))
+            ->orderBy('mes')
+            ->get();
+
+        $facturado = array_fill(0, 12, 0);
+        $ingresos = array_fill(0, 12, 0);
+
+        foreach ($query as $d) {
+            $facturado[$d->mes - 1] = $d->facturado;
+            $ingresos[$d->mes - 1] = $d->ingresos;
+        }
+
+        return response()->json([
+            'labels' => ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'],
+            'facturado' => $facturado,
+            'ingresos' => $ingresos
+        ]);
+    }
      public function kpi(Request $request)
     {
         $inicio = $request->input('inicio');

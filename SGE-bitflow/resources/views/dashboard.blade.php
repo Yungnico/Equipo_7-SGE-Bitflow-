@@ -299,6 +299,28 @@
         </x-adminlte-card>
     </div>
 </div>
+<div class="row">
+        <!-- Gráfico de torta por cliente -->
+        <div class="col-md-4">
+            <x-adminlte-card title="Montos facturados por cliente" theme="teal" icon="fas fa-chart-pie" collapsible>
+                <canvas id="graficoClientes" style="min-height: 300px;"></canvas>
+            </x-adminlte-card>
+        </div>
+
+        <!-- Gráfico de serie comparativo año actual vs anterior -->
+        <div class="col-md-4">
+            <x-adminlte-card title="Comparativo Año Actual vs Anterior" theme="info" icon="fas fa-chart-line" collapsible>
+                <canvas id="graficoComparativo" style="min-height: 300px;"></canvas>
+            </x-adminlte-card>
+        </div>
+
+        <!-- Gráfico de barras: Facturado vs Ingresos -->
+        <div class="col-md-4">
+            <x-adminlte-card title="Total Facturado vs Ingresos" theme="warning" icon="fas fa-chart-bar" collapsible>
+                <canvas id="graficoFacturadoIngresos" style="min-height: 300px;"></canvas>
+            </x-adminlte-card>
+        </div>
+    </div>
 
 @endsection
 
@@ -311,7 +333,6 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-
         // Variables globales para el gráfico de KPIs
 
         let showingChart = true;
@@ -601,5 +622,93 @@
             document.getElementById("facturaQuickRange").value = "last30";
             setFacturaRange("last30");
         });
+        function loadGraficoClientes() {
+        const params = new URLSearchParams({ inicio: facturaStart, fin: facturaEnd });
+
+        fetch(`/facturas/por-cliente?${params.toString()}`)
+            .then(res => res.json())
+            .then(data => {
+                const labels = data.map(d => d.cliente);
+                const valores = data.map(d => d.total_facturado);
+
+                const ctx = document.getElementById('graficoClientes').getContext('2d');
+                if (window.clienteChart) window.clienteChart.destroy();
+
+                window.clienteChart = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels,
+                        datasets: [{
+                            label: 'Total Facturado',
+                            data: valores,
+                            backgroundColor: labels.map(() => `hsl(${Math.random() * 360}, 60%, 70%)`)
+                        }]
+                    }
+                });
+            });
+    }
+
+    function loadGraficoComparativo() {
+        fetch(`/facturas/comparativo-anual`)
+            .then(res => res.json())
+            .then(data => {
+                const ctx = document.getElementById('graficoComparativo').getContext('2d');
+                if (window.comparativoChart) window.comparativoChart.destroy();
+
+                window.comparativoChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: data.labels,
+                        datasets: Object.entries(data.datasets).map(([label, valores], i) => ({
+                            label,
+                            data: valores,
+                            borderColor: i === 0 ? 'rgba(255,99,132,1)' : 'rgba(54,162,235,1)',
+                            backgroundColor: 'transparent',
+                            tension: 0.2
+                        }))
+                    }
+                });
+            });
+    }
+
+    function loadGraficoFacturadoVsIngresos() {
+        fetch('/facturas/facturado-vs-ingresos')
+            .then(res => res.json())
+            .then(data => {
+                const ctx = document.getElementById('graficoFacturadoIngresos').getContext('2d');
+                if (window.facturadoIngresosChart) window.facturadoIngresosChart.destroy();
+
+                window.facturadoIngresosChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: data.labels,
+                        datasets: [
+                            {
+                                label: 'Total Facturado',
+                                data: data.facturado,
+                                backgroundColor: 'rgba(54, 162, 235, 0.5)'
+                            },
+                            {
+                                label: 'Ingresos (Pagadas)',
+                                data: data.ingresos,
+                                backgroundColor: 'rgba(75, 192, 192, 0.5)'
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: { beginAtZero: true }
+                        }
+                    }
+                });
+            });
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        loadGraficoClientes();
+        loadGraficoComparativo();
+        loadGraficoFacturadoVsIngresos();
+    });
     </script>
 @endsection
