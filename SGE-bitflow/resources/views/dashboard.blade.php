@@ -1,6 +1,12 @@
 @extends('adminlte::page')
-@section('plugins.ChartJS', true)
+
 @section('title', 'Dashboard')
+
+@section('content_header')
+    @can('dashboard')
+        <h1>Futuras Métricas</h1>
+    @endcan
+@stop
 
 @section('content')
 <div class="row pt-5">
@@ -320,14 +326,14 @@
                 <canvas id="graficoFacturadoIngresos" style="min-height: 300px;"></canvas>
             </x-adminlte-card>
         </div>
-    </div>
+</div>
 
 @endsection
 
 @section('css')
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-@endsection
-
+    {{-- Add here extra stylesheets --}}
+    {{-- <link rel="stylesheet" href="/css/admin_custom.css"> --}}
+@stop
 
 @section('js')
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>

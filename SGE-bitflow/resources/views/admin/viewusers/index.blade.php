@@ -34,12 +34,12 @@
                             <td>{{ $user->email }}</td>
                             <td width="10px">
                                 @can('admin.viewusers.edit')     
-                                    <a class="btn btn-primary" href="{{route('viewusers.edit', $user)}}"><i class="fas fa-edit"></i></a>
+                                    <a class="btn btn-outline-primary" href="{{route('viewusers.edit', $user)}}"><i class="fas fa-edit"></i></a>
                                 @endcan
                                 <form id="eliminar_usuario_{{ $user->id }}" action="{{ route('viewusers.destroy', $user) }}" method="POST" class="d-inline eliminar-usuario-form">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-eliminar-usuario"><i class="fas fa-trash"></i></button>
+                                    <button type="submit" class="btn btn-outline-danger btn-eliminar-usuario"><i class="fas fa-trash"></i></button>
                                 </form>
                             </td>
                         </tr>

@@ -10,7 +10,10 @@ use App\Http\Controllers\CrudUserController;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\MonedaController;
 use App\Http\Controllers\CotizacionController;
+use App\Models\Cotizacion;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\ClienteExportController;
 use App\Http\Controllers\TransferenciaController;
 use App\Http\Controllers\FacturacionController;
 use App\Http\Controllers\CostoController;
@@ -90,10 +93,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/cotizaciones/{id}/pdf', [CotizacionController::class, 'generarPDF'])->name('cotizaciones.generarPDF');
     Route::get('/cotizaciones/{id}/preparar-pdf', [CotizacionController::class, 'prepararPDF'])->middleware('can:cotizaciones.prepararpdf')->name('cotizaciones.prepararPDF')->middleware('auth'); //middleware puesto
     Route::post('cotizaciones/{id}/enviar', [CotizacionController::class, 'enviarCorreo'])->name('cotizaciones.enviar')->middleware('auth');
-    Route::post('/cotizaciones/{id}/enviar', [CotizacionController::class, 'enviarCorreo'])->name('cotizaciones.enviar');
-
-    Route::get('/cotizaciones/{id}/Email', [CotizacionController::class, 'prepararEmail'])->middleware('can:cotizaciones.email')->name('cotizaciones.prepararEmail');//middleware puesto
-    Route::get('/cotizaciones/{id}/edit', [CotizacionController::class, 'edit'])->middleware('can:cotizaciones.edit')->name('cotizaciones.edit');//middleware puesto
+    Route::get('/cotizaciones/{id}/Email', [CotizacionController::class, 'prepararEmail'])->middleware('can:cotizaciones.email')->name('cotizaciones.prepararEmail'); //middleware puesto
+    Route::get('/cotizaciones/{id}/edit', [CotizacionController::class, 'edit'])->middleware('can:cotizaciones.edit')->name('cotizaciones.edit'); //middleware puesto
     Route::put('/cotizaciones/{id}', [CotizacionController::class, 'update'])->name('cotizaciones.editarestado');
 
     #perfil

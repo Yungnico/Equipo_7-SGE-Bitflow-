@@ -21,12 +21,23 @@
     <div class="alert alert-danger">{{ session('error') }}</div>
     @endif
 
-    {{-- Formulario de búsqueda --}}
-    
-    <div class="card mb-3 mt-4">
+    <div class="row align-items-center mb-3 pt-3">
+        <div class="col-md-6 mb-2 mb-md-0 ">
+            
+        </div>
+        <div class="col-md-6 text-md-right">
+            <button class="btn btn-primary" data-toggle="modal" data-target="#modalCrearCliente">Crear Cliente</button>
+            <a href="{{ route('clientes.exportar', array_merge(request()->all(), ['formato_exportacion' => 'pdf'])) }}" class="btn btn-success">Exportar a PDF</a>
+        </div>
+    </div>
+
+
+    @if($clientes->count())
+    <div class="card">
         <div class="card-body">
+
             <form action="{{ route('clientes.index') }}" method="GET">
-                <div class="form-row row align-items-center g-2">
+                <div class="form-row row align-items-center g-2 mt-2">
                     <div class="col-md-4">
                         <input type="text" name="razon_social" class="form-control text-center" placeholder="Razón social" value="{{ request('razon_social') }}">
                     </div>
@@ -46,27 +57,6 @@
                     </div>
                 </div>
             </form>
-        </div>
-    </div>
-
-    
-
-
-
-    <div class="row align-items-center mb-3">
-        <div class="col-md-6 mb-2 mb-md-0 ">
-            
-        </div>
-        <div class="col-md-6 text-md-right">
-            <button class="btn btn-primary" data-toggle="modal" data-target="#modalCrearCliente">Crear Cliente</button>
-            <a href="{{ route('clientes.exportar', array_merge(request()->all(), ['formato_exportacion' => 'pdf'])) }}" class="btn btn-success">Exportar a PDF</a>
-        </div>
-    </div>
-
-
-    @if($clientes->count())
-    <div class="card">
-        <div class="card-body">
 
                 <table id="clientes-table" class="table table-striped table-bordered table-hover">
                     <thead>
@@ -273,6 +263,7 @@
         $('#clientes-table').DataTable({
             responsive: true,
             autoWidth: false,
+            searching: false,
             language: {
                 url: '{{ asset("datatables/es-CL.json")}}'
             }
