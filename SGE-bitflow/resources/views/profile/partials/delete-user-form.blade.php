@@ -1,14 +1,4 @@
 <section class="space-y-6">
-    <header>
-        <h2 class="text-lg font-medium text-black">
-            <h2>{{ __('Eliminar cuenta') }}</h2>
-        </h2>
-
-        <p class="mt-1 text-sm text-black">
-            <h6>{{ __('Una vez eliminada tu cuenta toda la información sera eliminada permanentemente.') }}</h6>
-        </p>
-    </header>
-
     <x-danger-button
         x-data=""
         x-on:click.prevent="$dispatch('open-modal', 'confirm-user-deletion')"

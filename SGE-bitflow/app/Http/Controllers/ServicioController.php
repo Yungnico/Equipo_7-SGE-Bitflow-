@@ -6,7 +6,6 @@ use App\Models\Servicio;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Categoria;
-use App\Models\Moneda;
 use App\Models\Paridad;
 
 class ServicioController extends Controller
@@ -98,7 +97,7 @@ class ServicioController extends Controller
     }
     public function getServicio($id)
     {
-    $servicio = Servicio::with('moneda')->findOrFail($id);
+        $servicio = Servicio::with('moneda')->findOrFail($id);
         return response()->json([
             'descripcion' => $servicio->descripcion,
             'precio' => $servicio->precio,

@@ -43,7 +43,7 @@
                                         @endforeach
                                     </select>
                                     <div class="input-group-append">
-                                        <button class="btn btn-outline-secondary" type="button" data-toggle="tooltip" data-placement="top" title="Aquí debes Seleccionar el cliente al que se le va a realizar la cotización.">
+                                        <button class="btn btn-outline-secondary" type="button" data-toggle="tooltip" data-placement="top" title="Aquí debes seleccionar el cliente al que se le va a realizar la cotización.">
                                             <i class="fas fa-question-circle"></i>
                                         </button>
                                     </div>
@@ -74,7 +74,7 @@
                                 <div class="input-group">
                                     <input type="text" class="form-control" id="rut" name="rut" value="">
                                     <div class="input-group-append">
-                                        <button class="btn btn-outline-secondary" type="button" data-toggle="tooltip" data-placement="top" title="Aquí se muestra el RUT del cliente seleccionado, en caso de error, cambiar">
+                                        <button class="btn btn-outline-secondary" type="button" data-toggle="tooltip" data-placement="top" title="Aquí se muestra el RUT del cliente seleccionado, en caso de error, cambiar.">
                                             <i class="fas fa-question-circle"></i>
                                         </button>
                                     </div>
@@ -105,7 +105,7 @@
                                         <option value="">Seleccione un telefono</option>
                                     </select>
                                     <div class="input-group-append">
-                                        <button class="btn btn-outline-secondary" type="button" data-toggle="tooltip" data-placement="top" title="Aquí debes seleccionar el telefono del cliente al que se le va a enviar la cotización.">
+                                        <button class="btn btn-outline-secondary" type="button" data-toggle="tooltip" data-placement="top" title="Aquí debes seleccionar el teléfono del cliente al que se le va a enviar la cotización.">
                                             <i class="fas fa-question-circle"></i>
                                         </button>
                                     </div>
@@ -246,11 +246,11 @@
                     <form id="ItemsLform">
                         <div class="form-row">
                             <div class="form-group col-md-6">
-                                <label for="itemL">Ítems Libres:</label>
+                                <label for="itemL">Ítems libres:</label>
                                 <div class="input-group">
                                     <input type="text" class="form-control" id="itemsL" name="itemsL" value="" required>
                                     <div class="input-group-append">
-                                        <button class="btn btn-outline-secondary" type="button" data-toggle="tooltip" data-placement="top"  title="Aqui debes ingresar el nombre del item libre que deseas agregar a la cotización.">
+                                        <button class="btn btn-outline-secondary" type="button" data-toggle="tooltip" data-placement="top"  title="Aquí debes ingresar el nombre del ítem libre que deseas agregar a la cotización.">
                                             <i class="fas fa-question-circle"></i>
                                         </button>
                                     </div>
@@ -262,7 +262,7 @@
                                 <div class="input-group">
                                     <input type="text" class="form-control" id="descripcion_itemsL" name="descripcion" value="" required>
                                     <div class="input-group-append">
-                                        <button class="btn btn-outline-secondary" type="button" data-toggle="tooltip" data-placement="top"  title="Aquí debes ingresar la descripcion del servicio seleccionado.">
+                                        <button class="btn btn-outline-secondary" type="button" data-toggle="tooltip" data-placement="top"  title="Aquí debes ingresar la descripción del servicio seleccionado.">
                                             <i class="fas fa-question-circle"></i>
                                         </button>
                                     </div>
@@ -275,11 +275,11 @@
                                 <input type="number" class="form-control" id="cantidad_itemsL" value="1" required>
                             </div>
                             <div class="form-group col-md-6">
-                                <label>Precio Unitario:</label>
+                                <label>Precio unitario:</label>
                                 <input type="number" class="form-control" id="precio_itemsL" value="1500" required>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-success allign-center">Agregar Producto al Catálogo</button>
+                        <button type="submit" class="btn btn-success allign-center">Agregar producto al catálogo</button>
                     </form>
                 </div>
             </div> 

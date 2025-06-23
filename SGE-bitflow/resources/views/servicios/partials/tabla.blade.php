@@ -1,4 +1,4 @@
-<div class="container mt-5">
+<div class="py-3">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="h3">Servicios Registrados</h1>
     </div>
@@ -32,7 +32,7 @@
     <div class="card">
         <div class="card-body">
             <table id="tabla-servicios" class="table table-striped table-bordered align-middle">
-                <thead class="table-dark">
+                <thead>
                     <tr>
                         <th>Nombre</th>
                         <th>Descripción</th>
@@ -47,20 +47,30 @@
                         <th></th>
                         <th></th>
                         <th>
+                            @php
+                            $monedasUsadas = $servicios->pluck('moneda.moneda')->filter()->unique();
+                            @endphp
+
                             <select id="filtro-moneda" class="form-select">
                                 <option value="">Moneda</option>
-                                @foreach($monedas as $moneda)
-                                <option value="{{ $moneda->id }}">{{ $moneda->moneda }}</option>
+                                @foreach($monedasUsadas as $moneda)
+                                <option value="{{ $moneda }}">{{ $moneda }}</option>
                                 @endforeach
                             </select>
+
                         </th>
                         <th>
+                            @php
+                            $categoriasUsadas = $servicios->pluck('categoria.nombre')->filter()->unique();
+                            @endphp
+
                             <select id="filtro-categoria" class="form-select">
                                 <option value="">Categoría</option>
-                                @foreach($categorias as $categoria)
-                                <option value="{{ $categoria->nombre }}">{{ $categoria->nombre }}</option>
+                                @foreach($categoriasUsadas as $categoria)
+                                <option value="{{ $categoria }}">{{ $categoria }}</option>
                                 @endforeach
                             </select>
+
                         </th>
                         <th></th>
                     </tr>
@@ -74,7 +84,7 @@
                         <td>{{ $servicio->moneda->moneda ?? 'Sin moneda' }}</td>
                         <td>{{ $servicio->categoria->nombre ?? 'Sin categoría' }}</td>
                         <td class="d-flex gap-2 justify-content-center">
-                            <button class="btn btn-sm btn-primary"
+                            <button class="btn btn-sm btn-outline-primary"
                                 data-bs-toggle="modal"
                                 data-bs-target="#modalEditarServicio"
                                 data-id="{{ $servicio->id }}"
@@ -83,12 +93,12 @@
                                 data-precio="{{ $servicio->precio }}"
                                 data-moneda="{{ $servicio->moneda->moneda}}"
                                 data-categoria="{{ $servicio->categoria_id }}">
-                                <i class="fas fa-pencil-alt"></i>
+                                <i class="fas fa-edit"></i>
                             </button>
                             <form action="{{ route('servicios.destroy', $servicio->id) }}" method="POST" style="display:inline-block;">
                                 @csrf
                                 @method('DELETE')
-                                <button class="btn btn-sm btn-danger" onclick="return confirm('¿Estás seguro de eliminar este servicio?')">
+                                <button class="btn btn-sm btn-outline-danger" onclick="return confirm('¿Estás seguro de eliminar este servicio?')">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </form>

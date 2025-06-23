@@ -10,19 +10,56 @@ use Illuminate\Support\Facades\Session;
 class ParidadController extends Controller
 {
     protected $table = 'paridades';
-    private const MONEDAS_VALIDAS = ['USD', 'UF', 'CLP'];
+    private const MONEDAS_VALIDAS = ['CLP', 'USD', 'UF', 'UTM', 'EUR', 'GBP', 'CHF', 'JPY', 'HKD', 'CAD', 'CNY', 'AUD', 'BRL', 'RUB', 'MXN'];
+
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'moneda' => 'required|string|max:10',
+            'valor' => 'required|numeric|min:0',
+            'fecha' => 'nullable|date',
+        ]);
+
+        $fecha = $request->input('fecha') ?? now()->toDateString();
+
+        $existe = Paridad::where('moneda', $request->moneda)
+            ->where('fecha', $fecha)
+            ->exists();
+
+        if ($existe) {
+            return redirect()->back()->with('error', 'Ya existe una paridad con esa moneda y fecha.');
+        }
+
+        Paridad::create([
+            'moneda' => $request->moneda,
+            'valor' => $request->valor,
+            'fecha' => $fecha
+        ]);
+
+        return redirect()->route('paridades.index')->with('success', 'Paridad agregada exitosamente.');
+    }
+
 
     public function index()
     {
-        $paridades = Paridad::whereIn('moneda', self::MONEDAS_VALIDAS)
-            ->orderBy('fecha', 'desc')
-            ->get()
-            ->groupBy(function ($item) {
-                return $item->moneda . '-' . \Carbon\Carbon::parse($item->fecha)->format('Y-m'); // Agrupar por mes
-            });
+        $sub = \DB::table('paridades')
+            ->selectRaw('moneda, MAX(fecha) as fecha')
+            ->groupBy('moneda');
 
-        return view('paridades.index', compact('paridades'));
+        $paridades = Paridad::joinSub($sub, 'ultimas', function ($join) {
+            $join->on('paridades.moneda', '=', 'ultimas.moneda')
+                ->on('paridades.fecha', '=', 'ultimas.fecha');
+        })->get();
+
+        $todasLasMonedas = ['CLP', 'USD', 'UF', 'UTM', 'EUR', 'GBP', 'CHF', 'JPY', 'HKD', 'CAD', 'CNY', 'AUD', 'BRL', 'RUB', 'MXN'];
+        $monedasUsadas = $paridades->pluck('moneda')->toArray();
+        $monedasDisponibles = array_diff($todasLasMonedas, $monedasUsadas);
+
+        return view('paridades.index', compact('paridades', 'monedasDisponibles'));
     }
+
+
 
 
     public function fetchFromAPI()
@@ -72,9 +109,35 @@ class ParidadController extends Controller
         ]);
 
         $nuevoValor = $request->input('valor');
+        $moneda = $paridad->moneda;
 
-        if ($nuevoValor < $paridad->valor) {
-            Session::flash('warning', "El nuevo valor es menor que el valor anterior.");
+        // Comportamiento especial para USD y UF
+        if (in_array($moneda, ['USD', 'UF'])) {
+            $response = Http::get('https://mindicador.cl/api');
+
+            if ($response->successful()) {
+                $data = $response->json();
+                $clave = $moneda === 'USD' ? 'dolar' : 'uf';
+
+                if (isset($data[$clave]['valor'])) {
+                    $valorAPI = $data[$clave]['valor'];
+
+                    if ($nuevoValor < $valorAPI) {
+                        Session::flash('warning', "El nuevo valor es menor que el de la API.");
+                    } elseif ($nuevoValor > $valorAPI) {
+                        Session::flash('warning', "El valor es mayor al valor de la API.");
+                    } elseif ($nuevoValor == $valorAPI && $paridad->valor > $valorAPI) {
+                        Session::flash('info', "✅ El valor fue actualizado al valor actual de la API.");
+                    }
+                }
+            } else {
+                Session::flash('error', 'No se pudo consultar el valor actual de la API.');
+            }
+        } else {
+            // Comparación normal para otras monedas
+            if ($nuevoValor < $paridad->valor) {
+                Session::flash('warning', "El nuevo valor es menor que el valor anterior.");
+            }
         }
 
         $paridad->valor = $nuevoValor;
@@ -98,4 +161,10 @@ class ParidadController extends Controller
 
         return redirect()->route('paridades.index');
     }
+    public function destroy(Paridad $paridad)
+    {
+        $paridad->delete();
+        return redirect()->route('paridades.index')->with('success', 'Paridad eliminada correctamente.');
+    }
+
 }

@@ -1,15 +1,6 @@
 <section>
-    <header>
-        <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
-            <h2>{{ __('Cambiar contraseña') }}</h2>
-        </h2>
 
-        <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-            <h5>{{ __('Asegura tu cuenta usando una contraseña larga y aleatoria para estar seguro.') }}</h5>
-        </p>
-    </header>
-
-    <form method="post" action="{{ route('password.update') }}" class="mt-6 space-y-6">
+    <form id="actualizar_contraseña" method="post" action="{{ route('password.update') }}" class="mt-6 space-y-6">
         @csrf
         @method('put')
 
@@ -32,7 +23,7 @@
         </div>
 
         <div class="flex items-center gap-4">
-            <x-custom-button >{{ __('Guardar') }}</x-primary-button>
+            <x-custom-button >{{ __('Guardar') }}</x-custom-button>
 
             @if (session('status') === 'password-updated')
                 <p
@@ -46,6 +37,3 @@
         </div>
     </form>
 </section>
-
-
-<!-- aqui ver lo del sweet alert -->

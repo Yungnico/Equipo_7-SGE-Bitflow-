@@ -25,8 +25,9 @@
                         <label for="moneda" class="form-label">Moneda</label>
                         <select name="moneda_id" class="form-select" required>
                             @foreach($monedas as $moneda)
-                            <option value="{{ $moneda->id }}">{{ $moneda->codigo }} - {{ $moneda->nombre }}</option>
+                            <option value="{{ $moneda->id }}">{{ $moneda->moneda }} - {{ number_format($moneda->valor, 2) }}</option>
                             @endforeach
+
                         </select>
                     </div>
                     <div class="mb-3">
@@ -39,7 +40,6 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                     <button type="submit" class="btn btn-success">Guardar</button>
                 </div>
             </div>
@@ -76,8 +76,9 @@
                         <label for="editar-moneda" class="form-label">Moneda</label>
                         <select id="editar-moneda_id" name="moneda_id" class="form-select" required>
                             @foreach($monedas as $moneda)
-                            <option value="{{ $moneda->id }}">{{ $moneda->id }} - {{ $moneda->moneda }}</option>
+                            <option value="{{ $moneda->id }}">{{ $moneda->moneda }} - {{ number_format($moneda->valor, 2) }}</option>
                             @endforeach
+
                         </select>
                     </div>
                     <div class="mb-3">
@@ -90,7 +91,6 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                     <button type="submit" class="btn btn-primary">Actualizar</button>
                 </div>
             </div>
