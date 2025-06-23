@@ -21,6 +21,7 @@
         <tbody>
             @foreach ($cotizaciones as $cotizacion)
                 <tr>
+<<<<<<< HEAD
                     <td>{{ $cotizacion->codigo_cotizacion }}</td>
                     <td>{{ $cotizacion->cliente->razon_social }}</td>
                     <td>{{ $cotizacion->fecha_cotizacion }}</td>
@@ -39,6 +40,42 @@
                             <i class="fas fa-file-pdf"></i>
                         </a>
                         <a class="btn btn-sm btn-primary"  onclick="crearVentanaCorreo(  '{{ $cotizacion->codigo_cotizacion }}',  '{{ $cotizacion->id_cotizacion }}',  '{{ $cotizacion->email }}',  '{{ csrf_token() }}',  '{{ route('cotizaciones.enviar', $cotizacion->id_cotizacion) }}')">
+=======
+                    <th>Código Cotización</th>
+                    <th>Cliente </th>
+                    <th>Fecha</th>
+                    <th>Moneda</th>
+                    <th>Total</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                    
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($cotizaciones as $cotizacion)
+                    <tr>
+                        <td>{{ $cotizacion->codigo_cotizacion }}</td>
+                        <td>{{ $cotizacion->cliente->razon_social }}</td>
+                        <td>{{ $cotizacion->fecha_cotizacion }}</td>
+                        <td>{{ $cotizacion->moneda }}</td>
+                        <td>{{$cotizacion->total_iva}}</td>
+                        <td>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span>{{ $cotizacion->estado }}</span>
+                                <a href="{{ route('cotizaciones.edit', $cotizacion->id_cotizacion) }}" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                            </div>
+                        </td>
+                        <td class="text-center">
+                            <a href="{{ route('cotizaciones.prepararPDF', ['id' => $cotizacion->id_cotizacion]) }}" class="btn btn-sm btn-outline-secondary">
+                                <i class="fas fa-file-pdf"></i>
+                            </a>
+                            <a class="btn btn-sm btn-outline-info"  onclick="crearVentanaCorreo(  '{{ $cotizacion->codigo_cotizacion }}',  '{{ $cotizacion->id_cotizacion }}',  '{{ $cotizacion->email }}',  '{{ csrf_token() }}',  '{{ route('cotizaciones.enviar', $cotizacion->id_cotizacion) }}')">
+                                    <i class="fas fa-envelope"></i>
+                            </a>
+                            {{-- <a href="{{ route('cotizaciones.prepararEmail', ['id' => $cotizacion->id_cotizacion]) }}" class="btn btn-sm btn-info">
+>>>>>>> Dev
                                 <i class="fas fa-envelope"></i>
                         </a>
                         {{-- <a href="{{ route('cotizaciones.prepararEmail', ['id' => $cotizacion->id_cotizacion]) }}" class="btn btn-sm btn-primary">

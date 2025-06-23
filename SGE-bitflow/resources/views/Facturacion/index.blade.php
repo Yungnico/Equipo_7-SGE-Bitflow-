@@ -15,15 +15,10 @@
     @endif
     <div class="content pt-4">
 
-        <div class="row align-items-center mb-3">
-            <div class="col-md-6 mb-2 mb-md-0">
-                <!--<a href=" route('clientes.create') }}" class="btn btn-primary">Crear Cliente</a> -->
-                <button class="btn btn-primary" data-toggle="modal" data-target="#modalfacturas">Importar Facturas</button>
-            
-            </div>
-            <div class="col-md-6 text-md-right">
-                <button class="btn btn-primary" data-toggle="modal" data-target="#modal_agregacionfacturas">Agregar Facturas</button>
-            </div>
+
+        <div class="mb-3 text-right">
+            <button class="btn btn-primary" data-toggle="modal" data-target="#modalfacturas">Importar Facturas</button>
+            <button class="btn btn-primary" data-toggle="modal" data-target="#modal_agregacionfacturas">Agregar Facturas</button>
         </div>
         <div class="card p-3 mt-4">
             <div class="content">

@@ -1,11 +1,11 @@
 @extends('adminlte::page')
-
+@section('title', 'Editar estado de Cotización')
 @section('content')
 <div class="container pt-3">
 
     <div class="card">
         <div class="card-header pt-3">
-            <h3 class="card-title">Editar Estado de Cotización</h3>
+            <h3 class="card-title">Editar Estado de cotización</h3>
         </div>
         <div class="card-body">
             <form method="POST" action="{{ route('cotizaciones.editarestado', $cotizacion->id_cotizacion) }}" enctype="multipart/form-data">
@@ -49,6 +49,7 @@
                 </div>
     
                 <button type="submit" class="btn btn-primary">Guardar</button>
+                <a href="{{ route('cotizaciones.index') }}" class="btn btn-secondary">Cancelar</a>
             </form>
         </div>
     </div>
