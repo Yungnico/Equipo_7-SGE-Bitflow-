@@ -304,7 +304,7 @@
 </div>
 <div class="row">
         <!-- Gráfico de torta por cliente -->
-        <div class="col-sm-4">
+        <div class="col">
             <x-adminlte-card title="Montos facturados por cliente" theme="teal" icon="fas fa-chart-pie" collapsible>
                 <div class="d-flex justify-content-between align-items-center mb-2">
                     <select id="rango_clientes" class="form-control ">
@@ -322,20 +322,20 @@
         </div>
 
         <!-- Gráfico de serie comparativo año actual vs anterior -->
-        <div class="col-sm-4">
+        <div class="col">
             <x-adminlte-card title="Comparativo Año Actual vs Anterior" theme="info" icon="fas fa-chart-line" collapsible>
                 <canvas id="graficoComparativo" style="min-height: 300px;"></canvas>
             </x-adminlte-card>
         </div>
 
-        <!-- Gráfico de barras: Facturado vs Ingresos -->
-        <div class="col-sm-4">
-            <x-adminlte-card title="Total Facturado vs Ingresos" theme="warning" icon="fas fa-chart-bar" collapsible>
-                <canvas id="graficoFacturadoIngresos" style="min-height: 300px;"></canvas>
-            </x-adminlte-card>
-        </div>
 </div>
-<div class="row mt-3">
+<div class="row">
+    <!-- Gráfico de barras: Facturado vs Ingresos -->
+    <div class="col">
+        <x-adminlte-card title="Total Facturado vs Ingresos" theme="warning" icon="fas fa-chart-bar" collapsible>
+            <canvas id="graficoFacturadoIngresos" style="min-height: 300px;"></canvas>
+        </x-adminlte-card>
+    </div>
     <div class="col">
         <x-adminlte-card title="Ranking Buenos Clientes" theme="success" icon="fas fa-star" collapsible>
             <div class="d-flex justify-content-between align-items-center mb-2">
