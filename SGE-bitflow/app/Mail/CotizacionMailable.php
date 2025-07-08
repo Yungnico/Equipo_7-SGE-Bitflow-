@@ -18,13 +18,15 @@ class CotizacionMailable extends Mailable
      * Create a new message instance.
      */
     public $asunto, $mensaje, $id,$adjuntarPdf;
-
-    public function __construct($asunto, $mensaje, $id, $adjuntarPdf)
+    public $copia, $cco;
+    public function __construct($asunto, $mensaje, $id, $adjuntarPdf, $copia , $cco )
     {
         $this->asunto = $asunto;
         $this->mensaje = $mensaje;
         $this->id = $id;
         $this->adjuntarPdf = $adjuntarPdf;
+        $this->copia = $copia; // Correo de copia
+        $this->cco = $cco; // Correo de copia oculta
     }
 
     /**
@@ -34,7 +36,13 @@ class CotizacionMailable extends Mailable
     {
         return new Envelope(
             subject: $this->asunto,
-            from: new \Illuminate\Mail\Mailables\Address('hola@gmail.com', 'Bitflow')
+            from: new \Illuminate\Mail\Mailables\Address('hola@gmail.com', 'Bitflow'),
+            cc: [
+                new \Illuminate\Mail\Mailables\Address('' . $this->copia, 'Copia de Bitflow') // Correo de copia,
+            ],
+            bcc: [
+                new \Illuminate\Mail\Mailables\Address('' . $this->cco, 'Copia Oculta de Bitflow') // Correo de copia oculta
+            ],
         );
     }
 

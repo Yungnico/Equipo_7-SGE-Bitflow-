@@ -66,7 +66,7 @@ class FacturacionController extends Controller
 
         foreach ($ranking as $rut => $cliente) {
             $buenosPorDia = array_filter($cliente['facturas_por_dia'], function ($cantidad) {
-                return $cantidad >= 5;
+                return $cantidad > 0;
             });
 
             if (count($buenosPorDia) > 0) {
