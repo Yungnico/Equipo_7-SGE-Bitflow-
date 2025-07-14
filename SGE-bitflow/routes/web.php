@@ -18,6 +18,7 @@ use App\Http\Controllers\TransferenciaController;
 use App\Http\Controllers\FacturacionController;
 use App\Http\Controllers\CostoController;
 use App\Http\Controllers\SubcategoriaController;
+use App\Http\Controllers\CostoCategoriaController;
 
 
 Route::get('/facturas/por-cliente', [FacturacionController::class, 'graficoPorCliente']);
@@ -141,6 +142,16 @@ Route::middleware('auth')->group(function () {
     Route::get('/subcategorias/{categoriaId}', [SubcategoriaController::class, 'getPorCategoria']);
     Route::post('/transferencias/conciliar-egreso', [TransferenciaController::class, 'conciliarEgreso'])->name('transferencias.conciliar.egreso');
 
+    // Rutas para categorías
+    Route::prefix('categorias-costos')->group(function () {
+        Route::get('/', [CostoCategoriaController::class, 'index'])->name('categorias-costos.index');
+        Route::post('/', [CostoCategoriaController::class, 'store'])->name('categorias-costos.store');
+        Route::put('/{id}', [CostoCategoriaController::class, 'update'])->name('categorias-costos.update');
+        Route::delete('/{id}', [CostoCategoriaController::class, 'destroy'])->name('categorias-costos.destroy');
+    });
+
+    // Rutas para subcategorías (usando resource)
+    Route::resource('subcategorias-costos', SubcategoriaController::class)->except(['show']);
 
 
 
@@ -162,7 +173,7 @@ Route::middleware('auth')->group(function () {
         Route::get('contactos/info', [ContactoClienteController::class, 'getContactos'])->name('contactos.info');
     });
     // Rutas de Clientes
-    
+
     Route::get('/clientes/{id}/info', [ClienteController::class, 'getCliente'])->middleware('can:cliente.info')->name('clientes.info'); //middleware puesto
 
 

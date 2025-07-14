@@ -193,7 +193,7 @@ return [
     'classes_body' => '',
     'classes_brand' => '',
     'classes_brand_text' => '',
-    'classes_content_wrapper' => 'bg-white',//importante
+    'classes_content_wrapper' => 'bg-white', //importante
     'classes_content_header' => '',
     'classes_content' => '',
     'classes_sidebar' => 'sidebar-dark-primary elevation-4',
@@ -319,7 +319,7 @@ return [
             'text' => 'Perfil',
             'url' => 'perfil',
             'icon' => 'fas fa-user-cog ',   //fa-fw fa-user para el icono del usuario fontawesone 5 usa admin lte
-            
+
         ],
         [
             'text' => 'Registro de usuarios',
@@ -402,6 +402,12 @@ return [
         [
             'text' => 'Costos',
             'url' => 'costos',
+            'icon' => 'fas fa-dollar-sign',
+            'can' => 'factura.index',
+        ],
+        [
+            'text' => 'Costos categorias',
+            'url' => 'categorias-costos',
             'icon' => 'fas fa-dollar-sign',
             'can' => 'factura.index',
         ],
