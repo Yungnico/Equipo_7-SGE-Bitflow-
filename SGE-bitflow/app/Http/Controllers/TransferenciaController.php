@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 use App\Models\CostosDetalle;
+use App\Models\Facturacion;
 
 class TransferenciaController extends Controller
 {
@@ -165,6 +166,20 @@ class TransferenciaController extends Controller
             $fechaTransferencia = \Carbon\Carbon::parse($transferencia->fecha_transaccion);
 
             // 1. FILTRO POR FECHAS: Buscar todas las cotizaciones con fechas válidas para esta transferencia
+
+            $facturasvigentes = Facturacion::where('estado', '!=', 'Pagada')->get()->filter(function ($factura) use ($fechaTransferencia) {
+                $fechaEmision = \Carbon\Carbon::parse($factura->fecha_emision);
+                $plazo = $factura->cliente->plazo_pago_habil_dias;
+
+                if (!is_numeric($plazo)) return false;
+
+                $fechaLimite = $fechaEmision->copy()->addWeekdays($plazo);
+
+                return $fechaTransferencia->greaterThanOrEqualTo($fechaEmision) &&
+                    $fechaTransferencia->lessThanOrEqualTo($fechaLimite);
+            }); 
+
+            
             $cotizacionesVigentes = Cotizacion::where('estado', '!=', 'Pagada')->get()->filter(function ($cot) use ($fechaTransferencia) {
                 $fechaCot = \Carbon\Carbon::parse($cot->fecha_cotizacion);
                 $plazo = $cot->cliente->plazo_pago_habil_dias;
@@ -177,31 +192,31 @@ class TransferenciaController extends Controller
                     $fechaTransferencia->lessThanOrEqualTo($fechaLimite);
             });
 
-            // 2A. INTENTAR CONCILIAR POR COMENTARIO (si hay comentario válido)
-            if (preg_match('/(\d+)-CDP(\d+)/i', $comentario, $matches)) {
-                $idCotizacion = $matches[1]; // Ej: 1007
-                $idCliente = $matches[2];    // Ej: 2
+            // // 2A. INTENTAR CONCILIAR POR COMENTARIO (si hay comentario válido)
+            // if (preg_match('/(\d+)-CDP(\d+)/i', $comentario, $matches)) {
+            //     $idCotizacion = $matches[1]; // Ej: 1007
+            //     $idCliente = $matches[2];    // Ej: 2
 
-                $cotizacion = $cotizacionesVigentes->first(function ($cot) use ($idCotizacion, $idCliente, $monto) {
-                    return $cot->id_cotizacion == $idCotizacion &&
-                        $cot->id_cliente == $idCliente &&
-                        floatval($cot->total_iva) === $monto;
-                });
+            //     $cotizacion = $cotizacionesVigentes->first(function ($cot) use ($idCotizacion, $idCliente, $monto) {
+            //         return $cot->id_cotizacion == $idCotizacion &&
+            //             $cot->id_cliente == $idCliente &&
+            //             floatval($cot->total_iva) === $monto;
+            //     });
 
-                if ($cotizacion) {
-                    $cotizacion->estado = 'Pagada';
-                    $cotizacion->id_transferencia = $transferencia->id;
-                    $cotizacion->save();
+            //     if ($cotizacion) {
+            //         $cotizacion->estado = 'Pagada';
+            //         $cotizacion->id_transferencia = $transferencia->id;
+            //         $cotizacion->save();
 
-                    $transferencia->estado = 'Conciliada';
-                    $transferencia->save();
+            //         $transferencia->estado = 'Conciliada';
+            //         $transferencia->save();
 
-                    continue; // Conciliada exitosamente por comentario
-                } else {
-                    // Comentario apunta a una cotización inexistente o pagada → no continuar con RUT/nombre
-                    continue;
-                }
-            }
+            //         continue; // Conciliada exitosamente por comentario
+            //     } else {
+            //         // Comentario apunta a una cotización inexistente o pagada → no continuar con RUT/nombre
+            //         continue;
+            //     }
+            // }
 
             // 2B. SI NO HAY COMENTARIO VÁLIDO, BUSCAR POR RUT O NOMBRE
             $cliente = null;
@@ -218,6 +233,9 @@ class TransferenciaController extends Controller
                 continue; // No se puede conciliar
             }
 
+            $facturasCliente = $facturasvigentes->filter(function ($fact) use ($cliente) {
+                return $fact->id_cliente === $cliente->id;
+            });
             // Buscar cotizaciones vigentes del cliente
             $cotizacionesCliente = $cotizacionesVigentes->filter(function ($cot) use ($cliente) {
                 return $cot->id_cliente === $cliente->id;
@@ -228,6 +246,19 @@ class TransferenciaController extends Controller
                     $cotizacion->estado = 'Pagada';
                     $cotizacion->id_transferencia = $transferencia->id;
                     $cotizacion->save();
+
+                    $transferencia->estado = 'Conciliada';
+                    $transferencia->save();
+
+                    break; // Conciliada por RUT o nombre + monto
+                }
+            }
+
+            foreach ($facturasCliente as $factura) {
+                if (floatval($factura->total) === $monto) {
+                    $factura->estado = 'Pagada';
+                    $factura->id_transferencia = $transferencia->id;
+                    $factura->save();
 
                     $transferencia->estado = 'Conciliada';
                     $transferencia->save();

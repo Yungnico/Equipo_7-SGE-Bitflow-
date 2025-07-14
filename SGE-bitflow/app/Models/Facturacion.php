@@ -23,10 +23,21 @@ class Facturacion extends Model
         'iva',
         'total',
         'estado',
+        'id_cliente',
     ];
     public function detalles()
     {
         return $this->hasMany(DetalleFactura::class, 'factura_id', 'id');
+    }
+
+    public function cliente()
+    {
+        return $this->belongsTo(Cliente::class, 'id_cliente ', 'id');
+    }
+
+    public function transferencia()
+    {
+        return $this->belongsTo(TransferenciaBancaria::class, 'id_transferencia');
     }
 
     // public function cliente()
