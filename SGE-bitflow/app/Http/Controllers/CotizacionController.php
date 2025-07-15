@@ -17,6 +17,9 @@ use App\Mail\CotizacionMailable;
 use App\Models\CotizacionDetalle;
 use App\Models\DetalleFactura;
 use App\Models\Facturacion;
+use Illuminate\Support\Facades\Log;
+use Carbon\Carbon;
+
 
 class CotizacionController extends Controller
 {
