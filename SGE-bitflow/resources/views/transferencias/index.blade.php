@@ -28,21 +28,22 @@
 
 @section('content')
 <div class="container-fluid mt-1 px-0">
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    {{-- <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="h3">Transferencias Bancarias</h1>
         <form action="{{ route('transferencias.importar') }}" method="POST" enctype="multipart/form-data" class="d-flex gap-2">
             @csrf
             <input type="file" name="archivo" class="form-control" required>
             <button type="submit" class="btn btn-primary">Importar</button>
         </form>
-    </div>
+    </div> --}}
 
     <div class="d-flex justify-content-end align-items-center mb-4 flex-wrap gap-2">
-        <a href="{{ route('transferencias.conciliar') }}" class="btn btn-success px-4 py-2 mb-3">
+        <button class="btn btn-primary" data-toggle="modal" data-target="#modaltransferencias">Importar Transferencias</button>
+        <button onclick="window.location.href='{{ route('transferencias.conciliar') }}'" class="btn btn-primary">
             Conciliar Transferencias
-        </a>
+        </button>
 
-        <button type="button" id="reset-filtros" class="btn btn-secondary px-4 py-2 mb-3">
+        <button type="button" id="reset-filtros" class="btn btn-primary">
             Limpiar Filtros
         </button>
     </div>
@@ -131,10 +132,56 @@
                                 <button
                                     class="btn btn-sm btn-warning btn-conciliar"
                                     data-bs-toggle="modal"
-                                    data-bs-target="#modalConciliar"
+                                    data-bs-target="#modalConciliar{{$t->id}}"
                                     data-id="{{ $t->id }}">
                                     Pendiente
                                 </button>
+                                <!-- Modal Conciliar Transferencia -->
+                                <div class="modal fade" id="modalConciliar{{$t->id}}" tabindex="-1" aria-labelledby="modalConciliarLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-xl">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Seleccionar Factura para Conciliar</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="card">
+                                                    <div class="table-responsive">
+                                                        <table id="tabla-cotizaciones" class="table table-striped table-bordered nowrap w-100">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Folio Factura</th>
+                                                                    <th>Nombre</th>
+                                                                    <th>Fecha Cotización</th>
+                                                                    <th>Total</th>
+                                                                    <th>Acción</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @foreach($facturasdisponibles as $factura)
+                                                                <tr>
+                                                                    <td>{{ $factura->folio }}</td>
+                                                                    <td>{{ $factura->razon_social_receptor }}</td>
+                                                                    <td>{{ $factura->fecha_emision }}</td>
+                                                                    <td>${{ number_format($factura->total, 0, ',', '.') }}</td>
+                                                                    <td>
+                                                                        <form method="POST" action="{{ route('transferencias.conciliar.manual') }}" class="d-inline">
+                                                                            @csrf
+                                                                            <input type="hidden" name="transferencias_bancarias_id" class="input-transferencia-id" value="{{ $t->id }}">
+                                                                            <input type="hidden" name="id_factura" value="{{ $factura->id }}">
+                                                                            <button type="submit" class="btn btn-sm btn-primary">Conciliar</button>
+                                                                        </form>
+                                                                    </td>
+                                                                </tr>
+                                                                @endforeach
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                                 @elseif($t->estado === 'Conciliada')
                                 <span class="badge bg-success">Conciliada</span>
                                 @else
@@ -171,6 +218,7 @@
                             <td>${{ number_format($t->egreso, 2, ',', '.') }}</td>
                             <td>${{ number_format($t->saldo_contable, 2, ',', '.') }}</td>
                             <td>{{ $t->comentario_transferencia }}</td>
+
                         </tr>
                         @empty
                         <tr>
@@ -265,52 +313,46 @@
     </div>
 </div>
 
-<!-- Modal Conciliar Transferencia -->
-<div class="modal fade" id="modalConciliar" tabindex="-1" aria-labelledby="modalConciliarLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Seleccionar Cotización para Conciliar</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-            </div>
-            <div class="modal-body">
-                <div class="card">
-                    <div class="table-responsive">
-                        <table id="tabla-cotizaciones" class="table table-striped table-bordered nowrap w-100">
-                            <thead>
-                                <tr>
-                                    <th>Código Cotización</th>
-                                    <th>Nombre</th>
-                                    <th>Fecha Cotización</th>
-                                    <th>Total</th>
-                                    <th>Acción</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($cotizacionesDisponibles as $cotizacion)
-                                <tr>
-                                    <td>{{ $cotizacion->codigo_cotizacion }}</td>
-                                    <td>{{ $cotizacion->cliente->razon_social }}</td>
-                                    <td>{{ $cotizacion->fecha_cotizacion }}</td>
-                                    <td>${{ number_format($cotizacion->total, 0, ',', '.') }}</td>
-                                    <td>
-                                        <form method="POST" action="{{ route('transferencias.conciliar.manual') }}" class="d-inline">
-                                            @csrf
-                                            <input type="hidden" name="transferencias_bancarias_id" class="input-transferencia-id">
-                                            <input type="hidden" name="cotizaciones_id_cotizacion" value="{{ $cotizacion->id_cotizacion }}">
-                                            <button type="submit" class="btn btn-sm btn-primary">Conciliar</button>
-                                        </form>
-                                    </td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+
+<!-- Modal Importar Transferencias -->
+<div class="modal fade" id="modaltransferencias" tabindex="-1" role="dialog" aria-labelledby="modaltransferencias" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <form action="{{ route('transferencias.importar') }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modaltransferencias">Importar Transferencias</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div
+                        id="dropzone"
+                        class="border border-secondary rounded p-4 text-center bg-light"
+                        style="cursor: pointer;"
+                        onclick="document.getElementById('archivo').click();"
+                        ondragover="event.preventDefault(); this.classList.add('border-primary');"
+                        ondragleave="this.classList.remove('border-primary');"
+                        ondrop="handleDrop(event);"
+                        >
+                        <div class="mb-2">
+                            <i class="fas fa-upload fa-2x text-secondary"></i>
+                        </div>
+                        <p class="mb-0 text-muted">Arrastra tu archivo CSV aquí o haz clic para seleccionarlo</p>
+                        <small id="file-name" class="form-text text-muted mt-2"></small>
                     </div>
+                    <input type="file" name="archivo" id="archivo" class="d-none" accept=".csv" onchange="showFileName(this)" required>
+                    <button type="submit" class="btn btn-primary mt-3">
+                        Importar CSV 
+                    </button>
                 </div>
             </div>
         </div>
-    </div>
+    </form>
 </div>
+
+
 
 <!-- Modal Conciliar Egreso -->
 <div class="modal fade" id="modalEgresos" tabindex="-1" aria-labelledby="modalEgresosLabel" aria-hidden="true">
@@ -528,14 +570,6 @@
             });
         });
 
-        const modal = document.getElementById('modalConciliar');
-        modal.addEventListener('show.bs.modal', function(event) {
-            const button = event.relatedTarget;
-            const transferenciaId = button.getAttribute('data-id');
-            modal.querySelectorAll('.input-transferencia-id').forEach(input => {
-                input.value = transferenciaId;
-            });
-        });
 
         const tablaCostos = $('#tabla-costos').DataTable({
             responsive: true,

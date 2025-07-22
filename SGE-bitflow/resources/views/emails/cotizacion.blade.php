@@ -1,3 +1,8 @@
-<h4>Envío de Cotización #{{ $id }}</h4>
-<p>{!! nl2br(e($mensaje)) !!}
-</p>
+<x-mail::message>
+# ¡Hola! Adjuntamos tu cotización {{ $id }}.
+
+<p>{{ $mensaje }}</p>
+
+Gracias por preferirnos.<br>
+**Bitflow**
+</x-mail::message>

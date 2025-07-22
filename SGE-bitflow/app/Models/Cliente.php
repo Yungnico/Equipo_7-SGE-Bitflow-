@@ -24,4 +24,9 @@ class Cliente extends Model
     {
         return $this->hasMany(Contacto::class);
     }
+
+    public function facturas()
+    {
+        return $this->hasMany(Facturacion::class, 'id_cliente');
+    }
 }

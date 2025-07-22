@@ -153,7 +153,7 @@
                     <div class="form-row">
                         <div class="form-group col-md-4">
                             <label for="folio">Folio</label>
-                            <input type="text" class="form-control" id="folio" name="folio" value="{{ $maxFolio }}" disabled>
+                            <input type="text" class="form-control" id="folio" name="folio" required>
                         </div>
                         <div class="form-group col-md-4">
                             <label for="tipo_dte">Tipo DTE</label>
@@ -175,7 +175,7 @@
                             <select type="text" class="form-control" id="rut_receptor" name="rut_receptor" value="" required>
                                 <option value="">Seleccione un Cliente</option>
                                 @foreach ($clientes as $cliente)
-                                    <option value="{{ $cliente->id }}">{{ $cliente->rut }}</option>
+                                    <option data-index="{{ $cliente->id }}" value="{{ $cliente->rut }}">{{ $cliente->rut }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -462,6 +462,9 @@
                 document.getElementById('subtotal').textContent = `$${subtotal.toFixed(2)}`;
                 document.getElementById('ivaTotal').textContent = `$${ivaTotal.toFixed(2)}`;
                 document.getElementById('total').textContent = `$${total.toFixed(2)}`;
+                document.getElementById('subtotal').value = subtotal.toFixed(2);
+                document.getElementById('ivaTotal').value = ivaTotal.toFixed(2);
+                document.getElementById('total').value = total.toFixed(2);
             }
             function eliminarProducto(index) {
                 productosGuardados.splice(index, 1);
@@ -545,9 +548,12 @@
                     descripcion_itemsL: p.descripcion_itemsL,
                     precio_itemsL: p.precio_itemsL
                 }));
-                const subtotal = parseFloat(document.getElementById('subtotal').textContent.replace('$', '').replace('.', '').replace(',', '.'));
-                const ivaTotal = parseFloat(document.getElementById('ivaTotal').textContent.replace('$', '').replace('.', '').replace(',', '.'));
-                const total = parseFloat(document.getElementById('total').textContent.replace('$', '').replace('.', '').replace(',', '.'));
+                const subtotal = document.getElementById('subtotal').value;
+                const ivaTotal = document.getElementById('ivaTotal').value;
+                const total = document.getElementById('total').value;
+                console.log('total', total);
+                console.log('ivaTotal', ivaTotal);
+                console.log('subtotal', subtotal);
                 const data = {
                     _token: token,
                     folio: folio,
@@ -592,7 +598,7 @@
         });
 
         $('#rut_receptor').on('change',function(){
-            const clienteId = $(this).val();
+            const clienteId = $(this).find('option:selected').data('index');
             $.ajax({
                 url: '/clientes/' + clienteId + '/info',
                 type: 'GET',

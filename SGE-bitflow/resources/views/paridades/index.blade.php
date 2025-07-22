@@ -2,9 +2,6 @@
 
 @section('title', 'Paridades')
 
-@section('content_header')
-    <h1>Paridades</h1>
-@stop
 
 @section('css')
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
@@ -22,7 +19,7 @@
         <x-adminlte-alert theme="danger">{{ session('error') }}</x-adminlte-alert>
     @endif
 
-    <div class="text-right mb-3">
+    <div class="text-right mb-3 pt-4">
         <a href="{{ route('paridades.fetch') }}" class="btn btn-success mb-3">Actualizar</a>
  
         <button class="btn btn-primary mb-3" data-toggle="modal" data-target="#modalCrearParidad">

@@ -1,16 +1,14 @@
-<div class="py-3">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3">Servicios Registrados</h1>
-    </div>
+<div class="py-4">
+
 
     <div class="d-flex justify-content-end align-items-center mb-4 flex-wrap gap-2">
-        <button type="button" class="btn btn-success px-4 py-2" data-bs-toggle="modal" data-bs-target="#modalCrearServicio">
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalCrearServicio">
             Agregar Servicio
         </button>
-                <button class="btn btn-warning px-4 py-2" data-bs-toggle="modal" data-bs-target="#modalMantenedorCategorias">
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalMantenedorCategorias">
             Categorías
         </button>
-        <button id="reset-filtros" class="btn btn-secondary px-4 py-2">
+        <button id="reset-filtros" class="btn btn-primary">
             Limpiar filtros
         </button>
     </div>

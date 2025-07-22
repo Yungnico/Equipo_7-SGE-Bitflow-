@@ -66,7 +66,7 @@ class FacturacionController extends Controller
 
         foreach ($ranking as $rut => $cliente) {
             $buenosPorDia = array_filter($cliente['facturas_por_dia'], function ($cantidad) {
-                return $cantidad >= 5;
+                return $cantidad > 0;
             });
 
             if (count($buenosPorDia) > 0) {
@@ -238,23 +238,32 @@ class FacturacionController extends Controller
                         if (!$fecha_emision) continue;
 
                         try {
+                            if($cliente= Cliente::where('rut', $cols[13])->first()) {
+                                // Si el cliente ya existe, no lo creamos de nuevo
+                            } else {
+                                $cliente = Cliente::create([
+                                    'rut' => $cols[13],
+                                    'razon_social' => $cols[14],
+                                    'plazo_pago_habil_dias' => 30,
+                                ]);
+                            }
+                            
+
+                            $id_cliente = Cliente::where('RUT', $cols[13])->value('id');
+
+                            
                             $currentFactura = Facturacion::create([
                                 'folio' => $folio,
                                 'tipo_dte' => trim($cols[0]),
                                 'fecha_emision' => $fecha_emision,
                                 'rut_receptor' => $cols[13],
-                                'razon_social_receptor' => $cols[14],
+                                'razon_social_receptor' => $cols[14],   
                                 'total_neto' => floatval($cols[19]),
                                 'iva' => floatval($cols[21]),
                                 'total' => floatval($cols[22]),
                                 'estado' => 'emitida',
+                                'id_cliente' => $id_cliente,
                             ]);
-                            $cliente = Cliente::create([
-                                'rut' => $cols[13],
-                                'razon_social' => $cols[14],
-                                'plazo_pago_habil_dias' => 30,
-                            ]);
-
                         } catch (\Exception $e) {
                             Log::error("Error insertando factura en línea $linea: " . $e->getMessage());
                         }
@@ -307,6 +316,19 @@ class FacturacionController extends Controller
                         if (!$fecha_emision) continue;
 
                         try {
+                            if($cliente= Cliente::where('rut', $cols[13])->first()) {
+                                // Si el cliente ya existe, no lo creamos de nuevo
+                            } else {
+                                $cliente = Cliente::create([
+                                    'rut' => $cols[13],
+                                    'razon_social' => $cols[14],
+                                    'plazo_pago_habil_dias' => 30,
+                                ]);
+                            }
+                            
+
+                            $id_cliente = Cliente::where('RUT', $cols[13])->value('id');
+                            
                             $currentFactura = Facturacion::create([
                                 'folio' => $folio,
                                 'tipo_dte' => trim($cols[0]),
@@ -317,11 +339,7 @@ class FacturacionController extends Controller
                                 'iva' => floatval($cols[21]),
                                 'total' => floatval($cols[22]),
                                 'estado' => 'emitida',
-                            ]);
-                             $cliente = Cliente::create([
-                                'rut' => $cols[13],
-                                'razon_social' => $cols[14],
-                                'plazo_pago_habil_dias' => 30,
+                                'id_cliente' => $id_cliente,
                             ]);
                         } catch (\Exception $e) {
                             Log::error("Error insertando factura en línea $linea: " . $e->getMessage());
@@ -389,6 +407,8 @@ class FacturacionController extends Controller
                 'total' => 'required|numeric',
             ]);
 
+            $cliente = Cliente::where('rut', $request->rut_receptor)->first();
+
             $factura = Facturacion::create([
                 'folio' => $request->folio,
                 'tipo_dte' => $request->tipo_dte,
@@ -399,6 +419,7 @@ class FacturacionController extends Controller
                 'iva' => $request->iva,
                 'total' => $request->total,
                 'estado' => 'emitida',
+                'id_cliente' => $cliente ? $cliente->id : null,
             ]);
             if ($request->has('productos')) {
                 foreach ($request->productos as $producto) {

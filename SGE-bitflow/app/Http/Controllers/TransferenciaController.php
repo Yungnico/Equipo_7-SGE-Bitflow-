@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 use App\Models\CostosDetalle;
+use App\Models\Facturacion;
 
 class TransferenciaController extends Controller
 {
@@ -19,12 +20,16 @@ class TransferenciaController extends Controller
             ->whereNull('transferencias_bancarias_id')
             ->get();
 
+        $facturasdisponibles = Facturacion::with('cliente')
+            ->whereNull('id_transferencia')
+            ->whereIn('estado', ['emitida', 'pendiente'])
+            ->get();
 
         $cotizacionesDisponibles = Cotizacion::whereNull('id_transferencia')
             ->whereIn('estado', ['Borrador', 'Aceptada'])
             ->get();
 
-        return view('transferencias.index', compact('transferencias', 'cotizacionesDisponibles', 'costosDisponibles'));
+        return view('transferencias.index', compact('transferencias', 'cotizacionesDisponibles', 'costosDisponibles', 'facturasdisponibles'));
     }
 
     public function store(Request $request)
@@ -165,45 +170,50 @@ class TransferenciaController extends Controller
             $fechaTransferencia = \Carbon\Carbon::parse($transferencia->fecha_transaccion);
 
             // 1. FILTRO POR FECHAS: Buscar todas las cotizaciones con fechas válidas para esta transferencia
-            $cotizacionesVigentes = Cotizacion::where('estado', '!=', 'Pagada')->get()->filter(function ($cot) use ($fechaTransferencia) {
-                $fechaCot = \Carbon\Carbon::parse($cot->fecha_cotizacion);
-                $plazo = $cot->cliente->plazo_pago_habil_dias;
+
+            $facturasvigentes = Facturacion::where('estado', '!=', 'Pagada')->get()->filter(function ($factura) use ($fechaTransferencia) {
+                $fechaEmision = \Carbon\Carbon::parse($factura->fecha_emision);
+                $plazo = Cliente::find($factura->id_cliente)->plazo_pago_habil_dias;
 
                 if (!is_numeric($plazo)) return false;
 
-                $fechaLimite = $fechaCot->copy()->addWeekdays($plazo);
+                $fechaLimite = $fechaEmision->copy()->addWeekdays($plazo);
 
-                return $fechaTransferencia->greaterThanOrEqualTo($fechaCot) &&
+                return $fechaTransferencia->greaterThanOrEqualTo($fechaEmision) &&
                     $fechaTransferencia->lessThanOrEqualTo($fechaLimite);
-            });
+            }); 
 
-            // 2A. INTENTAR CONCILIAR POR COMENTARIO (si hay comentario válido)
-            if (preg_match('/(\d+)-CDP(\d+)/i', $comentario, $matches)) {
-                $idCotizacion = $matches[1]; // Ej: 1007
-                $idCliente = $matches[2];    // Ej: 2
+            
+            // $cotizacionesVigentes = Cotizacion::where('estado', '!=', 'Pagada')->get()->filter(function ($cot) use ($fechaTransferencia) {
+            //     $fechaCot = \Carbon\Carbon::parse($cot->fecha_cotizacion);
+            //     $plazo = $cot->cliente->plazo_pago_habil_dias;
 
-                $cotizacion = $cotizacionesVigentes->first(function ($cot) use ($idCotizacion, $idCliente, $monto) {
-                    return $cot->id_cotizacion == $idCotizacion &&
-                        $cot->id_cliente == $idCliente &&
-                        floatval($cot->total_iva) === $monto;
-                });
+            //     if (!is_numeric($plazo)) return false;
 
-                if ($cotizacion) {
-                    $cotizacion->estado = 'Pagada';
-                    $cotizacion->id_transferencia = $transferencia->id;
-                    $cotizacion->save();
+            //     $fechaLimite = $fechaCot->copy()->addWeekdays($plazo);
+
+            //     return $fechaTransferencia->greaterThanOrEqualTo($fechaCot) &&
+            //         $fechaTransferencia->lessThanOrEqualTo($fechaLimite);
+            // });
+
+            // Filtro por comentario
+            if (!empty($comentario)) {
+                $factura_comentario = Facturacion::where('estado', '!=', 'Pagada')
+                    ->where('folio', '=', $comentario)
+                    ->first();
+                if ($factura_comentario) {
+                    // Conciliar directamente por folio y monto
+                    $factura_comentario->estado = 'Pagada';
+                    $factura_comentario->id_transferencia = $transferencia->id;
+                    $factura_comentario->save();
 
                     $transferencia->estado = 'Conciliada';
                     $transferencia->save();
 
-                    continue; // Conciliada exitosamente por comentario
-                } else {
-                    // Comentario apunta a una cotización inexistente o pagada → no continuar con RUT/nombre
-                    continue;
+                    continue; // Salta al siguiente loop, ya está conciliada
                 }
             }
-
-            // 2B. SI NO HAY COMENTARIO VÁLIDO, BUSCAR POR RUT O NOMBRE
+            // SI NO HAY COMENTARIO VÁLIDO, BUSCAR POR RUT O NOMBRE
             $cliente = null;
 
             if (!empty($rut)) {
@@ -218,16 +228,20 @@ class TransferenciaController extends Controller
                 continue; // No se puede conciliar
             }
 
-            // Buscar cotizaciones vigentes del cliente
-            $cotizacionesCliente = $cotizacionesVigentes->filter(function ($cot) use ($cliente) {
-                return $cot->id_cliente === $cliente->id;
+            $facturasCliente = $facturasvigentes->filter(function ($fact) use ($cliente) {
+                return $fact->id_cliente === $cliente->id;
             });
+            // Buscar cotizaciones vigentes del cliente
+            // $cotizacionesCliente = $cotizacionesVigentes->filter(function ($cot) use ($cliente) {
+            //     return $cot->id_cliente === $cliente->id;
+            // });
 
-            foreach ($cotizacionesCliente as $cotizacion) {
-                if (floatval($cotizacion->total_iva) === $monto) {
-                    $cotizacion->estado = 'Pagada';
-                    $cotizacion->id_transferencia = $transferencia->id;
-                    $cotizacion->save();
+            
+            foreach ($facturasCliente as $factura) {
+                if (floatval($factura->total) === $monto) {
+                    $factura->estado = 'Pagada';
+                    $factura->id_transferencia = $transferencia->id;
+                    $factura->save();
 
                     $transferencia->estado = 'Conciliada';
                     $transferencia->save();
@@ -245,20 +259,22 @@ class TransferenciaController extends Controller
         // Validación de los campos del formulario
         $request->validate([
             'transferencias_bancarias_id' => 'required|exists:transferencias_bancarias,id',
-            'cotizaciones_id_cotizacion' => 'required|exists:cotizaciones,id_cotizacion',
+            'id_factura' => 'required|exists:facturacion,id',
         ]);
 
         try {
             // Buscar cotización por ID personalizado (id_cotizacion es la clave primaria)
-            $cotizacion = Cotizacion::where('id_cotizacion', $request->cotizaciones_id_cotizacion)->firstOrFail();
-
+            $factura = Facturacion::findOrFail($request->id_factura);
             // Buscar la transferencia por ID
             $transferencia = TransferenciaBancaria::findOrFail($request->transferencias_bancarias_id);
 
+            $factura->id_transferencia = $transferencia->id; // <- este es el campo correcto
+            $factura->estado = 'pagada';
+            $factura->save();
             // Asignar la transferencia a la cotización
-            $cotizacion->id_transferencia = $transferencia->id; // <- este es el campo correcto
-            $cotizacion->estado = 'Pagada';
-            $cotizacion->save();
+            // $cotizacion->id_transferencia = $transferencia->id; // <- este es el campo correcto
+            // $cotizacion->estado = 'Pagada';
+            // $cotizacion->save();
 
             // Marcar la transferencia como conciliada
             $transferencia->estado = 'Conciliada';

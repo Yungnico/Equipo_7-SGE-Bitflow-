@@ -54,34 +54,33 @@ class ClienteController extends Controller
     public function index(Request $request)
     {
         // Inicia la consulta
-        $query = Cliente::query();
+        // $query = Cliente::query();
 
-        // Aplica filtros si se ingresan datos
-        if ($request->filled('razon_social')) {
-            $query->where('razon_social', 'like', '%' . $request->razon_social . '%');
-        }
+        // // Aplica filtros si se ingresan datos
+        // if ($request->filled('razon_social')) {
+        //     $query->where('razon_social', 'like', '%' . $request->razon_social . '%');
+        // }
 
-        if ($request->filled('rut')) {
-            $query->where('rut', 'like', '%' . $request->rut . '%');
-        }
+        // if ($request->filled('rut')) {
+        //     $query->where('rut', 'like', '%' . $request->rut . '%');
+        // }
 
-        if ($request->filled('nombre_fantasia')) {
-            $query->where('nombre_fantasia', 'like', '%' . $request->nombre_fantasia . '%');
-        }
+        // if ($request->filled('nombre_fantasia')) {
+        //     $query->where('nombre_fantasia', 'like', '%' . $request->nombre_fantasia . '%');
+        // }
 
-        // Si no se ingresó ningún filtro, redirecciona con mensaje de advertencia (opcional)
-        if (
-            !$request->filled('razon_social') &&
-            !$request->filled('rut') &&
-            !$request->filled('nombre_fantasia')
-        ) {
-            // Puedes quitar esta parte si quieres que siempre muestre todo por defecto
-            // return redirect()->route('clientes.index')->with('warning', 'Ingrese al menos un criterio de búsqueda.');
-        }
+        // // Si no se ingresó ningún filtro, redirecciona con mensaje de advertencia (opcional)
+        // if (
+        //     !$request->filled('razon_social') &&
+        //     !$request->filled('rut') &&
+        //     !$request->filled('nombre_fantasia')
+        // ) {
+        //     // Puedes quitar esta parte si quieres que siempre muestre todo por defecto
+        // }
 
-        // Pagina el resultado (muy importante)
-        $clientes = $query->paginate(10);
-
+        // // Pagina el resultado (muy importante)
+        // $clientes = $query->paginate(10);
+        $clientes = Cliente::all();
         // Retorna la vista con los resultados
         return view('clientes.index', compact('clientes'));
     }

@@ -22,8 +22,12 @@ return new class extends Migration
             $table->decimal('iva', 15, 2);
             $table->decimal('total', 15, 2);
             $table->enum('estado', ['emitida', 'anulada', 'pagada'])->default('emitida');
+            $table->unsignedBigInteger('id_cliente')->nullable();
+            $table->foreign('id_cliente')->references('id')->on('clientes')->onDelete('set null');
+            $table->unsignedBigInteger('id_transferencia')->nullable();
+            $table->foreign('id_transferencia')->references('id')->on('transferencias_bancarias')->onDelete('set null');
             $table->timestamps();
-
+            
         });
     }
 

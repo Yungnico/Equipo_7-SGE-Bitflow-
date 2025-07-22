@@ -78,6 +78,8 @@ class CotizacionController extends Controller
             'correo_destino' => 'required|email',
             'asunto' => 'required|string|max:255',
             'mensaje' => 'required|string',
+            'copia' => 'nullable|email',
+            'copia_oculta' => 'nullable|email',
         ]);
 
         try {
@@ -85,6 +87,9 @@ class CotizacionController extends Controller
             $asunto = $request->asunto;
             $mensaje = $request->mensaje;
             $adjuntarPdf = $request->adjuntarPdf;
+            $copia = $request->copia;
+            $cco = $request->copia_oculta;
+
 
             $cotizacion = Cotizacion::with(['cliente', 'servicios', 'itemsLibres'])->findOrFail($id);
             $cotizacion->estado = 'Enviada';
@@ -95,7 +100,7 @@ class CotizacionController extends Controller
                 Storage::disk('public')->put($cotizacion->codigo_cotizacion . '.pdf', $pdf->output());
             }
 
-            $correoMailable = new CotizacionMailable($asunto, $mensaje, $cotizacion->codigo_cotizacion, $adjuntarPdf);
+            $correoMailable = new CotizacionMailable($asunto, $mensaje, $cotizacion->codigo_cotizacion, $adjuntarPdf,$copia,$cco);
             Mail::to($correo)->send($correoMailable);
 
             // Limpiar archivo PDF temporal
