@@ -32,7 +32,7 @@ class Facturacion extends Model
 
     public function cliente()
     {
-        return $this->belongsTo(Cliente::class, 'id_cliente ', 'id');
+        return $this->belongsTo(Cliente::class, 'id_cliente');
     }
 
     public function transferencia()

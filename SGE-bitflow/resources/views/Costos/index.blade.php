@@ -2,9 +2,7 @@
 
 @section('title', 'Costos')
 
-@section('content_header')
-<h1 class="h3">Costos Registrados</h1>
-@stop
+
 
 @section('css')
 {{-- DataTables + Select2 --}}
@@ -16,15 +14,18 @@
 @stop
 
 @section('content')
-<div class="container-fluid mt-5 px-0">
+<div class="container-fluid mt-5 pt-4 px-0">
 
     {{-- Botones de acciones --}}
     <div class="d-flex justify-content-end align-items-center mb-4 flex-wrap">
         <div class="d-flex gap-2">
-            <button type="button" class="btn btn-success px-4 py-2" data-bs-toggle="modal" data-bs-target="#modalCrearCosto">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalCrearCosto">
                 Agregar Costo
             </button>
-            <button id="reset-filtros" class="btn btn-secondary px-4 py-2">
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalMantenedorCategorias">
+                Categorías
+            </button>
+            <button id="reset-filtros" class="btn btn-primary">
                 Limpiar filtros
             </button>
         </div>
@@ -139,7 +140,7 @@
             <form action="{{ route('costos.store') }}" method="POST">
                 @csrf
                 <div class="modal-content">
-                    <div class="modal-header bg-success text-white">
+                    <div class="modal-header">
                         <h5 class="modal-title" id="modalCrearCostoLabel">Agregar Costo</h5>
                         <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                     </div>
@@ -281,7 +282,99 @@
         </div>
     </div>
 
+{{-- Modal: Mantenedor de Categorías --}}
+<div class="modal fade" id="modalMantenedorCategorias" tabindex="-1" aria-labelledby="modalMantenedorCategoriasLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-secondary text-white">
+                <h5 class="modal-title">Mantenedor de Categorías</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="card">
+                    <div class="card-body">
+                        <table class="table table-bordered" id="tabla-categorias" style="width: 100%">
+                            <thead class="table-secondary">
+                                <tr>
+                                    <th></th>
+                                    <th>
+                                        <div class="d-flex justify-content-center">
+                                            <button class="btn btn-success p-2"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#modalCrearCategoria"
+                                                data-parent="#modalMantenedorCategorias">
+                                                <i class="fas fa-plus"></i>
+                                            </button>
+                                        </div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($categorias as $categoria)
+                                <tr>
+                                    <td>{{ $categoria->nombre }}</td>
+                                    <td>
+                                        <div class="d-flex justify-content-center gap-2">
+                                            <button class="btn btn-sm btn-primary"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#modalEditarCategoria"
+                                                data-id="{{ $categoria->id }}"
+                                                data-nombre="{{ $categoria->nombre }}">
+                                                <i class="fas fa-pencil-alt"></i>
+                                            </button>
 
+                                            <form action="{{ route('categorias.destroy', $categoria->id) }}" method="POST" class="d-inline-block">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button class="btn btn-sm btn-danger" onclick="return confirm('¿Eliminar esta categoría?')">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{-- Modal: Crear Categoría --}}
+<div class="modal fade" id="modalCrearCategoria" tabindex="-1" aria-labelledby="modalCrearCategoriaLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form method="POST" action="{{ route('categoriascostos.store') }}">
+            @csrf
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Crear Categoría</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="nombre" class="form-label">Nombre de la Categoría</label>
+                        <input type="text" name="nombre" class="form-control" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Crear</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 </div>
 @stop
 

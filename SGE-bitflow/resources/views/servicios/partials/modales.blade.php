@@ -4,7 +4,7 @@
         <form method="POST" action="{{ route('servicios.store') }}">
             @csrf
             <div class="modal-content">
-                <div class="modal-header bg-success text-white">
+                <div class="modal-header">
                     <h5 class="modal-title">Agregar Servicio</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
@@ -174,7 +174,7 @@
         <form method="POST" action="{{ route('categorias.store') }}">
             @csrf
             <div class="modal-content">
-                <div class="modal-header bg-success text-white">
+                <div class="modal-header">
                     <h5 class="modal-title">Crear Categoría</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>

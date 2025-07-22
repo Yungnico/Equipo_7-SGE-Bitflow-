@@ -36,7 +36,6 @@ class CotizacionMailable extends Mailable
     {
         return new Envelope(
             subject: $this->asunto,
-            from: new \Illuminate\Mail\Mailables\Address('hola@gmail.com', 'Bitflow'),
             cc: [
                 new \Illuminate\Mail\Mailables\Address('' . $this->copia, 'Copia de Bitflow') // Correo de copia,
             ],
@@ -53,7 +52,7 @@ class CotizacionMailable extends Mailable
     {
         
         return new Content(
-            view: 'emails.cotizacion',
+            markdown: 'emails.cotizacion',
             with: [
                 'mensaje' => $this->mensaje,
                 'id' => $this->id,

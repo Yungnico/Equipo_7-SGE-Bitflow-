@@ -18,6 +18,7 @@ use App\Http\Controllers\TransferenciaController;
 use App\Http\Controllers\FacturacionController;
 use App\Http\Controllers\CostoController;
 use App\Http\Controllers\SubcategoriaController;
+use App\Http\Controllers\categoria_costocontroller;
 
 
 Route::get('/facturas/por-cliente', [FacturacionController::class, 'graficoPorCliente']);
@@ -117,6 +118,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/categorias/{categoria}/edit', [CategoriaController::class, 'edit'])->name('categorias.edit');
     Route::put('/categorias/{categoria}', [CategoriaController::class, 'update'])->name('categorias.update');
     Route::delete('/categorias/{categoria}', [CategoriaController::class, 'destroy'])->name('categorias.destroy');
+
+    Route::post('/categoriascostos', [categoria_costoController::class, 'store'])->name('categoriascostos.store');
 
     Route::resource('monedas', MonedaController::class)->only(['index', 'store', 'update', 'destroy']);
 

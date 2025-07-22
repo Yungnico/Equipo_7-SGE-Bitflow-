@@ -36,28 +36,6 @@
     <div class="card">
         <div class="card-body">
 
-            <form action="{{ route('clientes.index') }}" method="GET">
-                <div class="form-row row align-items-center g-2 mt-2">
-                    <div class="col-md-4">
-                        <input type="text" name="razon_social" class="form-control text-center" placeholder="Razón social" value="{{ request('razon_social') }}">
-                    </div>
-                    <div class="col-md-3">
-                        <input type="text" name="rut" class="form-control text-center" placeholder="RUT" value="{{ request('rut') }}">
-                    </div>
-                    <div class="col-md-5 d-flex">
-                        <input type="text" name="nombre_fantasia" class="form-control text-center me-2" placeholder="Nombre fantasía" value="{{ request('nombre_fantasia') }}">
-                        <div class="d-flex gap-2 mx-2">
-                            <button type="submit" class="btn btn-primary mx-2">
-                                <i class="fa fa-search"></i>
-                            </button>
-                            <a href="{{ route('clientes.index') }}" class="btn btn-secondary mx-1">
-                                <i class="fas fa-broom"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </form>
-
             <table id="clientes-table" class="table table-striped table-bordered table-hover">
                 <thead>
                     <tr>
@@ -256,8 +234,6 @@
         // Inicializar DataTable
         $('#clientes-table').DataTable({
             responsive: true,
-            autoWidth: false,
-            searching: false,
             language: {
                 url: '{{ asset("datatables/es-CL.json")}}'
             }

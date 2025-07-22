@@ -1,3 +1,7 @@
 @if(session('success'))
-<div class="alert alert-success">{{ session('success') }}</div>
+    <input type="hidden" id="successMessage" value="{{ session('success') }}">
+@endif
+
+@if(session('error'))
+    <input type="hidden" id="errorMessage" value="{{ session('error') }}">
 @endif

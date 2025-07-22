@@ -407,6 +407,8 @@ class FacturacionController extends Controller
                 'total' => 'required|numeric',
             ]);
 
+            $cliente = Cliente::where('rut', $request->rut_receptor)->first();
+
             $factura = Facturacion::create([
                 'folio' => $request->folio,
                 'tipo_dte' => $request->tipo_dte,
@@ -417,6 +419,7 @@ class FacturacionController extends Controller
                 'iva' => $request->iva,
                 'total' => $request->total,
                 'estado' => 'emitida',
+                'id_cliente' => $cliente ? $cliente->id : null,
             ]);
             if ($request->has('productos')) {
                 foreach ($request->productos as $producto) {
