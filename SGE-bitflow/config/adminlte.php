@@ -334,6 +334,13 @@ return [
             'can' => 'admin.viewusers.index',
         ],
         [
+            'text' => 'Clientes',
+            'url' => 'clientes',
+            'icon' => 'fas fa-solid fa-user-plus',
+            'can' => 'cliente.index',
+
+        ],
+        [
             'text' => 'Cotizaciones',
             'icon' => 'fas fa-fw fa-file-invoice-dollar',
             'can' => 'cotizaciones.menu',
@@ -374,13 +381,6 @@ return [
             'icon' => 'fas fa-fw fa-chart-bar',            
         ],
         */
-        [
-            'text' => 'Clientes',
-            'url' => 'clientes',
-            'icon' => 'fas fa-solid fa-user-plus',
-            'can' => 'cliente.index',
-
-        ],
         [
             'text' => 'Servicios',
             'url' => 'servicios',

@@ -1,5 +1,5 @@
 @extends('adminlte::page')
-
+@section('plugins.Sweetalert2', true)
 @section('title', 'Transferencias Bancarias')
 
 @section('content_header')
@@ -27,6 +27,14 @@
 @endsection
 
 @section('content')
+@if(session('success'))
+    <input type="hidden" id="successMessage" value="{{ session('success') }}">
+@endif
+
+@if(session('error'))
+    <input type="hidden" id="errorMessage" value="{{ session('error') }}">
+@endif
+
 <div class="container-fluid mt-1 px-0">
     {{-- <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="h3">Transferencias Bancarias</h1>
@@ -607,4 +615,39 @@
 
     });
 </script>
+@endsection
+
+@section('js')  
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<script>
+        var successMessage = document.getElementById('successMessage');
+        var errorMessage = document.getElementById('errorMessage');
+        if (successMessage) {
+            const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.onmouseenter = Swal.stopTimer;
+                        toast.onmouseleave = Swal.resumeTimer;
+                    }
+                });
+                 Toast.fire({
+                    icon: "success",
+                    title: "Exito!",
+                     text: successMessage.value,
+                });
+        } else if (errorMessage) {
+            Swal.fire({
+                icon: 'error',
+                 title: 'Error',
+                text: errorMessage.value,
+                confirmButtonText: 'Aceptar'
+            });
+        }
+    </script>
 @endsection
