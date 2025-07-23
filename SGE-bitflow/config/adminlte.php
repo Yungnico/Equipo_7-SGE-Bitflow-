@@ -400,12 +400,6 @@ return [
             'icon' => 'fas fa-dollar-sign',
             'can' => 'factura.index',
         ],
-        [
-            'text' => 'Costos categorias',
-            'url' => 'categorias-costos',
-            'icon' => 'fas fa-dollar-sign',
-            'can' => 'factura.index',
-        ],
     ],
 
     /*
