@@ -19,7 +19,7 @@ use App\Http\Controllers\FacturacionController;
 use App\Http\Controllers\CostoController;
 use App\Http\Controllers\SubcategoriaController;
 use App\Http\Controllers\categoria_costocontroller;
-
+use App\Http\Controllers\CategoriaCostoController;
 
 Route::get('/facturas/por-cliente', [FacturacionController::class, 'graficoPorCliente']);
 Route::get('/facturas/comparativo-anual', [FacturacionController::class, 'comparativoAnual']);
@@ -119,7 +119,9 @@ Route::middleware('auth')->group(function () {
     Route::put('/categorias/{categoria}', [CategoriaController::class, 'update'])->name('categorias.update');
     Route::delete('/categorias/{categoria}', [CategoriaController::class, 'destroy'])->name('categorias.destroy');
 
-    Route::post('/categoriascostos', [categoria_costoController::class, 'store'])->name('categoriascostos.store');
+    Route::post('/categoriascostos', [CategoriaCostoController::class, 'store'])->name('categoriascostos.store');
+    Route::put('/categoriascostos/{categoria}', [CategoriaCostoController::class, 'update'])->name('categoriascostos.update');
+    Route::delete('/categoriascostos/{categoria}', [CategoriaCostoController::class, 'destroy'])->name('categoriascostos.destroy');
 
     Route::resource('monedas', MonedaController::class)->only(['index', 'store', 'update', 'destroy']);
 

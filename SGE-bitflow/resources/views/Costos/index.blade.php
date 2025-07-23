@@ -14,6 +14,13 @@
 @stop
 
 @section('content')
+@if(session('success'))
+    <input type="hidden" id="successMessage" value="{{ session('success') }}">
+@endif
+
+@if(session('error'))
+    <input type="hidden" id="errorMessage" value="{{ session('error') }}">
+@endif
 <div class="container-fluid mt-5 pt-4 px-0">
 
     {{-- Botones de acciones --}}
@@ -42,7 +49,6 @@
                         <th>Monto</th>
                         <th>Moneda</th>
                         <th>Categoría</th>
-                        <th>Subcategoría</th>
                         <th>Frecuencia</th>
                         <th>Acciones</th>
                     </tr>
@@ -76,7 +82,6 @@
                         </th>
                         <th></th>
                         <th></th>
-                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -99,7 +104,6 @@
                         </td>
                         <td>{{ optional($detalle->moneda)->moneda ?? 'Sin moneda' }}</td>
                         <td>{{ $costo->categoria->nombre ?? 'Sin categoría' }}</td>
-                        <td>{{ $costo->subcategoria->nombre ?? 'Sin subcategoría' }}</td>
                         <td>{{ ucfirst($costo->frecuencia_pago) }}</td>
                         <td class="d-flex gap-2 justify-content-center">
                             <button
@@ -108,7 +112,6 @@
                                 data-concepto="{{ $costo->concepto }}"
                                 data-frecuencia="{{ $costo->frecuencia_pago }}"
                                 data-categoria="{{ $costo->categoria_id }}"
-                                data-subcategoria="{{ $costo->subcategoria_id }}"
                                 data-moneda="{{ $moneda_id }}"
                                 data-monto="{{ $monto }}"
                                 data-bs-toggle="modal"
@@ -178,12 +181,12 @@
                             </select>
                         </div>
 
-                        <div class="col-md-6">
+                        {{-- <div class="col-md-6">
                             <label for="subcategoria_id" class="form-label">Subcategoría</label>
                             <select name="subcategoria_id" id="subcategoria_id" class="form-select" required>
                                 <option value="">Seleccione una categoría primero</option>
                             </select>
-                        </div>
+                        </div> --}}
 
                         <div class="col-md-6">
                             <label for="moneda_id" class="form-label">Moneda</label>
@@ -253,12 +256,12 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-6">
+                        {{-- <div class="col-md-6">
                             <label for="editar_subcategoria_id" class="form-label">Subcategoría</label>
                             <select name="subcategoria_id" id="editar_subcategoria_id" class="form-select" required>
                                 <option value="">Seleccione</option>
                             </select>
-                        </div>
+                        </div> --}}
                         <div class="col-md-6">
                             <label for="editar_moneda_id" class="form-label">Moneda</label>
                             <select name="moneda_id" id="editar_moneda_id" class="form-select" required>
@@ -320,16 +323,7 @@
                                 <tr>
                                     <td>{{ $categoria->nombre }}</td>
                                     <td>
-                                        <div class="d-flex justify-content-center gap-2">
-                                            <button class="btn btn-sm btn-primary"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#modalEditarCategoria"
-                                                data-id="{{ $categoria->id }}"
-                                                data-nombre="{{ $categoria->nombre }}">
-                                                <i class="fas fa-pencil-alt"></i>
-                                            </button>
-
-                                            <form action="{{ route('categorias.destroy', $categoria->id) }}" method="POST" class="d-inline-block">
+                                            <form action="{{ route('categoriascostos.destroy', $categoria->id) }}" method="POST" class="d-inline-block">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button class="btn btn-sm btn-danger" onclick="return confirm('¿Eliminar esta categoría?')">
@@ -379,118 +373,143 @@
 @stop
 
 @section('js')
-<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-<script src="https://cdn.datatables.net/2.3.0/js/dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/2.3.0/js/dataTables.bootstrap5.min.js"></script>
-<script src="https://cdn.datatables.net/responsive/3.0.4/js/dataTables.responsive.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.datatables.net/2.3.0/js/dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/2.3.0/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/3.0.4/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<script>
-    $(document).ready(function() {
-        let table = $('#tabla-costos').DataTable({
-            responsive: true,
-            orderCellsTop: true,
-            fixedHeader: true,
-            language: {
-                url: '{{ asset("datatables/es-CL.json")}}'
-            },
-        });
+    <script>
+        $(document).ready(function() {
+            let table = $('#tabla-costos').DataTable({
+                responsive: true,
+                orderCellsTop: true,
+                fixedHeader: true,
+                language: {
+                    url: '{{ asset("datatables/es-CL.json")}}'
+                },
+            });
 
-        $('#filtro-moneda').on('change', function() {
-            table.column(2).search($(this).val()).draw();
-        });
+            $('#filtro-moneda').on('change', function() {
+                table.column(2).search($(this).val()).draw();
+            });
 
-        $('#filtro-categoria-costos').on('change', function() {
-            table.column(3).search($(this).find('option:selected').text()).draw();
-        });
+            $('#filtro-categoria-costos').on('change', function() {
+                table.column(3).search($(this).find('option:selected').text()).draw();
+            });
 
+            $('#reset-filtros').on('click', function() {
+                $('#filtro-moneda, #filtro-categoria-costos').val('').trigger('change');
+                table.search('').columns().search('').draw();
+            });
 
-        $('#reset-filtros').on('click', function() {
-            $('#filtro-moneda, #filtro-categoria-costos').val('').trigger('change');
-            table.search('').columns().search('').draw();
-        });
+            // Crear: cargar subcategorías dinámicamente
+            $('#categoria_id').on('change', function() {
+                const categoriaId = $(this).val();
+                const subSelect = $('#subcategoria_id');
+                subSelect.prop('disabled', true).html('<option value="">Cargando...</option>');
 
-
-
-        // ===================== MODAL CREAR ===================== //
-        $('#categoria_id').on('change', function() {
-            const categoriaId = $(this).val();
-            const subSelect = $('#subcategoria_id');
-            subSelect.prop('disabled', true).html('<option value="">Cargando...</option>');
-
-            if (categoriaId) {
-                fetch(`/subcategorias/${categoriaId}`)
-                    .then(res => {
-                        if (!res.ok) throw new Error('Respuesta no válida');
-                        return res.json();
-                    })
-                    .then(data => {
-                        let options = '<option value="">Seleccione</option>';
-                        data.forEach(sub => {
-                            options += `<option value="${sub.id}">${sub.nombre}</option>`;
+                if (categoriaId) {
+                    fetch(`/subcategorias/${categoriaId}`)
+                        .then(res => res.json())
+                        .then(data => {
+                            let options = '<option value="">Seleccione</option>';
+                            data.forEach(sub => {
+                                options += `<option value="${sub.id}">${sub.nombre}</option>`;
+                            });
+                            subSelect.html(options).prop('disabled', false);
+                        })
+                        .catch(err => {
+                            console.error('Error al cargar subcategorías:', err);
+                            subSelect.html('<option value="">Error al cargar</option>').prop('disabled', false);
                         });
-                        subSelect.html(options).prop('disabled', false);
-                    })
-                    .catch(err => {
-                        console.error('Error al cargar subcategorías:', err);
-                        subSelect.html('<option value="">Error al cargar</option>').prop('disabled', false);
-                    });
-            } else {
-                subSelect.html('<option value="">Seleccione una categoría primero</option>').prop('disabled', false);
-            }
-        });
+                } else {
+                    subSelect.html('<option value="">Seleccione una categoría primero</option>').prop('disabled', false);
+                }
+            });
 
-        // ===================== MODAL EDITAR ===================== //
-        let subcategoriaIdSeleccionada = null;
+            // Editar
+            let subcategoriaIdSeleccionada = null;
 
-        $('#editar_categoria_id').on('change', function() {
-            const categoriaId = $(this).val();
-            const subSelect = $('#editar_subcategoria_id');
-            subSelect.prop('disabled', true).html('<option value="">Cargando...</option>');
+            $('#editar_categoria_id').on('change', function() {
+                const categoriaId = $(this).val();
+                const subSelect = $('#editar_subcategoria_id');
+                subSelect.prop('disabled', true).html('<option value="">Cargando...</option>');
 
-            if (categoriaId) {
-                fetch(`/subcategorias/${categoriaId}`)
-                    .then(res => {
-                        if (!res.ok) throw new Error('Respuesta no válida');
-                        return res.json();
-                    })
-                    .then(data => {
-                        let options = '<option value="">Seleccione</option>';
-                        data.forEach(sub => {
-                            const selected = sub.id == subcategoriaIdSeleccionada ? 'selected' : '';
-                            options += `<option value="${sub.id}" ${selected}>${sub.nombre}</option>`;
+                if (categoriaId) {
+                    fetch(`/subcategorias/${categoriaId}`)
+                        .then(res => res.json())
+                        .then(data => {
+                            let options = '<option value="">Seleccione</option>';
+                            data.forEach(sub => {
+                                const selected = sub.id == subcategoriaIdSeleccionada ? 'selected' : '';
+                                options += `<option value="${sub.id}" ${selected}>${sub.nombre}</option>`;
+                            });
+                            subSelect.html(options).prop('disabled', false);
+                        })
+                        .catch(err => {
+                            console.error('Error al cargar subcategorías (editar):', err);
+                            subSelect.html('<option value="">Error al cargar</option>').prop('disabled', false);
                         });
-                        subSelect.html(options).prop('disabled', false);
-                    })
-                    .catch(err => {
-                        console.error('Error al cargar subcategorías (editar):', err);
-                        subSelect.html('<option value="">Error al cargar</option>').prop('disabled', false);
-                    });
-            } else {
-                subSelect.html('<option value="">Seleccione una categoría primero</option>').prop('disabled', false);
-            }
+                } else {
+                    subSelect.html('<option value="">Seleccione una categoría primero</option>').prop('disabled', false);
+                }
+            });
+
+            // Botón "Editar"
+            $(document).on('click', '.btn-editar', function() {
+                const btn = $(this);
+                const id = btn.data('id');
+                const categoriaId = btn.data('categoria');
+                subcategoriaIdSeleccionada = btn.data('subcategoria');
+
+                $('#editar_id').val(id);
+                $('#editar_concepto').val(btn.data('concepto'));
+                $('#editar_frecuencia_pago').val(btn.data('frecuencia'));
+                $('#editar_moneda_id').val(btn.data('moneda'));
+                $('#editar_monto').val(btn.data('monto'));
+
+                const hoy = new Date().toISOString().split('T')[0];
+                $('#editar_fecha_modificacion').val(hoy);
+
+                $('#formEditarCosto').attr('action', `/costos/${id}`);
+                $('#editar_categoria_id').val(categoriaId).trigger('change');
+            });
         });
 
-        // Botón "Editar"
-        $(document).on('click', '.btn-editar', function() {
-            const btn = $(this);
-            const id = btn.data('id');
-            const categoriaId = btn.data('categoria');
-            subcategoriaIdSeleccionada = btn.data('subcategoria'); // ⚠️ ASIGNACIÓN DIRECTA
+        // SweetAlert2 para success y error
+        var successMessage = document.getElementById('successMessage');
+        var errorMessage = document.getElementById('errorMessage');
 
-            $('#editar_id').val(id);
-            $('#editar_concepto').val(btn.data('concepto'));
-            $('#editar_frecuencia_pago').val(btn.data('frecuencia'));
-            $('#editar_moneda_id').val(btn.data('moneda'));
-            $('#editar_monto').val(btn.data('monto'));
+        if (successMessage) {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                }
+            });
 
-            const hoy = new Date().toISOString().split('T')[0];
-            $('#editar_fecha_modificacion').val(hoy);
+            Toast.fire({
+                icon: "success",
+                title: "Éxito!",
+                text: successMessage.value,
+            });
+        }
 
-            $('#formEditarCosto').attr('action', `/costos/${id}`);
-            $('#editar_categoria_id').val(categoriaId).trigger('change');
-        });
-    });
-</script>
-@stop
+        if (errorMessage) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: errorMessage.value,
+                confirmButtonText: 'Aceptar'
+            });
+        }
+    </script>
+@endsection

@@ -11,7 +11,6 @@ return new class extends Migration {
             $table->id();
             $table->string('concepto');
             $table->foreignId('categoria_id')->constrained('categorias_costos');
-            $table->foreignId('subcategoria_id')->constrained('subcategorias_costos');
             $table->enum('frecuencia_pago', ['único', 'mensual', 'trimestral', 'semestral', 'anual']);
             $table->timestamps();
         });

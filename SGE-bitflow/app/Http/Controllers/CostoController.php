@@ -18,14 +18,12 @@ class CostoController extends Controller
         $request->validate([
             'concepto' => 'required|string',
             'categoria_id' => 'required|exists:categorias_costos,id',
-            'subcategoria_id' => 'required|exists:subcategorias_costos,id',
             'frecuencia_pago' => 'required|in:único,mensual,trimestral,semestral,anual',
             'moneda_id' => 'required|integer',
             'monto' => 'required|numeric',
             'fecha_inicio' => 'required|date'
         ]);
-
-        $costo = Costos::create($request->only(['concepto', 'categoria_id', 'subcategoria_id', 'frecuencia_pago']));
+        $costo = Costos::create($request->only(['concepto', 'categoria_id', 'frecuencia_pago']));
 
         $frecuencia = $request->frecuencia_pago;
         $monto = $request->monto;
@@ -60,17 +58,15 @@ class CostoController extends Controller
     public function edit(Costos $costo)
     {
         $categorias = CategoriaCostos::all();
-        $subcategorias = SubCategoriaCostos::all();
         $monedas = Paridad::all();
         $detalle = $costo->detalles;
 
-        return view('Costos.edit', compact('costo', 'categorias', 'subcategorias', 'monedas', 'detalle'));
+        return view('Costos.edit', compact('costo', 'categorias', 'monedas', 'detalle'));
     }
     public function index()
     {
         $costos = Costos::with([
             'categoria',
-            'subcategoria',
             'detalles' => function ($query) {
                 $query->orderBy('fecha', 'asc'); // puedes cambiar a 'id' si prefieres
             },
@@ -78,10 +74,9 @@ class CostoController extends Controller
         ])->get();
 
         $categorias = CategoriaCostos::all();
-        $subcategorias = SubCategoriaCostos::all();
         $monedas = Paridad::all();
 
-        return view('Costos.index', compact('costos', 'categorias', 'subcategorias', 'monedas'));
+        return view('Costos.index', compact('costos', 'categorias', 'monedas'));
     }
 
     public function destroy(Costos $costo)
@@ -98,13 +93,12 @@ class CostoController extends Controller
         $request->validate([
             'concepto' => 'required|string',
             'categoria_id' => 'required|exists:categorias_costos,id',
-            'subcategoria_id' => 'required|exists:subcategorias_costos,id',
             'frecuencia_pago' => 'required|in:único,mensual,trimestral,semestral,anual',
             'moneda_id' => 'required|integer',
             'monto' => 'required|numeric',
             'fecha_modificacion' => 'required|date' // Se mantiene aunque no se use
         ]);
-
+        
         // Verificar si algún detalle tiene transferencia bancaria
         $tieneTransferencias = $costo->detalles()
             ->whereNotNull('transferencias_bancarias_id')
@@ -118,7 +112,6 @@ class CostoController extends Controller
         $costo->update($request->only([
             'concepto',
             'categoria_id',
-            'subcategoria_id',
             'frecuencia_pago'
         ]));
 

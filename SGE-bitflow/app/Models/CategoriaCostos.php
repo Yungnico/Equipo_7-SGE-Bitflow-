@@ -13,4 +13,9 @@ class CategoriaCostos extends Model
     {
         return $this->hasMany(SubCategoriaCostos::class);
     }
+
+    public function costos()
+    {
+        return $this->hasMany(Costos::class);
+    }
 }
